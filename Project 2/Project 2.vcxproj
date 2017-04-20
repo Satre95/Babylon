@@ -139,6 +139,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.hpp" />
+    <ClInclude Include="BoxTreeNode.hpp" />
+    <ClInclude Include="BoxTreeObject.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="DirectLight.hpp" />
@@ -158,6 +160,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="BoxTreeNode.cpp" />
+    <ClCompile Include="BoxTreeObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DirectLight.cpp" />
