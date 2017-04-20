@@ -8,13 +8,13 @@
 
 #include "Light.hpp"
 
-class DirectLight: public Light {
+class DirectLight : public Light {
 public:
-    DirectLight(glm::vec3 direction){ this->direction = direction; }
-    DirectLight() { direction = glm::vec3(0); }
-    
-    void SetDirection(glm::vec3 d) { direction = d; }
-    float Illuminate(const glm::vec3 &pos, Color &col, glm::vec3 &toLight, glm::vec3 &ltPos);
+	DirectLight(glm::vec3 direction) { this->direction = direction; }
+	DirectLight() { direction = glm::vec3(0); }
+
+	void SetDirection(glm::vec3 d) { direction = d; }
+	float Illuminate(const glm::vec3 &pos, Color &col, glm::vec3 &toLight, glm::vec3 &ltPos);
 private:
-    glm::vec3 direction;
+	glm::vec3 direction;
 };

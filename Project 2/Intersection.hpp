@@ -13,7 +13,7 @@ class Material;
 
 class Intersection {
 public:
-	Intersection()			{HitDistance=1e10; Mtl=0;}
+	Intersection() { HitDistance = 1e10; Mtl = 0; }
 
 public:
 	// Ray intersection data

@@ -9,9 +9,8 @@
 #include "DirectLight.hpp"
 
 float DirectLight::Illuminate(const glm::vec3 &pos, Color &col, glm::vec3 &toLight, glm::vec3 &ltPos) {
-    
-    toLight = -direction;
-    col = BaseColor;
-    ltPos = pos - (1000000.0f * direction);
-    return Intensity;
+	toLight = -direction;
+	col = BaseColor;
+	ltPos = pos - (1000000.0f * direction);
+	return Intensity;
 }

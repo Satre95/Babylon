@@ -11,12 +11,12 @@
 #include "Light.hpp"
 #include <glm/vec3.hpp>
 
-class PointLight: public Light {
+class PointLight : public Light {
 public:
-    
-    float Illuminate(const glm::vec3 &pos, Color &col, glm::vec3 &toLight, glm::vec3 &ltPos);
-    
-    void SetPosition(glm::vec3 p) { position = p; }
+
+	float Illuminate(const glm::vec3 &pos, Color &col, glm::vec3 &toLight, glm::vec3 &ltPos);
+
+	void SetPosition(glm::vec3 p) { position = p; }
 private:
-    glm::vec3 position;
+	glm::vec3 position;
 };

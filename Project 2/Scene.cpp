@@ -9,15 +9,15 @@
 #include "Scene.hpp"
 
 bool Scene::Intersect(const Ray &ray, Intersection &hit) {
-    Intersection tempHit;
-    
-    bool success=false;
-    for(unsigned int i=0;i<Objects.size();i++)
-        if(Objects[i]->Intersect(ray,tempHit)) {
-            if(tempHit.HitDistance < hit.HitDistance && tempHit.HitDistance > HIT_THRESHOLD)
-                hit = tempHit;
-            success=true;
-        }
-    
-    return success;
+	Intersection tempHit;
+
+	bool success = false;
+	for (unsigned int i = 0; i < Objects.size(); i++)
+		if (Objects[i]->Intersect(ray, tempHit)) {
+			if (tempHit.HitDistance < hit.HitDistance && tempHit.HitDistance > HIT_THRESHOLD)
+				hit = tempHit;
+			success = true;
+		}
+
+	return success;
 }

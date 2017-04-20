@@ -1,6 +1,3 @@
-// Project 2.cpp : Defines the entry point for the console application.
-//
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstdlib>
@@ -72,4 +69,3 @@ int main()
 
 	return 0;
 }
-
