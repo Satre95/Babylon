@@ -17,6 +17,8 @@ public:
 	void Init(Vertex * v0, Vertex * v1, Vertex * v2, Material * m);
 
 	bool Intersect(const Ray &ray, Intersection &hit) const;
+	
+	Vertex & GetVertex(int i) { return *vertices[i]; }
 
 private:
 	//    std::array<Vertex *, 3> vertices;
