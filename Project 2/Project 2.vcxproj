@@ -138,9 +138,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Bitmap.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Color.hpp" />
