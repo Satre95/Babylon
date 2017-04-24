@@ -21,6 +21,10 @@ public:
 	bool LoadPLY(const char * filename, Material * mtl);
 	void Smooth();
 
+	int GetNumTriangles() const { return NumTriangles; }
+	int GetNumVertexes() const { return NumVertexes; }
+	Triangle *& GetTriangles() { return Triangles; }
+
 private:
 	int NumVertexes, NumTriangles;
 	Vertex * Vertexes;

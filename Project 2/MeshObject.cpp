@@ -188,7 +188,8 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 	// Close file
 	fclose(f);
 	printf("Loaded %d triangles from file '%s'\n", numtris, filename);
-	return true;}
+	return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
