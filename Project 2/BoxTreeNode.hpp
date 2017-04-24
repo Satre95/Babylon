@@ -6,6 +6,7 @@
 #include "Ray.hpp"
 #include "Intersection.hpp"
 #include "Triangle.hpp"
+#include <array>
 
 #define MAX_TRIANGLES_PER_BOX 8
 
@@ -17,9 +18,9 @@ public:
 
 	bool Intersect(const Ray & ray, Intersection & hit);
 	void Construct(int count, Triangle ** tri);
-
 private:
 	glm::vec3 BoxMin, BoxMax;
 	BoxTreeNode * child1, *child2;
-	Triangle * Tri[MAX_TRIANGLES_PER_BOX];
+	std::array<Triangle *, MAX_TRIANGLES_PER_BOX> Tri;
+	//Triangle * Tri[MAX_TRIANGLES_PER_BOX];
 };

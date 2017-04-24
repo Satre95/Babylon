@@ -18,7 +18,9 @@ public:
 
 	bool Intersect(const Ray &ray, Intersection &hit) const;
 	
-	Vertex & GetVertex(int i) { return *vertices[i]; }
+	Vertex & GetVertex(int i) const { return *vertices[i]; }
+
+	glm::vec3 GetCenter()const ;
 
 private:
 	//    std::array<Vertex *, 3> vertices;
