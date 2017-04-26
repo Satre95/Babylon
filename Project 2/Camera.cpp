@@ -7,6 +7,7 @@
 //
 
 #include "Camera.hpp"
+#include "Utilities.hpp"
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -75,9 +76,18 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			glm::vec3 lightPos;
 			glm::vec3 toLight;
 			float intensity = light.Illuminate(hitData.Position, tempColor, toLight, lightPos);
-			hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
 
-			pixelColor.AddScaled(tempColor, intensity);
+			//Check if this is shadowed by anything
+			Intersection shadowHit;
+			shadowHit.HitDistance = glm::length(lightPos - hitData.Position) - FLOAT_THRESHOLD;
+			shadowHit.Position = hitData.Position;
+			Ray shadowRay;
+			shadowRay.Origin = shadowHit.Position;
+			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
+			if (!scene.Intersect(shadowRay, shadowHit)) {
+				hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
+				pixelColor.AddScaled(tempColor, intensity);
+			}
 		}
 
 		img->SetPixel(x, y, pixelColor.ToInt());
