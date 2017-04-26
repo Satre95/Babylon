@@ -7,7 +7,7 @@ BoxTreeNode::BoxTreeNode()
 {
 	child1 = child2 = nullptr;
 	BoxMin = glm::vec3(1e15f);
-	BoxMax = glm::vec3(1e15f * -1.0f);
+	BoxMax = glm::vec3(-1e15f);
 	Tri.fill(nullptr);
 }
 
@@ -62,7 +62,6 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	return true;
 }
 
-
 bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit) {
 	//If leaf node, test against children
 	if (!child1 && !child2)
@@ -109,7 +108,6 @@ bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
 	return intersection;
 }
 
-
 void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Compute BoxMin & BoxMax to fit around all tri’s
 	auto tempTri = *tri;
@@ -134,7 +132,6 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 
 			if (tempTri->GetVertex(j).Position.z > BoxMax.z)
 				BoxMax.z = tempTri->GetVertex(j).Position.z;
-
 		}
 		tempTri++;
 	}
@@ -159,14 +156,14 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 		dist = BoxMax.y - BoxMin.y;
 		planeNormalAxis = 1;
 	}
-	if (BoxMax.z - BoxMin.z > dist) 
+	if (BoxMax.z - BoxMin.z > dist)
 	{
 		splitPlaneLoc = (BoxMax.z + BoxMin.z) / 2.0f;
 		dist = BoxMax.z - BoxMin.z;
 		planeNormalAxis = 2;
 	}
 	// Allocate two new temporary arrays
-	Triangle **leftGroup = new Triangle*[count]; 
+	Triangle **leftGroup = new Triangle*[count];
 	Triangle **rightGroup = new Triangle*[count];
 	int leftCount = 0, rightCount = 0;
 

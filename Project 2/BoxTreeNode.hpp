@@ -22,7 +22,7 @@ private:
 
 	///Tests againsts children in order of distance.
 	bool IntersectChildren(const Ray & ray, Intersection & hit);
-	
+
 	///Tests against the triangles of this volume, if any.
 	bool IntersectTriangles(const Ray & ray, Intersection & hit);
 

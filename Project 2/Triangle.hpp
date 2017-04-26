@@ -17,10 +17,10 @@ public:
 	void Init(Vertex * v0, Vertex * v1, Vertex * v2, Material * m);
 
 	bool Intersect(const Ray &ray, Intersection &hit) const;
-	
+
 	Vertex & GetVertex(int i) const { return *(vertices[i]); }
 
-	glm::vec3 GetCenter()const ;
+	glm::vec3 GetCenter()const;
 
 private:
 	//    std::array<Vertex *, 3> vertices;

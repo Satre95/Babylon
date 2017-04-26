@@ -148,10 +148,10 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 	}
 	// Read verts
 	int i = 0;
-	if (numverts>0) {
+	if (numverts > 0) {
 		NumVertexes = numverts;
 		Vertexes = new Vertex[NumVertexes];
-		for (i = 0; i<NumVertexes; i++) {
+		for (i = 0; i < NumVertexes; i++) {
 			fgets(tmp, 256, f);
 			char *pch = strtok(tmp, " ");
 			int prop = 0;
@@ -168,23 +168,23 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 		}
 	}
 	// Read tris
-	if (numtris>0) {
+	if (numtris > 0) {
 		if (mtl == 0) mtl = new LambertMaterial;
 		NumTriangles = numtris;
 		Triangles = new Triangle[numtris];
-		for (i = 0; i<numtris; i++) {
+		for (i = 0; i < numtris; i++) {
 			int count, i0, i1, i2;
 			fscanf(f, "%d %d %d %d\n", &count, &i0, &i1, &i2);
 			if (count != 3) {
 				printf("ERROR: MeshObject::LoadPLY()- Only triangles are supported\n");
-					fclose(f);
+				fclose(f);
 				return false;
 			}
 			Triangles[i].Init(&Vertexes[i0], &Vertexes[i1], &Vertexes[i2], mtl);
 		}
 	}
 	// Smooth
-	if (normprop<0) Smooth();
+	if (normprop < 0) Smooth();
 	// Close file
 	fclose(f);
 	printf("Loaded %d triangles from file '%s'\n", numtris, filename);
@@ -195,17 +195,17 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 
 void MeshObject::Smooth() {
 	int i, j;
-	for (i = 0; i<NumVertexes; i++)
+	for (i = 0; i < NumVertexes; i++)
 		Vertexes[i].Normal = glm::vec3(0);
-	for (i = 0; i<NumTriangles; i++) {
+	for (i = 0; i < NumTriangles; i++) {
 		Triangle &tri = Triangles[i];
 		glm::vec3 e1 = tri.GetVertex(1).Position - tri.GetVertex(0).Position;
 		glm::vec3 e2 = tri.GetVertex(2).Position - tri.GetVertex(0).Position;
 		glm::vec3 cross = glm::cross(e1, e2);
-		for (j = 0; j<3; j++)
+		for (j = 0; j < 3; j++)
 			tri.GetVertex(j).Normal += cross;
 	}
-	for (i = 0; i<NumVertexes; i++)
+	for (i = 0; i < NumVertexes; i++)
 		Vertexes[i].Normal = glm::normalize(Vertexes[i].Normal);
 }
 

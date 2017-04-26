@@ -21,7 +21,7 @@ void project2() {
 	MeshObject ground;
 	ground.MakeBox(5.0f, 0.1f, 5.0f);
 	scn.AddObject(ground);
-	
+
 	// Create dragon
 	MeshObject dragon;
 	dragon.LoadPLY("dragon.ply");
@@ -29,33 +29,33 @@ void project2() {
 	BoxTreeObject tree;
 	tree.Construct(dragon);
 	scn.AddObject(tree);
-	
+
 	// Create instance
 	InstanceObject inst(tree);
 	glm::mat4x4 mtx = glm::eulerAngleY(glm::pi<float>());
 	mtx[3] = glm::vec4(-0.05f, 0.0f, -0.1f, 1.0f);
 	inst.SetMatrix(mtx);
 	scn.AddObject(inst);
-	
+
 	// Create lights
 	DirectLight sunlgt;
 	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
 	sunlgt.SetIntensity(1.0f);
 	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
 	scn.AddLight(sunlgt);
-	
+
 	PointLight redlgt;
 	redlgt.SetBaseColor(Color(1.0f, 0.2f, 0.2f));
 	redlgt.SetIntensity(0.02f);
 	redlgt.SetPosition(glm::vec3(-0.2f, 0.2f, 0.2f));
 	scn.AddLight(redlgt);
-	
+
 	PointLight bluelgt;
 	bluelgt.SetBaseColor(Color(0.2f, 0.2f, 1.0f));
 	bluelgt.SetIntensity(0.02f);
 	bluelgt.SetPosition(glm::vec3(0.1f, 0.1f, 0.3f));
 	scn.AddLight(bluelgt);
-	
+
 	// Create camera
 	Camera cam;
 	cam.BuildCamera(glm::vec3(-0.1f, 0.1f, 0.2f), glm::vec3(-0.05f, 0.12f, 0.0f),
