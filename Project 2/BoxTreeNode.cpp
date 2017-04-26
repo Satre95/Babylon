@@ -2,12 +2,15 @@
 #include <iterator>
 #include <algorithm>
 #include <iostream>
+#include <glm/ext.hpp>
+
+int BoxTreeNode::splitCount = 0;
 
 BoxTreeNode::BoxTreeNode()
 {
 	child1 = child2 = nullptr;
 	BoxMin = glm::vec3(1e15f);
-	BoxMax = glm::vec3(-1e15f);
+	BoxMax = glm::vec3(-(1e15f));
 	Tri.fill(nullptr);
 }
 
@@ -19,11 +22,8 @@ BoxTreeNode::~BoxTreeNode() {
 }
 
 bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit) {
-	if (IntersectVolume(ray, hit)) {
-		return IntersectChildren(ray, hit);
-	}
-
-	return false;
+	return IntersectChildren(ray, hit);
+	//return true;
 }
 
 bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
@@ -44,102 +44,88 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	t_max = glm::min(t_max, glm::max(t_1.z, t_2.z));
 
 	//No intersection.
-	if (t_min > t_max || t_max < 0)
+	if (t_min > t_max || t_max < 0) {
 		return false;
+	}
 
 	//Compute intersection point on this node's bounding volume.
 	glm::vec3 intersection;
+	float dist = 0;
 	if (t_min >= 0)
-		intersection = p + t_min * d;
+		dist = t_min;
 	else
-		intersection = p + t_max * d;
+		dist = t_max;
+
 	//Compare distance with already set value
-	auto dist = glm::length(intersection);
-	if (dist < hit.HitDistance) {
-		hit.HitDistance = dist;
-		hit.Position = intersection;
-	}
+	//if (dist < hit.HitDistance) {
+		//hit.HitDistance = dist;
+		//hit.Position = intersection;
+	//}
 	return true;
 }
 
 bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit) {
-	//If leaf node, test against children
-	if (!child1 && !child2)
+	//If leaf node, test against triangles
+	if (child1 == nullptr && child2 == nullptr)
 		return IntersectTriangles(ray, hit);
 
-	//Test against child VOLUMES
-	BoxTreeNode * children[2];
-	children[0] = child1;
-	children[1] = child2;
-	Intersection volHit[2];
-	for (int i = 0; i < 2; i++) {
-		volHit[i].HitDistance = hit.HitDistance;
-		children[i]->IntersectVolume(ray, volHit[i]);
-	}
-
-	if (volHit[0].HitDistance > volHit[1].HitDistance) {
-		std::swap(volHit[0], volHit[1]);
-		std::swap(children[0], children[1]);
-	}
-
 	bool success = false;
-	for (int i = 0; i < 2; i++) {
-		if (volHit[i].HitDistance < hit.HitDistance)
-			if (children[i]->IntersectChildren(ray, hit))
-				success = true;
+	//Test against child VOLUMES, then recurse inside.
+	if (child1->IntersectVolume(ray, hit)) {
+		if (child1->IntersectChildren(ray, hit))
+			success = true;
+	}
+
+	if (child2->IntersectVolume(ray, hit)) {
+		if (child2->IntersectChildren(ray, hit))
+			success = true;
 	}
 
 	return success;
 }
 
 bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
-	Intersection localHit;
 	bool intersection = false;
 	//If we are a leaf node, test against our triangles.
 	for (int i = 0; i < numTriangles; i++) {
-		Intersection tempHit;
-		bool tempI = Tri.at(i)->Intersect(ray, tempHit);
-		intersection = intersection || tempI;
-		if (tempI && tempHit.HitDistance < localHit.HitDistance)
-			localHit = tempHit;
+		intersection = intersection || Tri.at(i)->Intersect(ray, hit);
 	}
-
-	hit = (localHit.HitDistance < hit.HitDistance) ? localHit : hit;
 	return intersection;
 }
 
 void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Compute BoxMin & BoxMax to fit around all tri’s
-	auto tempTri = *tri;
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			if (tempTri->GetVertex(j).Position.x < BoxMin.x)
-				BoxMin.x = tempTri->GetVertex(j).Position.x;
+			if (tri[i]->GetVertex(j).Position.x < BoxMin.x)
+				BoxMin.x = tri[i]->GetVertex(j).Position.x;
 
-			if (tempTri->GetVertex(j).Position.y < BoxMin.y)
-				BoxMin.y = tempTri->GetVertex(j).Position.y;
+			if (tri[i]->GetVertex(j).Position.y < BoxMin.y)
+				BoxMin.y = tri[i]->GetVertex(j).Position.y;
 
-			if (tempTri->GetVertex(j).Position.z < BoxMin.z)
-				BoxMin.z = tempTri->GetVertex(j).Position.z;
+			if (tri[i]->GetVertex(j).Position.z < BoxMin.z)
+				BoxMin.z = tri[i]->GetVertex(j).Position.z;
 
-			if (tempTri->GetVertex(j).Position.x > BoxMax.x)
-				BoxMax.x = tempTri->GetVertex(j).Position.x;
+			if (tri[i]->GetVertex(j).Position.x > BoxMax.x)
+				BoxMax.x = tri[i]->GetVertex(j).Position.x;
 
-			if (tempTri->GetVertex(j).Position.y > BoxMax.y)
-				BoxMax.y = tempTri->GetVertex(j).Position.y;
+			if (tri[i]->GetVertex(j).Position.y > BoxMax.y)
+				BoxMax.y = tri[i]->GetVertex(j).Position.y;
 
-			if (tempTri->GetVertex(j).Position.z > BoxMax.z)
-				BoxMax.z = tempTri->GetVertex(j).Position.z;
+			if (tri[i]->GetVertex(j).Position.z > BoxMax.z)
+				BoxMax.z = tri[i]->GetVertex(j).Position.z;
 		}
-		tempTri++;
 	}
 
 	// Check if this is a leaf node
 	if (count <= MAX_TRIANGLES_PER_BOX) {
 		// Copy triangles to BoxTreeNode’s Tri array
-		std::copy(tri, tri + count, std::begin(Tri));
+		for (int h = 0; h < count; h++)
+		{
+			Tri[h] = tri[h];
+		}
 		numTriangles = count;
 		return;
 	}
@@ -168,17 +154,15 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	int leftCount = 0, rightCount = 0;
 
 	// Place triangles into group 1 or group 2
-	tempTri = *tri;
 	for (int i = 0; i < count; i++) {
 		// Compute center of triangle & determine which side of splitting plane
-		auto center = tempTri->GetCenter();
+		glm::vec3 center = tri[i]->GetCenter();
+
 		// Add to appropriate group
 		if (center[planeNormalAxis] > splitPlaneLoc)
-			leftGroup[leftCount++] = tempTri;
+			leftGroup[leftCount++] = tri[i];
 		else
-			rightGroup[rightCount++] = tempTri;
-
-		tempTri++;
+			rightGroup[rightCount++] = tri[i];
 	}
 	// Check if either group is empty. If so, move (at least) 1 triangle into that group
 	if (leftCount == 0) {
@@ -192,11 +176,6 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 		leftCount -= 1;
 	}
 
-	if (BoxMax.x == -1e15f || BoxMax.y == -1e15f || BoxMax.z == -1e15f)
-		std::cerr << "Incorrect BoxMax!" << std::endl;
-	if (BoxMin.x == 1e15f || BoxMin.y == 1e15f || BoxMin.z == 1e15f)
-		std::cerr << "Incorrect BoxMin!" << std::endl;
-
 	// Recursively build sub-trees
 	child1 = new BoxTreeNode; child2 = new BoxTreeNode;
 	child1->Construct(leftCount, leftGroup);
@@ -204,4 +183,13 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 
 	// Free up arrays
 	delete[]leftGroup; delete[]rightGroup;
+}
+
+void BoxTreeNode::CountTriangles(int & count) {
+	if (!child1 && !child2)
+		count += numTriangles;
+	else {
+		child1->CountTriangles(count);
+		child2->CountTriangles(count);
+	}
 }
