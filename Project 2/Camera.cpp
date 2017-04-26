@@ -85,11 +85,11 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			Ray shadowRay;
 			shadowRay.Origin = shadowHit.Position;
 			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
-			if (!scene.Intersect(shadowRay, shadowHit)) {
-				hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
-				pixelColor.AddScaled(tempColor, intensity);
-				//pixelColor.AddScaled(Color::GREEN, intensity);
-			}
+			//if (!scene.Intersect(shadowRay, shadowHit)) {
+				//hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
+				//pixelColor.AddScaled(tempColor, intensity);
+			pixelColor.AddScaled(Color::GREEN, intensity);
+			//}
 		}
 
 		//std::cerr << "Leaf hit count: " << BoxTreeNode::splitCount << std::endl;

@@ -16,16 +16,15 @@ public:
 	BoxTreeNode();
 	~BoxTreeNode();
 
-	bool Intersect(const Ray & ray, Intersection & hit);
+	bool Intersect(const Ray & ray, Intersection & hit, int & depth);
 	void Construct(int count, Triangle ** tri);
 	void CountTriangles(int & count);
 
-	int depth = 0;
 	static int splitCount;
 private:
 
 	///Tests againsts children in order of distance.
-	bool IntersectChildren(const Ray & ray, Intersection & hit);
+	bool IntersectChildren(const Ray & ray, Intersection & hit, int & depth);
 
 	///Tests against the triangles of this volume, if any.
 	bool IntersectTriangles(const Ray & ray, Intersection & hit);

@@ -19,7 +19,8 @@ void BoxTreeObject::Construct(MeshObject & mesh) {
 bool BoxTreeObject::Intersect(const Ray & ray, Intersection & hit) {
 	if (!rootNode)
 		return false;
-	return rootNode->Intersect(ray, hit);
+	int depth = 0;
+	return rootNode->Intersect(ray, hit, depth);
 }
 void BoxTreeObject::CountTriangles(int & count) {
 	if (!rootNode) return;

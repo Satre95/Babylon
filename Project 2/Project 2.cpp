@@ -33,9 +33,6 @@ void project2() {
 
 	BoxTreeObject tree;
 	tree.Construct(dragon);
-	int count = 0;
-	tree.CountTriangles(count);
-	std::cerr << "Number of triangles in leaves of tree after construction: " << count << std::endl;
 	//tree.Construct(tallBox);
 
 	scn.AddObject(tree);

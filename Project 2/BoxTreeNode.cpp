@@ -21,8 +21,8 @@ BoxTreeNode::~BoxTreeNode() {
 		delete child2;
 }
 
-bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit) {
-	return IntersectChildren(ray, hit);
+bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit, int & depth) {
+	return IntersectChildren(ray, hit, depth);
 	//return true;
 }
 
@@ -49,12 +49,12 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	}
 
 	//Compute intersection point on this node's bounding volume.
-	glm::vec3 intersection;
-	float dist = 0;
-	if (t_min >= 0)
-		dist = t_min;
-	else
-		dist = t_max;
+	//glm::vec3 intersection;
+	//float dist = 0;
+	//if (t_min >= 0)
+		//dist = t_min;
+	//else
+		//dist = t_max;
 
 	//Compare distance with already set value
 	//if (dist < hit.HitDistance) {
@@ -64,7 +64,10 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	return true;
 }
 
-bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit) {
+bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit, int & depth) {
+	depth++;
+	if (depth == 35)
+		return true;
 	//If leaf node, test against triangles
 	if (child1 == nullptr && child2 == nullptr)
 		return IntersectTriangles(ray, hit);
@@ -72,12 +75,12 @@ bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit) {
 	bool success = false;
 	//Test against child VOLUMES, then recurse inside.
 	if (child1->IntersectVolume(ray, hit)) {
-		if (child1->IntersectChildren(ray, hit))
+		if (child1->IntersectChildren(ray, hit, depth))
 			success = true;
 	}
 
 	if (child2->IntersectVolume(ray, hit)) {
-		if (child2->IntersectChildren(ray, hit))
+		if (child2->IntersectChildren(ray, hit, depth))
 			success = true;
 	}
 
