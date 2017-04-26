@@ -36,20 +36,22 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 		return false;
 
 	//Compute world space intersection point
-	hit.Position = a + alpha * (b - a) + beta * (c - a);
+	glm::vec3 position = a + alpha * (b - a) + beta * (c - a);
+	float dist = glm::distance(position, p);
 
-	//Calculate normal
-	hit.Normal = glm::normalize((1 - alpha - beta) * vertices[0]->Normal + alpha * vertices[1]->Normal + beta * vertices[2]->Normal);
+	if (dist < hit.HitDistance && dist > FLOAT_THRESHOLD) {
+		hit.HitDistance = dist;
+		hit.Position = position;
+		hit.Normal = glm::normalize((1 - alpha - beta) * vertices[0]->Normal + alpha * vertices[1]->Normal + beta * vertices[2]->Normal);
+		hit.Mtl = material;
 
-	//Set info
-	hit.HitDistance = glm::distance(hit.Position, p);
-	hit.Mtl = material;
-
-	return true;
+		return true;
+	}
+	return false;
 }
 
 glm::vec3 Triangle::GetCenter() const {
 	//Avg the coordinates
-	auto avg = vertices[0]->Position + vertices[0]->Position + vertices[0]->Position;
+	auto avg = vertices[0]->Position + vertices[1]->Position + vertices[2]->Position;
 	return avg / 3.0f;
 }

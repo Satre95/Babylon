@@ -23,12 +23,17 @@ public:
 
 	int GetNumTriangles() const { return NumTriangles; }
 	int GetNumVertexes() const { return NumVertexes; }
-	Triangle *& GetTriangles() { return Triangles; }
+	Triangle * GetTriangles() { return Triangles; }
+	Triangle ** GetTrianglePtrs();
 
 private:
+
+	void BuildTrianglePointerArray();
+
 	int NumVertexes, NumTriangles;
 	Vertex * Vertexes;
 	Triangle * Triangles;
+	Triangle ** TrianglePtrs;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

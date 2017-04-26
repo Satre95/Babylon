@@ -15,7 +15,10 @@ MeshObject::MeshObject() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MeshObject::~MeshObject() {}
+MeshObject::~MeshObject() {
+	delete[] Triangles;
+	delete[] TrianglePtrs;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -111,6 +114,8 @@ void MeshObject::MakeBox(float x, float y, float z, Material *mtl) {
 	Vertexes[23].Set(p110, -zAxis, t01);
 	Triangles[10].Init(&Vertexes[20], &Vertexes[21], &Vertexes[22], mtl);
 	Triangles[11].Init(&Vertexes[20], &Vertexes[22], &Vertexes[23], mtl);
+
+	BuildTrianglePointerArray();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +193,8 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 	// Close file
 	fclose(f);
 	printf("Loaded %d triangles from file '%s'\n", numtris, filename);
+
+	BuildTrianglePointerArray();
 	return true;
 }
 
@@ -210,3 +217,16 @@ void MeshObject::Smooth() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+Triangle ** MeshObject::GetTrianglePtrs() {
+	return TrianglePtrs;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void MeshObject::BuildTrianglePointerArray() {
+	TrianglePtrs = new Triangle *[NumTriangles];
+	for (int i = 0; i < NumTriangles; i++) {
+		TrianglePtrs[i] = &Triangles[i];
+	}
+}
