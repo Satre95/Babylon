@@ -13,6 +13,7 @@ public:
 
 	void Construct(MeshObject & mesh);
 	bool Intersect(const Ray & ray, Intersection & hit);
+	void CountTriangles(int & count);
 private:
 	BoxTreeNode * rootNode;
 };
