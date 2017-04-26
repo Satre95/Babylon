@@ -8,6 +8,7 @@
 
 #include "Camera.hpp"
 #include "Utilities.hpp"
+#include "BoxTreeNode.hpp"
 #include <vector>
 #include <thread>
 #include <iostream>
@@ -87,9 +88,11 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			if (!scene.Intersect(shadowRay, shadowHit)) {
 				hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
 				pixelColor.AddScaled(tempColor, intensity);
+				//pixelColor.AddScaled(Color::GREEN, intensity);
 			}
 		}
 
+		//std::cerr << "Leaf hit count: " << BoxTreeNode::splitCount << std::endl;
 		img->SetPixel(x, y, pixelColor.ToInt());
 	}
 	else {

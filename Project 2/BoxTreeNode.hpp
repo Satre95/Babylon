@@ -8,7 +8,7 @@
 #include "Triangle.hpp"
 #include <array>
 
-#define MAX_TRIANGLES_PER_BOX 8
+#define MAX_TRIANGLES_PER_BOX 10
 
 class BoxTreeNode
 {
@@ -18,6 +18,10 @@ public:
 
 	bool Intersect(const Ray & ray, Intersection & hit);
 	void Construct(int count, Triangle ** tri);
+	void CountTriangles(int & count);
+
+	int depth = 0;
+	static int splitCount;
 private:
 
 	///Tests againsts children in order of distance.
