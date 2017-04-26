@@ -13,9 +13,12 @@ BoxTreeObject::~BoxTreeObject()
 void BoxTreeObject::Construct(MeshObject & mesh) {
 	if (!rootNode)
 		rootNode = new BoxTreeNode();
+	auto temp = &mesh.GetTriangles();
 	rootNode->Construct(mesh.GetNumTriangles(), &mesh.GetTriangles());
 }
 
 bool BoxTreeObject::Intersect(const Ray & ray, Intersection & hit) {
-	return true;
+	if (!rootNode)
+		return false;
+	return rootNode->Intersect(ray, hit);
 }

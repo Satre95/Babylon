@@ -18,7 +18,7 @@ public:
 
 	bool Intersect(const Ray &ray, Intersection &hit);
 	void MakeBox(float x, float y, float z, Material * mtl = nullptr);
-	bool LoadPLY(const char * filename, Material * mtl);
+	bool LoadPLY(const char * filename, Material * mtl = nullptr);
 	void Smooth();
 
 	int GetNumTriangles() const { return NumTriangles; }

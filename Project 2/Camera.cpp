@@ -12,7 +12,7 @@
 #include <iostream>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up, float fov, glm::vec2 dims) {
-	SetResolution(dims.x, dims.y);
+	SetResolution(int(dims.x), int(dims.y));
 	BuildCamera(pos, target, up);
 }
 
@@ -33,7 +33,7 @@ void Camera::Render(Scene & scene, bool parallel) {
 		unsigned numThreads = std::thread::hardware_concurrency();
 		std::vector<std::thread> threads;
 
-		for (int i = 0; i < numThreads; i++) {
+		for (size_t i = 0; i < numThreads; i++) {
 			threads.emplace_back(&Camera::RenderPixelsParallel, this, std::ref(scene));
 		}
 

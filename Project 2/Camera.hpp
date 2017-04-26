@@ -37,7 +37,7 @@ public:
 	}
 	void SetResolution(int x, int y) {
 		width = x; height = y;
-		SetAspect(width / height);
+		SetAspect(float(width) / float(height));
 	}
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
@@ -45,8 +45,7 @@ public:
 	void SaveBitmap(std::string filename);
 
 private:
-	float width;
-	float height;
+	int width, height;
 	glm::mat4 C;
 	glm::mat4 V;
 	float aspect;
