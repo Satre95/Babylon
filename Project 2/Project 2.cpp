@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <thread>
+#include <chrono>
 
 #include <iostream>
 #include "InstanceObject.hpp"
@@ -12,7 +14,10 @@
 #include "Scene.hpp"
 #include "BoxTreeObject.hpp"
 
+using namespace std::chrono;
+
 void project2() {
+	auto begin = steady_clock::now();
 	// Create scene
 	Scene scn;
 	scn.SetSkyColor(Color(0.8f, 0.8f, 1.0f));
@@ -72,8 +77,14 @@ void project2() {
 	cam.SetAspect(1.33f);
 	cam.SetResolution(800, 600);
 
+	auto end = steady_clock::now();
+	std::cerr << "Scene construction took " << duration_cast<milliseconds> (end - begin).count() << "ms" << std::endl;
+
 	// Render image
-	cam.Render(scn);
+	begin = steady_clock::now();
+	cam.Render(scn, true);
+	end = steady_clock::now();
+	std::cerr << "Render took " << duration_cast<milliseconds> (end - begin).count() << "ms" << std::endl;
 	cam.SaveBitmap("project2.bmp");
 
 #ifdef _WIN32
@@ -81,6 +92,9 @@ void project2() {
 #else
 	std::system("open project2.bmp");
 #endif // _WIN32
+
+	//Wait a few seconds to give time to read vals
+	std::this_thread::sleep_for(milliseconds(3000));
 }
 
 void project1() {
