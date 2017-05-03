@@ -8,7 +8,7 @@
 
 #pragma once
 
-#define FLOAT_THRESHOLD 0.000001f
+#define FLOAT_THRESHOLD 1e-10f
 
 class Utilities {
 public:
