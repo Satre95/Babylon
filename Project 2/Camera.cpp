@@ -74,12 +74,15 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	Intersection hitData;
 	if (scene.Intersect(ray, hitData)) {
 		Color pixelColor = Color::BLACK;
+
 		for (int i = 0; i < scene.GetNumLights(); i++) {
 			Light & light = scene.GetLight(i);
-			Color tempColor;
 			glm::vec3 lightPos;
 			glm::vec3 toLight;
-			float intensity = light.Illuminate(hitData.Position, tempColor, toLight, lightPos);
+			Color lightColor = Color::BLACK;
+			float intensity = light.Illuminate(hitData.Position, lightColor, toLight, lightPos);
+
+			if (intensity == 0) continue;
 
 			//Check if this is shadowed by anything
 			Intersection shadowHit;
@@ -89,9 +92,13 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			shadowRay.Origin = shadowHit.Position;
 			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
 			if (!scene.Intersect(shadowRay, shadowHit)) {
-				hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
-				pixelColor.AddScaled(tempColor, intensity);
-				//pixelColor.AddScaled(Color::GREEN, intensity);
+				Color matColor = Color::BLACK;
+				hitData.Mtl->ComputeReflectance(matColor, toLight, glm::vec3(), hitData);
+				matColor.Multiply(lightColor);
+				matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
+				matColor.Scale(intensity);
+
+				pixelColor.AddScaled(matColor, intensity);
 			}
 		}
 
