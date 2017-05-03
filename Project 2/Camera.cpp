@@ -53,6 +53,9 @@ void Camera::Render(Scene & scene, bool parallel) {
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
+	//TODO: Get rid of this  Hack-y fix to parallel synch problem.
+	if (x >= width || y >= height) return;
+
 	float fx = (float(x) + 0.5f) / width - 0.5f;
 	float fy = (float(y) + 0.5f) / height - 0.5f;
 
@@ -85,11 +88,11 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			Ray shadowRay;
 			shadowRay.Origin = shadowHit.Position;
 			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
-			//if (!scene.Intersect(shadowRay, shadowHit)) {
-				//hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
-				//pixelColor.AddScaled(tempColor, intensity);
-			pixelColor.AddScaled(Color::GREEN, intensity);
-			//}
+			if (!scene.Intersect(shadowRay, shadowHit)) {
+				hitData.Mtl->ComputeReflectance(tempColor, toLight, glm::vec3(), hitData);
+				pixelColor.AddScaled(tempColor, intensity);
+				//pixelColor.AddScaled(Color::GREEN, intensity);
+			}
 		}
 
 		//std::cerr << "Leaf hit count: " << BoxTreeNode::splitCount << std::endl;

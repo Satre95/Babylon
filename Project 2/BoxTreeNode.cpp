@@ -23,7 +23,6 @@ BoxTreeNode::~BoxTreeNode() {
 
 bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit, int & depth) {
 	return IntersectChildren(ray, hit, depth);
-	//return true;
 }
 
 bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
