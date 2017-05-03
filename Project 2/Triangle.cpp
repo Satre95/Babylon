@@ -52,6 +52,5 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 
 glm::vec3 Triangle::GetCenter() const {
 	//Avg the coordinates
-	auto avg = vertices[0]->Position + vertices[1]->Position + vertices[2]->Position;
-	return avg / 3.0f;
+	return (vertices[0]->Position + vertices[1]->Position + vertices[2]->Position) / 3.f;
 }

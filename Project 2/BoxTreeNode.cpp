@@ -65,9 +65,9 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 }
 
 bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit, int & depth) {
-	depth++;
-	if (depth == 35)
-		return true;
+	//depth++;
+	//if (depth == 55)
+		//return true;
 	//If leaf node, test against triangles
 	if (child1 == nullptr && child2 == nullptr)
 		return IntersectTriangles(ray, hit);
@@ -125,10 +125,7 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Check if this is a leaf node
 	if (count <= MAX_TRIANGLES_PER_BOX) {
 		// Copy triangles to BoxTreeNode’s Tri array
-		for (int h = 0; h < count; h++)
-		{
-			Tri[h] = tri[h];
-		}
+		std::copy(tri, tri + count, std::begin(Tri));
 		numTriangles = count;
 		return;
 	}
@@ -136,8 +133,8 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Determine largest box dimension x, y, or z
 	// Compute splitting plane halfway along largest dimension
 	float dist = BoxMax.x - BoxMin.x;
-	splitPlaneLoc = (BoxMax.x + BoxMin.x) / 2.0f; //Default to X-axis
-	planeNormalAxis = 0;
+	float splitPlaneLoc = (BoxMax.x + BoxMin.x) / 2.0f; //Default to X-axis
+	int planeNormalAxis = 0;
 
 	if (BoxMax.y - BoxMin.y > dist)
 	{
@@ -152,8 +149,8 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 		planeNormalAxis = 2;
 	}
 	// Allocate two new temporary arrays
-	Triangle **leftGroup = new Triangle*[count];
-	Triangle **rightGroup = new Triangle*[count];
+	Triangle ** leftGroup = new Triangle*[count];
+	Triangle ** rightGroup = new Triangle*[count];
 	int leftCount = 0, rightCount = 0;
 
 	// Place triangles into group 1 or group 2
@@ -170,11 +167,13 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Check if either group is empty. If so, move (at least) 1 triangle into that group
 	if (leftCount == 0) {
 		leftGroup[0] = rightGroup[rightCount - 1];
+		rightGroup[rightCount - 1] = nullptr;
 		leftCount = 1;
 		rightCount -= 1;
 	}
 	else if (rightCount == 0) {
 		rightGroup[0] = leftGroup[leftCount - 1];
+		leftGroup[leftCount - 1] = nullptr;
 		rightCount = 1;
 		leftCount -= 1;
 	}

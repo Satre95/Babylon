@@ -34,8 +34,6 @@ private:
 
 	glm::vec3 BoxMin, BoxMax;
 	BoxTreeNode * child1, *child2;
-	float splitPlaneLoc = std::numeric_limits<float>::min();
-	int planeNormalAxis = 0;
 	std::array<Triangle*, MAX_TRIANGLES_PER_BOX> Tri;
 	int numTriangles = -1; //Used only if node is a leaf
 	//Triangle * Tri[MAX_TRIANGLES_PER_BOX];
