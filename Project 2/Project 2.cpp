@@ -50,23 +50,7 @@ void project2() {
 	scn.AddObject(inst);
 
 	// Create lights
-	DirectLight sunlgt;
-	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(1.0f);
-	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
-	scn.AddLight(sunlgt);
-
-	PointLight redlgt;
-	redlgt.SetBaseColor(Color(1.0f, 0.2f, 0.2f));
-	redlgt.SetIntensity(0.02f);
-	redlgt.SetPosition(glm::vec3(-0.2f, 0.2f, 0.2f));
-	scn.AddLight(redlgt);
-
-	PointLight bluelgt;
-	bluelgt.SetBaseColor(Color(0.2f, 0.2f, 1.0f));
-	bluelgt.SetIntensity(0.02f);
-	bluelgt.SetPosition(glm::vec3(0.1f, 0.1f, 0.3f));
-	scn.AddLight(bluelgt);
+	DirectLight sunlgt;	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));	sunlgt.SetIntensity(1.0f);	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));	scn.AddLight(sunlgt);	PointLight redlgt;	redlgt.SetBaseColor(Color(1.0f, 0.2f, 0.2f));	redlgt.SetIntensity(0.02f);	redlgt.SetPosition(glm::vec3(-0.2f, 0.2f, 0.2f));	scn.AddLight(redlgt);	PointLight bluelgt;	bluelgt.SetBaseColor(Color(0.2f, 0.2f, 1.0f));	bluelgt.SetIntensity(0.06f);	bluelgt.SetPosition(glm::vec3(0.1f, 0.1f, 0.3f));	scn.AddLight(bluelgt);
 
 	// Create camera
 	Camera cam;

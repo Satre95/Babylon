@@ -82,7 +82,7 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			Color lightColor = Color::BLACK;
 			float intensity = light.Illuminate(hitData.Position, lightColor, toLight, lightPos);
 
-			if (intensity == 0) continue;
+			if (intensity <= 0.0f) continue;
 
 			//Check if this is shadowed by anything
 			Intersection shadowHit;
@@ -98,11 +98,10 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 				matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
 				matColor.Scale(intensity);
 
-				pixelColor.AddScaled(matColor, intensity);
+				pixelColor.Add(matColor);
 			}
 		}
 
-		//std::cerr << "Leaf hit count: " << BoxTreeNode::splitCount << std::endl;
 		img->SetPixel(x, y, pixelColor.ToInt());
 	}
 	else {
