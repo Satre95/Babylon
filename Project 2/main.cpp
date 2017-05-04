@@ -16,6 +16,9 @@
 
 using namespace std::chrono;
 
+void project3() {
+}
+
 void project2() {
 	auto begin = steady_clock::now();
 	// Create scene
@@ -141,7 +144,8 @@ void project1() {
 }
 
 int main() {
-	project2();
+	project3();
+	//project2();
 	//project1();
 	return 0;
 }
