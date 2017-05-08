@@ -70,6 +70,8 @@ private:
 	std::pair<int, int> GetNextPixel();
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
+	///Modifies the subpixel sample point to be weighted with shirley distribution.
+	void ApplyShirleyWeight(float & subX, float & subY);
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
 	void RenderPixelsParallel(Scene & scene);

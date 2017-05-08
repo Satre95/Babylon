@@ -66,13 +66,18 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 
 			//Get coords of center of subpixel
 			float fx = ((float(x) + float(u) * subPixelDims.first + halfSubPixelWidth)
-				/ float(width))
-				- 0.5f;
+				/ float(width));
 			float fy = ((float(y) + float(v) * subPixelDims.second + halfSubPixelHeight)
-				/ float(height))
-				- 0.5f;
+				/ float(height));
 
+			//Apply Jitter if necessary
 			if (jitterEnabled) JitterSubPixel(fx, fy);
+			//Apply Shirley weighting if necessary.
+			if (shirleyEnabled) ApplyShirleyWeight(fx, fy);
+
+			//Subtract 0.5 to get in [-0.5, 0.5] range
+			fx -= 0.5f;
+			fy -= 0.5f;
 
 			std::cerr << "Subpixel Coords: " << "(" << fx << ", " << fy << ")" << std::endl;
 
@@ -164,4 +169,17 @@ void Camera::JitterSubPixel(float & subX, float & subY) {
 	float halfSubPixelHeight = subPixelHeight * 0.5f;
 	subX = Utilities::randomFloatInRange(subX - halfSubPixelWidth, subX + halfSubPixelWidth);
 	subY = Utilities::randomFloatInRange(subY - halfSubPixelHeight, subY + halfSubPixelWidth);
+}
+
+void Camera::ApplyShirleyWeight(float & s, float & t) {
+	assert(s >= 0.f && s <= 1.f);
+	assert(t >= 0.f && t <= 1.f);
+
+	s = (s < 0.5f) ?
+		(-0.5f + pow(2.f*s, 0.5f)) :
+		(1.5f - pow(2.f - 2.f * s, 0.5f));
+
+	t = (t < 0.5f) ?
+		(-0.5f + pow(2.f*t, 0.5f)) :
+		(1.5f - pow(2.f - 2.f*t, 0.5f));
 }
