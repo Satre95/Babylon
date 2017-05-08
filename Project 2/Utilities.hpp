@@ -10,6 +10,13 @@
 
 #define FLOAT_THRESHOLD 1e-10f
 
+#include <ctime>
+#include <cstdlib>
+
 class Utilities {
 public:
+
+	static float randomFloatInRange(float LO, float HI) {
+		return LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+	}
 };

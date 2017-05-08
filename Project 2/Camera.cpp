@@ -53,60 +53,81 @@ void Camera::Render(Scene & scene, bool parallel) {
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
-	//TODO: Get rid of this  Hack-y fix to parallel synch problem.
-	if (x >= width || y >= height) return;
+	std::vector<Color> pixelColors;
+	subPixelDims.first = 1 / float(width) / superSamples.first;
+	subPixelDims.second = 1 / float(height) / superSamples.second;
+	float halfSubPixelWidth = subPixelDims.first * 0.5f;
+	float halfSubPixelHeight = subPixelDims.second * 0.5f;
 
-	float fx = (float(x) + 0.5f) / width - 0.5f;
-	float fy = (float(y) + 0.5f) / height - 0.5f;
+	for (int v = 0; v < superSamples.second; v++) {
+		for (int u = 0; u < superSamples.first; u++) {
+			//TODO: Get rid of this hack-y fix to parallel synch problem.
+			if (x >= width || y >= height) return;
 
-	auto a = glm::vec3(C[0]);
-	auto b = glm::vec3(C[1]);
-	auto c = glm::vec3(C[2]);
-	auto d = glm::vec3(C[3]);
+			//Get coords of center of subpixel
+			float fy = ((float(y) + float(v) * halfSubPixelHeight)
+				/ float(height) * 2.0f)
+				+ halfSubPixelHeight;
+			float fx = ((float(x) + float(u) * halfSubPixelWidth)
+				/ float(width) * 2.0f)
+				+ halfSubPixelWidth;
 
-	float scaleX = 2.0f * tanf(hFov / 2.0f);
-	float scaleY = 2.0f * tanf(vFov / 2.0f);
+			if (jitterEnabled) JitterSubPixel(fx, fy);
 
-	Ray ray;
-	ray.Origin = d;
-	ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - c);
+			std::cerr << "Subpixel Coords: " << "(" << fx << ", " << fy << ")" << std::endl;
 
-	Intersection hitData;
-	if (scene.Intersect(ray, hitData)) {
-		Color pixelColor = Color::BLACK;
+			auto a = glm::vec3(C[0]);
+			auto b = glm::vec3(C[1]);
+			auto c = glm::vec3(C[2]);
+			auto d = glm::vec3(C[3]);
 
-		for (int i = 0; i < scene.GetNumLights(); i++) {
-			Light & light = scene.GetLight(i);
-			glm::vec3 lightPos;
-			glm::vec3 toLight;
-			Color lightColor = Color::BLACK;
-			float intensity = light.Illuminate(hitData.Position, lightColor, toLight, lightPos);
+			float scaleX = 2.0f * tanf(hFov / 2.0f);
+			float scaleY = 2.0f * tanf(vFov / 2.0f);
 
-			if (intensity <= 0.0f) continue;
+			Ray ray;
+			ray.Origin = d;
+			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - c);
 
-			//Check if this is shadowed by anything
-			Intersection shadowHit;
-			shadowHit.HitDistance = glm::length(lightPos - hitData.Position) - FLOAT_THRESHOLD;
-			shadowHit.Position = hitData.Position;
-			Ray shadowRay;
-			shadowRay.Origin = shadowHit.Position;
-			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
-			if (!scene.Intersect(shadowRay, shadowHit)) {
-				Color matColor = Color::BLACK;
-				hitData.Mtl->ComputeReflectance(matColor, toLight, glm::vec3(), hitData);
-				matColor.Multiply(lightColor);
-				matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
-				matColor.Scale(intensity);
+			Intersection hitData;
+			if (scene.Intersect(ray, hitData)) {
+				Color pixelColor = Color::BLACK;
 
-				pixelColor.Add(matColor);
+				for (int i = 0; i < scene.GetNumLights(); i++) {
+					Light & light = scene.GetLight(i);
+					glm::vec3 lightPos;
+					glm::vec3 toLight;
+					Color lightColor = Color::BLACK;
+					float intensity = light.Illuminate(hitData.Position, lightColor, toLight, lightPos);
+
+					if (intensity <= 0.0f) continue;
+
+					//Check if this is shadowed by anything
+					Intersection shadowHit;
+					shadowHit.HitDistance = glm::length(lightPos - hitData.Position) - FLOAT_THRESHOLD;
+					shadowHit.Position = hitData.Position;
+					Ray shadowRay;
+					shadowRay.Origin = shadowHit.Position;
+					shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
+					if (!scene.Intersect(shadowRay, shadowHit)) {
+						Color matColor = Color::BLACK;
+						hitData.Mtl->ComputeReflectance(matColor, toLight, glm::vec3(), hitData);
+						matColor.Multiply(lightColor);
+						matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
+						matColor.Scale(intensity);
+
+						pixelColor.Add(matColor);
+					}
+				}
+
+				pixelColors.push_back(pixelColor);
+			}
+			else {
+				pixelColors.push_back(scene.GetSkyColor());
 			}
 		}
+	}
 
-		img->SetPixel(x, y, pixelColor.ToInt());
-	}
-	else {
-		img->SetPixel(x, y, scene.GetSkyColor().ToInt());
-	}
+	//TODO: Average the colors from each ray,
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
@@ -134,4 +155,13 @@ std::pair<int, int> Camera::GetNextPixel() {
 	//    std::cerr << "(" << currX << ", " << currY << ")" << std::endl;
 
 	return std::make_pair(currX, currY);
+}
+
+void Camera::JitterSubPixel(float & subX, float & subY) {
+	float & subPixelWidth = subPixelDims.first;
+	float & subPixelHeight = subPixelDims.second;
+	float halfSubPixelWidth = subPixelWidth * 0.5f;
+	float halfSubPixelHeight = subPixelHeight * 0.5f;
+	subX = Utilities::randomFloatInRange(subX - halfSubPixelWidth, subX + halfSubPixelWidth);
+	subY = Utilities::randomFloatInRange(subY - halfSubPixelHeight, subY + halfSubPixelWidth);
 }

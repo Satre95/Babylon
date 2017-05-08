@@ -39,6 +39,11 @@ public:
 		width = x; height = y;
 		SetAspect(float(width) / float(height));
 	}
+	void SetSuperSample(int xSamples, int ySamples) {
+		superSamples = std::make_pair(xSamples, ySamples);
+	}
+	void SetJitter(bool enable) { jitterEnabled = enable; }
+	void SetShirley(bool enable) { shirleyEnabled = enable; }
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
 	void Render(Scene & scene, bool parallel = false);
@@ -53,12 +58,18 @@ private:
 	float hFov;
 	BitmapPtrUnique img;
 	std::mutex queryMutex;
+	std::pair<int, int> superSamples;
+	std::pair<float, float> subPixelDims;
+	bool jitterEnabled = false;
+	bool shirleyEnabled = false;
+	int currX = 0;
+	int currY = 0;
 
 	void RenderPixel(int x, int y, Scene & scene);
 	bool PixelsRemaining();
 	std::pair<int, int> GetNextPixel();
-	int currX = 0;
-	int currY = 0;
+	///Modifies the subpixel sample point to be randomized within the subpixel
+	void JitterSubPixel(float & subX, float & subY);
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
 	void RenderPixelsParallel(Scene & scene);
