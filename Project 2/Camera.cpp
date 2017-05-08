@@ -54,8 +54,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
 	std::vector<Color> pixelColors;
-	subPixelDims.first = 1 / float(width) / superSamples.first;
-	subPixelDims.second = 1 / float(height) / superSamples.second;
+	subPixelDims.first = 1.0f / superSamples.first;
+	subPixelDims.second = 1.0f / superSamples.second;
 	float halfSubPixelWidth = subPixelDims.first * 0.5f;
 	float halfSubPixelHeight = subPixelDims.second * 0.5f;
 
@@ -65,12 +65,12 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			if (x >= width || y >= height) return;
 
 			//Get coords of center of subpixel
-			float fy = ((float(y) + float(v) * halfSubPixelHeight)
-				/ float(height) * 2.0f)
-				+ halfSubPixelHeight;
-			float fx = ((float(x) + float(u) * halfSubPixelWidth)
-				/ float(width) * 2.0f)
-				+ halfSubPixelWidth;
+			float fx = ((float(x) + float(u) * subPixelDims.first + halfSubPixelWidth)
+				/ float(width))
+				- 0.5f;
+			float fy = ((float(y) + float(v) * subPixelDims.second + halfSubPixelHeight)
+				/ float(height))
+				- 0.5f;
 
 			if (jitterEnabled) JitterSubPixel(fx, fy);
 

@@ -77,8 +77,8 @@ void project3() {
 	//cam.BuildCamera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
 	cam.SetAspect(4.f / 3.f);
+	cam.SetSuperSample(4, 4);
 	cam.SetResolution(1, 1);
-	cam.SetSuperSample(2, 2);
 	//cam.SetJitter(true);
 
 	auto end = steady_clock::now();
