@@ -25,11 +25,13 @@ public:
 		M_Inverse = glm::inverse(mtx);
 	}
 
+	void SetMaterial(Material * mat) { mtl = mat; }
+
 	glm::mat4 GetMatrix() { return M; }
 	glm::mat4 GetInverseMatrix() { return M_Inverse; }
 	Object* GetChild() { return child; }
 private:
-
+	Material * mtl = nullptr;
 	glm::mat4 M;
 	glm::mat4 M_Inverse;
 	Object * child;

@@ -38,6 +38,8 @@ bool InstanceObject::Intersect(const Ray &ray, Intersection &hit) {
 	hit.Position = glm::vec3(M * glm::vec4(hit.Position, 1));
 	hit.Normal = glm::vec3(M * glm::vec4(hit.Normal, 0));
 	hit.HitDistance = glm::distance(ray.Origin, hit.Position);
+	//Assign material if we have one
+	if (mtl != nullptr) hit.Mtl = mtl;
 	return true;
 }
 
