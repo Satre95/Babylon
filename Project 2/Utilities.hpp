@@ -12,11 +12,15 @@
 
 #include <ctime>
 #include <cstdlib>
+#include <random>
 
 class Utilities {
 public:
 
-	static float randomFloatInRange(float LO, float HI) {
-		return LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+	static float randomFloatInRange(const float & LO, const float & HI) {
+		std::random_device rand_dev;
+		std::mt19937 generator(rand_dev());
+		std::uniform_real_distribution<float> dist(LO, HI);
+		return dist(generator);
 	}
 };
