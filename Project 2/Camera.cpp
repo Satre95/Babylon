@@ -164,10 +164,10 @@ std::pair<int, int> Camera::GetNextPixel() {
 void Camera::JitterSubPixel(float & subX, float & subY) {
 	float & subPixelWidth = subPixelDims.first;
 	float & subPixelHeight = subPixelDims.second;
-	float halfSubPixelWidth = subPixelWidth * 0.5f;
-	float halfSubPixelHeight = subPixelHeight * 0.5f;
-	subX = Utilities::randomFloatInRange(subX - halfSubPixelWidth, subX + halfSubPixelWidth);
-	subY = Utilities::randomFloatInRange(subY - halfSubPixelHeight, subY + halfSubPixelWidth);
+	float jitterWidth = subPixelWidth / 10.f;
+	float jitterHeight = subPixelHeight / 10.f;
+	subX = Utilities::randomFloatInRange(subX - jitterWidth, subX + jitterWidth);
+	subY = Utilities::randomFloatInRange(subY - jitterHeight, subY + jitterHeight);
 }
 
 void Camera::ApplyShirleyWeight(float & s, float & t) {

@@ -54,19 +54,19 @@ void project3() {
 	// Create lights
 	DirectLight sunlgt;
 	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(0.8f);
+	sunlgt.SetIntensity(0.6f);
 	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
 	scn.AddLight(sunlgt);
 
 	PointLight redlgt;
 	redlgt.SetBaseColor(Color(1.0f, 0.2f, 0.2f));
-	redlgt.SetIntensity(0.2f);
+	redlgt.SetIntensity(0.1f);
 	redlgt.SetPosition(glm::vec3(-0.2f, 0.2f, 0.2f));
 	scn.AddLight(redlgt);
 
 	PointLight bluelgt;
 	bluelgt.SetBaseColor(Color(0.2f, 0.2f, 1.0f));
-	bluelgt.SetIntensity(0.2f);
+	bluelgt.SetIntensity(0.1f);
 	bluelgt.SetPosition(glm::vec3(0.1f, 0.1f, 0.3f));
 	scn.AddLight(bluelgt);
 
@@ -77,8 +77,8 @@ void project3() {
 	//cam.BuildCamera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
 	cam.SetAspect(4.f / 3.f);
-	cam.SetSuperSample(4, 4);
-	cam.SetResolution(800, 600);
+	cam.SetSuperSample(16, 16);
+	cam.SetResolution(400, 400);
 	//cam.SetJitter(true);
 	//cam.SetShirley(true);
 
@@ -243,7 +243,7 @@ void project1() {
 }
 
 int main() {
-	srand(static_cast<unsigned>(time(0)));
+	//srand(static_cast<unsigned>(time(0)));
 	project3();
 	//project2();
 	//project1();

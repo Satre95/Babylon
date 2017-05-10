@@ -139,7 +139,7 @@ bool MeshObject::LoadPLY(const char * filename, Material * mtl) {
 		if (strncmp(tmp, "element face", 12) == 0)
 			numtris = atoi(&tmp[12]);
 		if (strncmp(tmp, "property", 8) == 0) {
-			int len = strlen(tmp);
+			int len = int(strlen(tmp));
 			if (strncmp(&tmp[len - 3], " x", 2) == 0) posprop = props;
 			if (strncmp(&tmp[len - 3], "nx", 2) == 0) normprop = props;
 			props++;
