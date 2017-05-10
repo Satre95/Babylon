@@ -16,6 +16,7 @@ public:
 		col.Scale(1 / glm::pi<float>());
 	}
 
+	void SetColor(Color & c) { DiffuseColor = c; }
 private:
 	Color DiffuseColor;
 };
