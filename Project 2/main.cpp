@@ -54,19 +54,19 @@ void project3() {
 	// Create lights
 	DirectLight sunlgt;
 	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(1.0f);
+	sunlgt.SetIntensity(0.8f);
 	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
 	scn.AddLight(sunlgt);
 
 	PointLight redlgt;
 	redlgt.SetBaseColor(Color(1.0f, 0.2f, 0.2f));
-	redlgt.SetIntensity(0.02f);
+	redlgt.SetIntensity(0.2f);
 	redlgt.SetPosition(glm::vec3(-0.2f, 0.2f, 0.2f));
 	scn.AddLight(redlgt);
 
 	PointLight bluelgt;
 	bluelgt.SetBaseColor(Color(0.2f, 0.2f, 1.0f));
-	bluelgt.SetIntensity(0.06f);
+	bluelgt.SetIntensity(0.2f);
 	bluelgt.SetPosition(glm::vec3(0.1f, 0.1f, 0.3f));
 	scn.AddLight(bluelgt);
 
@@ -78,27 +78,28 @@ void project3() {
 	cam.SetFoV(40.0f);
 	cam.SetAspect(4.f / 3.f);
 	cam.SetSuperSample(4, 4);
-	cam.SetResolution(1, 1);
+	cam.SetResolution(800, 600);
 	//cam.SetJitter(true);
+	//cam.SetShirley(true);
 
 	auto end = steady_clock::now();
 	std::cerr << "Scene construction took " << duration_cast<milliseconds> (end - begin).count() << "ms" << std::endl;
 
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, false);
+	cam.Render(scn, true);
 	end = steady_clock::now();
 	std::cerr << "Render took " << duration_cast<milliseconds> (end - begin).count() << "ms" << std::endl;
-	//cam.SaveBitmap("project2.bmp");
+	cam.SaveBitmap("project3.bmp");
 
 #ifdef _WIN32
-	//std::system("project2.bmp");
+	std::system("project3.bmp");
 #else
 	std::system("open project2.bmp");
 #endif // _WIN32
 
 	//Wait a few seconds to give time to read vals
-	std::this_thread::sleep_for(milliseconds(30000));
+	std::this_thread::sleep_for(milliseconds(3000));
 }
 
 void project2() {

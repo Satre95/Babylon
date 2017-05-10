@@ -15,3 +15,13 @@ Color Color::BLUE(0.0, 0.0, 1.0);
 Color Color::GREEN(0.0, 0.75, 0.0);
 
 ////////////////////////////////////////////////////////////////////////////////
+
+Color Color::AverageColors(std::vector<Color> & colors) {
+	Color avg = Color::BLACK;
+	for (Color & aColor : colors)
+		avg.Add(aColor);
+	avg.Scale(1.f / float(colors.size()));
+	return avg;
+}
+
+////////////////////////////////////////////////////////////////////////////////

@@ -79,8 +79,6 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			fx -= 0.5f;
 			fy -= 0.5f;
 
-			std::cerr << "Subpixel Coords: " << "(" << fx << ", " << fy << ")" << std::endl;
-
 			auto a = glm::vec3(C[0]);
 			auto b = glm::vec3(C[1]);
 			auto c = glm::vec3(C[2]);
@@ -132,7 +130,8 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 		}
 	}
 
-	//TODO: Average the colors from each ray,
+	//Average out the colors from the rays and save them to the image.
+	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
