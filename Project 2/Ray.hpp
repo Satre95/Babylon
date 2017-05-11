@@ -10,6 +10,8 @@
 
 class Ray {
 public:
+	Ray() {}
+	Ray(glm::vec3 o, glm::vec3 d) : Origin(o), Direction(d) {}
 	glm::vec3 Origin;
 	glm::vec3 Direction;
 };

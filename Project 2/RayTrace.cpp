@@ -1,6 +1,6 @@
 ﻿#include "RayTrace.hpp"
 
-void RayTrace::TraceRay(Intersection & hitData, Ray & ray, Scene & scene) {
+void RayTrace::TraceRay(Intersection & hitData, Ray & ray, int depth) {
 	if (scene.Intersect(ray, hitData)) {
 		Color pixelColor = Color::BLACK;
 
@@ -30,6 +30,22 @@ void RayTrace::TraceRay(Intersection & hitData, Ray & ray, Scene & scene) {
 				pixelColor.Add(matColor);
 			}
 		}
+
+		//If max depth reached, terminate recursion.
+		if (depth == maxDepth) return;
+
+		//Now recursively compute reflected ray and color
+		//1. Generate new ray
+		glm::vec3 reflection;
+		Intersection reflectHit;
+		reflectHit.Shade = Color::BLACK;
+		hitData.Mtl->GenerateSample(hitData, ray.Direction, reflection, reflectHit.Shade);
+		Ray reflectRay(hitData.Position, reflection);
+		//2. Trace the ray
+		TraceRay(reflectHit, reflectRay, depth + 1);
+		pixelColor.Add(reflectHit.Shade);
+
+		//Assign color
 		hitData.Shade = pixelColor;
 	}
 	else {
