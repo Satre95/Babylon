@@ -17,6 +17,7 @@
 #include "Scene.hpp"
 #include "Bitmap.hpp"
 #include "Material.hpp"
+#include "RayTrace.hpp"
 
 class Camera {
 public:
