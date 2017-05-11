@@ -31,6 +31,8 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
 
+	if (!rayTracer) rayTracer = new RayTrace(scene, 2);
+
 	if (parallel) {
 		unsigned numThreads = std::thread::hardware_concurrency();
 		std::vector<std::thread> threads;
@@ -92,7 +94,7 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - c);
 
 			Intersection hitData;
-			RayTrace::TraceRay(hitData, ray, scene);
+			rayTracer->TraceRay(hitData, ray);
 
 			pixelColors.push_back(hitData.Shade);
 		}
@@ -134,8 +136,8 @@ void Camera::JitterSubPixel(float & subX, float & subY) {
 	float & subPixelHeight = subPixelDims.second;
 	float jitterWidth = subPixelWidth / 2.f;
 	float jitterHeight = subPixelHeight / 2.f;
-	subX = Utilities::randomFloatInRange(subX - jitterWidth, subX + jitterWidth);
-	subY = Utilities::randomFloatInRange(subY - jitterHeight, subY + jitterHeight);
+	subX = glm::linearRand(subX - jitterWidth, subX + jitterWidth);
+	subY = glm::linearRand(subY - jitterHeight, subY + jitterHeight);
 }
 
 void Camera::ApplyShirleyWeight(float & s, float & t) {
