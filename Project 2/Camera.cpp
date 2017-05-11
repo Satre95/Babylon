@@ -54,8 +54,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
 	std::vector<Color> pixelColors;
-	subPixelDims.first = 1.0f / superSamples.first;
-	subPixelDims.second = 1.0f / superSamples.second;
+	subPixelDims.first = 1.0f / superSamples.first / float(width);
+	subPixelDims.second = 1.0f / superSamples.second / float(height);
 	float halfSubPixelWidth = subPixelDims.first * 0.5f;
 	float halfSubPixelHeight = subPixelDims.second * 0.5f;
 
@@ -132,8 +132,8 @@ std::pair<int, int> Camera::GetNextPixel() {
 void Camera::JitterSubPixel(float & subX, float & subY) {
 	float & subPixelWidth = subPixelDims.first;
 	float & subPixelHeight = subPixelDims.second;
-	float jitterWidth = subPixelWidth / 10.f;
-	float jitterHeight = subPixelHeight / 10.f;
+	float jitterWidth = subPixelWidth / 2.f;
+	float jitterHeight = subPixelHeight / 2.f;
 	subX = Utilities::randomFloatInRange(subX - jitterWidth, subX + jitterWidth);
 	subY = Utilities::randomFloatInRange(subY - jitterHeight, subY + jitterHeight);
 }
