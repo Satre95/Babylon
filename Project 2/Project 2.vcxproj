@@ -168,7 +168,9 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DirectLight.cpp" />
     <ClCompile Include="InstanceObject.cpp" />
+    <ClCompile Include="LambertMaterial.cpp" />
     <ClCompile Include="MeshObject.cpp" />
+    <ClCompile Include="MetalMaterial.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene.cpp" />
