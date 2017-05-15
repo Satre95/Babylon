@@ -10,10 +10,13 @@ void LambertMaterial::GenerateSample(const Intersection & isect, const glm::vec3
 	float s = glm::linearRand(0.f, 1.f);
 	float t = glm::linearRand(0.f, 1.f);
 	float u = 2.f * glm::pi<float>() * s;
-	float v = pow(1 - t, 0.5f);
-	outDir.x = v * cos(u);
-	outDir.y = pow(t, 0.5f);
-	outDir.z = v * sin(u);
+	float v = sqrtf(1.f - t);
+
+	glm::vec3 i = glm::normalize(glm::vec3(isect.Normal.x + 5.f, isect.Normal.y - 2.f, isect.Normal.z));
+	glm::vec3 j = isect.Normal;
+	glm::vec3 k = glm::cross(i, j);
+
+	outDir = v * cos(u) * i + sqrtf(t) * j + v * sin(u) * k;
 
 	//Set the output color;
 	outColor = DiffuseColor;

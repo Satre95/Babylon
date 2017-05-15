@@ -1,9 +1,11 @@
 ﻿#include "RayTrace.hpp"
 
 void RayTrace::TraceRay(Intersection & hitData, Ray & ray, int depth) {
-	if (scene.Intersect(ray, hitData)) {
-		Color pixelColor = Color::BLACK;
+	//If max depth reached, terminate recursion.
+	if (depth == maxDepth) return;
 
+	if (scene.Intersect(ray, hitData)) {
+		hitData.Shade = Color::BLACK;
 		for (int i = 0; i < scene.GetNumLights(); i++) {
 			Light & light = scene.GetLight(i);
 			glm::vec3 lightPos;
@@ -27,26 +29,22 @@ void RayTrace::TraceRay(Intersection & hitData, Ray & ray, int depth) {
 				matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
 				matColor.Scale(intensity);
 
-				pixelColor.Add(matColor);
+				hitData.Shade.Add(matColor);
 			}
 		}
-
-		//If max depth reached, terminate recursion.
-		if (depth == maxDepth) return;
 
 		//Now recursively compute reflected ray and color
 		//1. Generate new ray
 		glm::vec3 reflection;
 		Intersection reflectHit;
 		reflectHit.Shade = Color::BLACK;
-		hitData.Mtl->GenerateSample(hitData, ray.Direction, reflection, reflectHit.Shade);
+		Color tempColor;
+		hitData.Mtl->GenerateSample(hitData, ray.Direction, reflection, tempColor);
 		Ray reflectRay(hitData.Position, reflection);
 		//2. Trace the ray
 		TraceRay(reflectHit, reflectRay, depth + 1);
-		pixelColor.Add(reflectHit.Shade);
-
-		//Assign color
-		hitData.Shade = pixelColor;
+		reflectHit.Shade.Multiply(tempColor);
+		hitData.Shade.Add(reflectHit.Shade);
 	}
 	else {
 		hitData.Shade = scene.GetSkyColor();

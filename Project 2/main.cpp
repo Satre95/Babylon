@@ -60,17 +60,17 @@ void project3() {
 	// Create lights
 	DirectLight sunlgt;
 	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(1.0f);
+	sunlgt.SetIntensity(0.8f);
 	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
 	scn.AddLight(sunlgt);
 	// Create camera
 	Camera cam;
-	cam.SetResolution(640, 480);
+	cam.SetResolution(800, 600);
 	cam.SetAspect(1.33f);
 	cam.BuildCamera(glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(4, 4);
+	cam.SetSuperSample(10, 10);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 
@@ -102,7 +102,7 @@ void project3() {
 
 	//----------------------------------------------------------
 	//Wait a few seconds to give time to read vals
-	std::this_thread::sleep_for(milliseconds(3000));
+	std::this_thread::sleep_for(milliseconds(5000));
 }
 
 void project2() {
@@ -171,7 +171,7 @@ void project2() {
 
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn);
+	cam.Render(scn, true);
 	end = steady_clock::now();
 	std::cerr << "Render took " << duration_cast<milliseconds> (end - begin).count() << "ms" << std::endl;
 	cam.SaveBitmap("project2.bmp");
@@ -246,7 +246,6 @@ void project1() {
 }
 
 int main() {
-	//srand(static_cast<unsigned>(time(0)));
 	project3();
 	//project2();
 	//project1();

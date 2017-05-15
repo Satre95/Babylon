@@ -31,7 +31,7 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
 
-	if (!rayTracer) rayTracer = new RayTrace(scene, 2);
+	if (!rayTracer) rayTracer = new RayTrace(scene, 5);
 
 	if (parallel) {
 		unsigned numThreads = std::thread::hardware_concurrency();
@@ -66,16 +66,17 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			//TODO: Get rid of this hack-y fix to parallel synch problem.
 			if (x >= width || y >= height) return;
 
-			//Get coords of center of subpixel
-			float fx = ((float(x) + float(u) * subPixelDims.first + halfSubPixelWidth)
-				/ float(width));
-			float fy = ((float(y) + float(v) * subPixelDims.second + halfSubPixelHeight)
-				/ float(height));
+			float subX = 0.5f, subY = 0.5f;
 
-			//Apply Jitter if necessary
-			if (jitterEnabled) JitterSubPixel(fx, fy);
-			//Apply Shirley weighting if necessary.
-			if (shirleyEnabled) ApplyShirleyWeight(fx, fy);
+			if (jitterEnabled) JitterSubPixel(subX, subY);
+
+			float subSampleY = (subY + v) / superSamples.second;
+			float subSampleX = (subX + u) / superSamples.first;
+			if (shirleyEnabled) ApplyShirleyWeight(subSampleX, subSampleY);
+
+			//Get coords of center of subpixel
+			float fx = (float(x) + subSampleX) / float(width);
+			float fy = (float(y) + subSampleY) / float(height);
 
 			//Subtract 0.5 to get in [-0.5, 0.5] range
 			fx -= 0.5f;
@@ -132,12 +133,8 @@ std::pair<int, int> Camera::GetNextPixel() {
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {
-	float & subPixelWidth = subPixelDims.first;
-	float & subPixelHeight = subPixelDims.second;
-	float jitterWidth = subPixelWidth / 2.f;
-	float jitterHeight = subPixelHeight / 2.f;
-	subX = glm::linearRand(subX - jitterWidth, subX + jitterWidth);
-	subY = glm::linearRand(subY - jitterHeight, subY + jitterHeight);
+	subX = Utilities::randomFloatInRange(0.f, 1.f);
+	subY = Utilities::randomFloatInRange(0.f, 1.f);
 }
 
 void Camera::ApplyShirleyWeight(float & s, float & t) {
