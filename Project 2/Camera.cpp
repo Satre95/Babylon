@@ -31,7 +31,7 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
 
-	if (!rayTracer) rayTracer = new RayTrace(scene, 5);
+	if (!rayTracer) rayTracer = new RayTrace(scene);
 
 	if (parallel) {
 		unsigned numThreads = std::thread::hardware_concurrency();
@@ -55,6 +55,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
+	if (x >= width || y >= height) return;
+
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
@@ -64,7 +66,6 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	for (int v = 0; v < superSamples.second; v++) {
 		for (int u = 0; u < superSamples.first; u++) {
 			//TODO: Get rid of this hack-y fix to parallel synch problem.
-			if (x >= width || y >= height) return;
 
 			float subX = 0.5f, subY = 0.5f;
 
@@ -107,8 +108,10 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 
 void Camera::RenderPixelsParallel(Scene &scene) {
 	while (PixelsRemaining()) {
-		auto coord = GetNextPixel();
-		RenderPixel(coord.first, coord.second, scene);
+		//auto aCoord = GetNextPixel();
+		auto coords = GetNextPixelGroup();
+		for (auto & aCoord : coords)
+			RenderPixel(aCoord.first, aCoord.second, scene);
 	}
 }
 
@@ -117,19 +120,28 @@ void Camera::SaveBitmap(std::string filename) {
 }
 
 bool Camera::PixelsRemaining() {
-	std::lock_guard<std::mutex> lock(queryMutex);
+	//std::lock_guard<std::mutex> lock(queryMutex);
 	return currX * currY < (width - 1) * (height - 1);
 }
 
-//TODO: Fix demand partitioning.
 std::pair<int, int> Camera::GetNextPixel() {
 	std::lock_guard<std::mutex> lock(queryMutex);
 	currX = (currX + 1 < width) ? currX + 1 : 0;
 	currY = (currX == 0) ? currY + 1 : currY;
+	return std::make_pair(currX.load(), currY.load());
+}
 
-	//    std::cerr << "(" << currX << ", " << currY << ")" << std::endl;
+std::vector<std::pair<int, int>> Camera::GetNextPixelGroup() {
+	std::lock_guard<std::mutex> lock(queryMutex);
+	const int groupSize = 10;
+	std::vector<std::pair<int, int>> coords(groupSize);
 
-	return std::make_pair(currX, currY);
+	for (int i = 0; i < groupSize; i++) {
+		currX = (currX + 1 < width) ? currX + 1 : 0;
+		currY = (currX == 0) ? currY + 1 : currY;
+		coords.at(i) = std::make_pair(currX.load(), currY.load());
+	}
+	return coords;
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {

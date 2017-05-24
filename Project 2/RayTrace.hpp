@@ -7,7 +7,7 @@
 
 class RayTrace {
 public:
-	RayTrace(Scene & scn, int maxD = 5) : scene(scn), maxDepth(maxD)
+	RayTrace(Scene & scn, int maxD = 10) : scene(scn), maxDepth(maxD)
 	{}
 
 	void TraceRay(Intersection & hit, Ray & ray, int depth = 1);

@@ -14,6 +14,7 @@
 #include <glm/gtc/random.hpp>
 #include <string>
 #include <mutex>
+#include <atomic>
 
 #include "Scene.hpp"
 #include "Bitmap.hpp"
@@ -39,6 +40,7 @@ public:
 		SetFoV(glm::degrees(vFov));
 	}
 	void SetResolution(int x, int y) {
+		assert((x*y) % 5 == 0); //Only accept resolutions that are multiples of 5
 		width = x; height = y;
 		SetAspect(float(width) / float(height));
 	}
@@ -65,13 +67,16 @@ private:
 	std::pair<float, float> subPixelDims;
 	bool jitterEnabled = false;
 	bool shirleyEnabled = false;
-	int currX = 0;
-	int currY = 0;
+	std::atomic_int currX = 0;
+	std::atomic_int currY = 0;
 	RayTrace * rayTracer = nullptr;
 
 	void RenderPixel(int x, int y, Scene & scene);
 	bool PixelsRemaining();
 	std::pair<int, int> GetNextPixel();
+	//Fetches the next group of pixels for this thread to process.
+	std::vector<std::pair<int, int>> GetNextPixelGroup();
+
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
 	///Modifies the subpixel sample point to be weighted with shirley distribution.

@@ -65,12 +65,12 @@ void project3() {
 	scn.AddLight(sunlgt);
 	// Create camera
 	Camera cam;
-	cam.SetResolution(800, 600);
+	cam.SetResolution(640, 480);
 	cam.SetAspect(1.33f);
 	cam.BuildCamera(glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(10, 10);
+	cam.SetSuperSample(4, 4);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 
