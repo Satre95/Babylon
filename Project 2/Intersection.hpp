@@ -20,6 +20,9 @@ public:
 	float HitDistance;
 	glm::vec3 Position;
 	glm::vec3 Normal;
+	glm::vec3 TangentU;
+	glm::vec3 TangentV;
+
 	Material *Mtl;
 
 	// Shaded color

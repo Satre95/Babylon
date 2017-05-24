@@ -45,6 +45,12 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 		hit.Normal = glm::normalize((1 - alpha - beta) * vertices[0]->Normal + alpha * vertices[1]->Normal + beta * vertices[2]->Normal);
 		hit.Mtl = material;
 
+		hit.TangentU = glm::cross(glm::vec3(0, 1.f, 0), hit.Normal);
+		if (glm::length(hit.TangentU) < FLOAT_THRESHOLD)
+			hit.TangentU = glm::cross(glm::vec3(1.f, 0, 0), hit.Normal);
+		hit.TangentU = glm::normalize(hit.TangentU);
+		hit.TangentV = glm::cross(hit.Normal, hit.TangentU);
+
 		return true;
 	}
 	return false;
