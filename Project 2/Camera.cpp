@@ -34,7 +34,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 	if (!rayTracer) rayTracer = new RayTrace(scene);
 
 	if (parallel) {
-		unsigned numThreads = std::thread::hardware_concurrency();
+		//Use hyperthreading (# threads = 2 x # cores)
+		unsigned numThreads = std::thread::hardware_concurrency() * 2;
 		std::vector<std::thread> threads;
 
 		for (size_t i = 0; i < numThreads; i++) {
@@ -106,12 +107,15 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
+void Camera::RenderPixel(int aTile, Scene & scene)
+{
+	//Convert the tile index to a pixel group.
+}
+
 void Camera::RenderPixelsParallel(Scene &scene) {
-	while (PixelsRemaining()) {
-		//auto aCoord = GetNextPixel();
-		auto coords = GetNextPixelGroup();
-		for (auto & aCoord : coords)
-			RenderPixel(aCoord.first, aCoord.second, scene);
+	while (tiles > 0) {
+		int tile = GetNextPixelGroup();
+		RenderPixel(tile, scene);
 	}
 }
 
@@ -131,17 +135,8 @@ std::pair<int, int> Camera::GetNextPixel() {
 	return std::make_pair(currX.load(), currY.load());
 }
 
-std::vector<std::pair<int, int>> Camera::GetNextPixelGroup() {
-	std::lock_guard<std::mutex> lock(queryMutex);
-	const int groupSize = 10;
-	std::vector<std::pair<int, int>> coords(groupSize);
-
-	for (int i = 0; i < groupSize; i++) {
-		currX = (currX + 1 < width) ? currX + 1 : 0;
-		currY = (currX == 0) ? currY + 1 : currY;
-		coords.at(i) = std::make_pair(currX.load(), currY.load());
-	}
-	return coords;
+int Camera::GetNextPixelGroup() {
+	return tiles--;
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {

@@ -40,8 +40,9 @@ public:
 		SetFoV(glm::degrees(vFov));
 	}
 	void SetResolution(int x, int y) {
-		assert((x*y) % 5 == 0); //Only accept resolutions that are multiples of 5
 		width = x; height = y;
+		tileWidth = (width + tiles - 1) / tiles; //Ceiling
+		tileHeight = (height + tiles - 1) / tiles;
 		SetAspect(float(width) / float(height));
 	}
 	void SetSuperSample(int xSamples, int ySamples) {
@@ -70,12 +71,15 @@ private:
 	std::atomic_int currX = 0;
 	std::atomic_int currY = 0;
 	RayTrace * rayTracer = nullptr;
+	std::atomic_int tiles = 100;
+	int tileWidth, tileHeight;
 
 	void RenderPixel(int x, int y, Scene & scene);
+	void RenderPixel(int aTile, Scene & scene);
 	bool PixelsRemaining();
 	std::pair<int, int> GetNextPixel();
 	//Fetches the next group of pixels for this thread to process.
-	std::vector<std::pair<int, int>> GetNextPixelGroup();
+	int GetNextPixelGroup();
 
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
