@@ -6,6 +6,7 @@
 
 #include "Object.hpp"
 #include "Light.hpp"
+#include "Volume.hpp"
 #include <vector>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +17,11 @@ public:
 	~Scene() { Objects.clear(); Lights.clear(); }
 	void AddObject(Object & obj) { Objects.push_back(&obj); }
 	void AddLight(Light &lgt) { Lights.push_back(&lgt); }
+	void AddVolume(Volume & vol)
+	{
+		Volumes.push_back(&vol);
+		vol.SetLights(Lights);
+	}
 	void SetSkyColor(const Color sky) { SkyColor = sky; }
 
 	int GetNumLights() { return (int)Lights.size(); }
@@ -27,6 +33,7 @@ public:
 private:
 	std::vector<Object*> Objects;
 	std::vector<Light*> Lights;
+	std::vector<Volume*> Volumes;
 	Color SkyColor;
 };
 ////////////////////////////////////////////////////////////////////////////////
