@@ -35,7 +35,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
-		unsigned numThreads = std::thread::hardware_concurrency() * 2;
+		//unsigned numThreads = std::thread::hardware_concurrency() * 2;
+		unsigned numThreads = std::thread::hardware_concurrency();
 		std::vector<std::thread> threads;
 
 		for (size_t i = 0; i < numThreads; i++) {
@@ -56,8 +57,6 @@ void Camera::Render(Scene & scene, bool parallel) {
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
-	if (x >= width || y >= height) return;
-
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
@@ -109,34 +108,44 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 
 void Camera::RenderPixel(int aTile, Scene & scene)
 {
-	//Convert the tile index to a pixel group.
+	if (aTile < 0) return; //Sanity check
+	//Compute the pixel bounds for the given tile.
+	auto tile = tileCoords.at(aTile);
+	int tileStartX = tile.first * tileWidth;
+	int tileEndX = tileStartX + tileWidth;
+
+	int tileStartY = tile.second * tileHeight;
+	int tileEndY = tileStartY + tileHeight;
+
+#ifdef DEBUG
+	{
+		std::lock_guard<std::mutex> lk(logMutex);
+		std::cerr << "Thread " << std::this_thread::get_id() << " processing tile " << aTile
+			<< "(" << tileStartX << ", "
+			<< tileStartY << ")"
+			<< std::endl;
+	}
+#endif // DEBUG
+
+	//Iterate over pixels in tile
+	for (int y = tileStartY; y < tileEndY; y++)
+	{
+		for (int x = tileStartX; x < tileEndX; x++)
+		{
+			if (x >= width || y >= height) break; //In case image dims not multiple of tile size
+			RenderPixel(x, y, scene);
+		}
+	}
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
-	while (tiles > 0) {
-		int tile = GetNextPixelGroup();
-		RenderPixel(tile, scene);
+	while (tileCoordIndex >= 0) {
+		RenderPixel(tileCoordIndex--, scene);
 	}
 }
 
 void Camera::SaveBitmap(std::string filename) {
 	img->SaveBMP(filename.c_str());
-}
-
-bool Camera::PixelsRemaining() {
-	//std::lock_guard<std::mutex> lock(queryMutex);
-	return currX * currY < (width - 1) * (height - 1);
-}
-
-std::pair<int, int> Camera::GetNextPixel() {
-	std::lock_guard<std::mutex> lock(queryMutex);
-	currX = (currX + 1 < width) ? currX + 1 : 0;
-	currY = (currX == 0) ? currY + 1 : currY;
-	return std::make_pair(currX.load(), currY.load());
-}
-
-int Camera::GetNextPixelGroup() {
-	return tiles--;
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {
@@ -155,4 +164,19 @@ void Camera::ApplyShirleyWeight(float & s, float & t) {
 	t = (t < 0.5f) ?
 		(-0.5f + pow(2.f*t, 0.5f)) :
 		(1.5f - pow(2.f - 2.f*t, 0.5f));
+}
+
+void Camera::SetResolution(int x, int y) {
+	width = x; height = y;
+	//Calculate the number of tiles.
+	int tileArea = tileWidth * tileHeight;
+	numTilesX = (x + tileWidth - 1) / tileWidth; //round up
+	numTilesY = (y + tileHeight - 1) / tileHeight; //round up
+	for (int j = 0; j < numTilesY; j++) {
+		for (int i = 0; i < numTilesX; i++) {
+			tileCoords.push_back(std::make_pair(i, j));
+		}
+	}
+	tileCoordIndex = tileCoords.size() - 1;
+	SetAspect(float(width) / float(height));
 }
