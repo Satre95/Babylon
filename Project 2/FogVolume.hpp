@@ -9,14 +9,16 @@ class FogVolume : Volume
 public:
 	FogVolume();
 
-	void Evaluate(
+	float EvaluateRadiance(
 		const glm::vec3 & pos,
-		float & absorptionCoeff,
-		float & scatteringCoeff,
-		float & emissionPhaseFn,
-		float & scatteringPhaseFn
+		const Ray & ray,
+		float step
 	) override;
+
+	bool Intersect(const Ray & ray) override;
 private:
+	float EvaluateExtinction(const glm::vec3 pos, const Ray & ray, float step);
+
 	float absorptionCoeff;
 	float outScatteringCoeff;
 	float extinctionCoeff;

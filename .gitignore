@@ -666,3 +666,5 @@ __pycache__/
 # End of https://www.gitignore.io/api/visualstudio,xcode,windows,macos,c++
 *.bmp
 *.ply
+*.diagsession
+*.diagsession
