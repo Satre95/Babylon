@@ -102,6 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +132,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,14 +147,18 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="DirectLight.hpp" />
+    <ClInclude Include="FogVolume.hpp" />
     <ClInclude Include="InstanceObject.hpp" />
     <ClInclude Include="Intersection.hpp" />
+    <ClInclude Include="IsotropicScatter.h" />
     <ClInclude Include="LambertMaterial.hpp" />
     <ClInclude Include="Light.hpp" />
+    <ClInclude Include="LorenzMieScatter.hpp" />
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="MeshObject.hpp" />
     <ClInclude Include="MetalMaterial.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="ScatterPhase.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Ray.hpp" />
     <ClInclude Include="RayTrace.hpp" />
@@ -160,6 +166,7 @@
     <ClInclude Include="Triangle.hpp" />
     <ClInclude Include="Utilities.hpp" />
     <ClInclude Include="Vertex.hpp" />
+    <ClInclude Include="Volume.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bitmap.cpp" />
@@ -168,6 +175,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="DirectLight.cpp" />
+    <ClCompile Include="FogVolume.cpp" />
     <ClCompile Include="InstanceObject.cpp" />
     <ClCompile Include="LambertMaterial.cpp" />
     <ClCompile Include="MeshObject.cpp" />
