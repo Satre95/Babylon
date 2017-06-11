@@ -7,6 +7,7 @@
 //
 
 #include "Scene.hpp"
+#include "Volume.hpp"
 
 bool Scene::Intersect(const Ray &ray, Intersection &hit) {
 	bool success = false;
@@ -16,4 +17,21 @@ bool Scene::Intersect(const Ray &ray, Intersection &hit) {
 		}
 
 	return success;
+}
+
+void Scene::AddVolume(Volume & vol)
+{
+	Volumes.push_back(&vol);
+	vol.SetScene(this);
+}
+
+std::vector<Volume *> Scene::IntersectVolumes(const Ray & ray)
+{
+	std::vector<Volume *> hitVols;
+	for (Volume *& aVol : Volumes)
+	{
+		if (aVol->Intersect(ray))
+			hitVols.push_back(aVol);
+	}
+	return hitVols;
 }
