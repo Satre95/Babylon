@@ -1,6 +1,6 @@
 ﻿#include "RayTrace.hpp"
 
-void RayTrace::TraceRay(Intersection & hitData, Ray & ray, int depth) {
+void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
 	//If max depth reached, terminate recursion.
 	if (depth == maxDepth) return;
 

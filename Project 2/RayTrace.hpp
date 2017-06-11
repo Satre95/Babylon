@@ -10,7 +10,7 @@ public:
 	RayTrace(Scene & scn, int maxD = 10) : scene(scn), maxDepth(maxD)
 	{}
 
-	void TraceRay(Intersection & hit, Ray & ray, int depth = 1);
+	void TraceRay(Intersection & hit, const Ray & ray, int depth = 1);
 
 private:
 	Scene & scene;
