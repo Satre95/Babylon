@@ -2,6 +2,7 @@
 
 #include "Volume.hpp"
 #include "IsotropicScatter.h"
+#include "RayTrace.hpp"
 
 //A homogenous, infinite volume
 class FogVolume : Volume
@@ -9,17 +10,26 @@ class FogVolume : Volume
 public:
 	FogVolume();
 
-	float EvaluateRadiance(
+	void EvaluateRadiance(
+		Color & incomingRad,
+		const Scene & scene,
 		const glm::vec3 & pos,
-		const Ray & ray,
-		float step
+		float segment
 	) override;
 
 	bool Intersect(const Ray & ray) override;
-private:
-	float EvaluateExtinction(const glm::vec3 pos, const Ray & ray, float step);
+protected:
+	void EvaluateExtinction(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step) override;
+	void EvaluateEmission(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step) override;
+	void EvaluateInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step) override;
 
-	float absorptionCoeff;
-	float outScatteringCoeff;
+	float EvaluateDirectInScattering(const Scene & scene, const glm::vec3 & pos, float step);
+	float EvaluateIndirectInScattering(const Scene & scene, const glm::vec3 & pos, float step);
+
+private:
+	Color absorptionCoeff;
+	Color scatteringCoeff;
 	float extinctionCoeff;
+	//TODO: define different extinction coeffs for each RGB val.
+	//Color extinctionCoeff;
 };

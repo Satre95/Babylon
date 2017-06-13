@@ -20,12 +20,14 @@ public:
 	void AddVolume(Volume & vol);
 	void SetSkyColor(const Color sky) { SkyColor = sky; }
 
-	int GetNumLights() { return (int)Lights.size(); }
-	Light &GetLight(int i) { return *Lights.at(i); }
-	Color GetSkyColor() { return SkyColor; }
+	int GetNumLights() const { return (int)Lights.size(); }
+	int GetNumVolumes() const { return (int)Volumes.size(); }
+	Volume* GetVolume(int i)const { return Volumes.at(i); }
+	Light &GetLight(int i) const { return *Lights.at(i); }
+	Color GetSkyColor() const { return SkyColor; }
 
-	bool Intersect(const Ray &ray, Intersection &hit);
-	std::vector<Volume *> IntersectVolumes(const Ray & ray);
+	bool Intersect(const Ray &ray, Intersection &hit) const;
+	std::vector<Volume *> IntersectVolumes(const Ray & ray) const;
 private:
 	std::vector<Object*> Objects;
 	std::vector<Light*> Lights;

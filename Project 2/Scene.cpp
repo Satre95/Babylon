@@ -9,7 +9,7 @@
 #include "Scene.hpp"
 #include "Volume.hpp"
 
-bool Scene::Intersect(const Ray &ray, Intersection &hit) {
+bool Scene::Intersect(const Ray &ray, Intersection &hit) const {
 	bool success = false;
 	for (unsigned int i = 0; i < Objects.size(); i++)
 		if (Objects[i]->Intersect(ray, hit)) {
@@ -22,13 +22,12 @@ bool Scene::Intersect(const Ray &ray, Intersection &hit) {
 void Scene::AddVolume(Volume & vol)
 {
 	Volumes.push_back(&vol);
-	vol.SetScene(this);
 }
 
-std::vector<Volume *> Scene::IntersectVolumes(const Ray & ray)
+std::vector<Volume *> Scene::IntersectVolumes(const Ray & ray) const
 {
 	std::vector<Volume *> hitVols;
-	for (Volume *& aVol : Volumes)
+	for (auto & aVol : Volumes)
 	{
 		if (aVol->Intersect(ray))
 			hitVols.push_back(aVol);
