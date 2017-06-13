@@ -11,6 +11,7 @@ class Color {
 public:
 	Color() { Red = Green = Blue = 1.0; }
 	Color(float r, float g, float b) { Red = r; Green = g; Blue = b; }
+	Color(float val) { Red = Blue = Green = val; }
 
 	void Set(float r, float g, float b) { Red = r; Green = g; Blue = b; }
 
@@ -19,6 +20,16 @@ public:
 	void Scale(float s) { Red *= s; Green *= s; Blue *= s; }
 	void Scale(const Color c, float s) { Red = s*c.Red; Green = s*c.Green; Blue = s*c.Blue; }
 	void Multiply(const Color c) { Red *= c.Red; Green *= c.Green; Blue *= c.Blue; }
+	const float & GetRed() { return Red; }
+	const float & GetGreen() { return Green; }
+	const float & GetBlue() { return Blue; }
+	Color operator+ (const Color & other)
+	{
+		Color t = Color::BLACK;
+		t.Add(*this);
+		t.Add(other);
+		return t;
+	}
 
 	int ToInt() {
 		int r = (Red < 0) ? 0 : ((Red >= 1.0) ? 255 : int(Red*256.0f));
