@@ -13,6 +13,10 @@ class Object {
 public:
 	virtual ~Object() {}
 	virtual bool Intersect(const Ray &ray, Intersection &hit) = 0;
+
+	void SetMaterial(Material * mat) { mtl = mat; }
+protected:
+	Material * mtl = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
