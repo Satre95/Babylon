@@ -45,19 +45,20 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
 		//2. Trace the ray
 		TraceRay(reflectHit, reflectRay, depth + 1);
 		reflectHit.Shade.Multiply(tempColor);
-		hitData.Shade.Add(reflectHit.Shade);
 
 		//Now compute volumetric effects.
 		for (int i = 0; i < scene.GetNumVolumes(); i++)
 		{
 			Volume * aVol = scene.GetVolume(i);
 			aVol->EvaluateRadiance(
-				hitData.Shade, //L(x, w) radiance at this point
+				reflectHit.Shade, //L(x, w) radiance at this point
 				scene,
 				reflectHit.Position, // x' aka x + sw
 				glm::length(reflectHit.Position - hitData.Position) //length of segment b/w x & x'
 			);
 		}
+
+		hitData.Shade.Add(reflectHit.Shade);
 	}
 	else {
 		hitData.Shade = scene.GetSkyColor();
