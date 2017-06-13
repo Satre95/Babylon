@@ -13,11 +13,9 @@ void FogVolume::EvaluateRadiance(
 {
 	//1. Add Emission scaled by segment
 	EvaluateEmission(incomingRad, scene, pos, segment);
-	incomingRad.Scale(segment);
 
 	//2. Add In scattering, scaled by segment
 	EvaluateInScattering(incomingRad, scene, pos, segment);
-	incomingRad.Scale(segment);
 
 	//3. Multiply by extinction
 	EvaluateExtinction(incomingRad, scene, pos, segment);
@@ -31,7 +29,13 @@ bool FogVolume::Intersect(const Ray & ray)
 void FogVolume::EvaluateExtinction(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
 {
 	//TODO: Store this in a var instead of recalculating each tick.
-	incomingRad.Scale(glm::pow(glm::e<float>(), extinctionCoeff * step)); //Homogenous vol, so constant.
+
+	//Calculate each spectrum individually.
+	float rScale = glm::pow(glm::e<float>(), -1.f * extinctionCoeff.GetRed() * step);
+	float gScale = glm::pow(glm::e<float>(), -1.f * extinctionCoeff.GetGreen() * step);
+	float bScale = glm::pow(glm::e<float>(), -1.f * extinctionCoeff.GetBlue() * step);
+
+	incomingRad.Multiply(Color(rScale, gScale, bScale)); //Homogenous vol, so constant.
 }
 
 void FogVolume::EvaluateEmission(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
@@ -40,22 +44,21 @@ void FogVolume::EvaluateEmission(Color & incomingRad, const Scene & scene, const
 void FogVolume::EvaluateInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
 {
 	//1. compute in scattering from indirect sources around the environment. (only one)
-
+	EvaluateIndirectInScattering(incomingRad, scene, pos, step);
 	//2. compute in scattering from direct lights.
-
-	//3. add it up
+	EvaluateDirectInScattering(incomingRad, scene, pos, step);
 }
 
-float FogVolume::EvaluateDirectInScattering(const Scene & scene, const glm::vec3 & pos, float segment)
+void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
 {
-	float radiance = 0;
 	for (int i = 0; i < scene.GetNumLights(); i++)
 	{
 		Light & aLight = scene.GetLight(i);
 		//Shoot a ray to the light
 		glm::vec3 toLight, lightPos;
+		Color illuminatedColor;
 		//Use the Illuminate fn to fetch light vars
-		aLight.Illuminate(pos, Color(), toLight, lightPos);
+		aLight.Illuminate(pos, illuminatedColor, toLight, lightPos);
 		Ray shadowRay;
 		shadowRay.Origin = pos;
 		shadowRay.Direction = glm::normalize(lightPos - pos);
@@ -64,21 +67,19 @@ float FogVolume::EvaluateDirectInScattering(const Scene & scene, const glm::vec3
 		//If ray doesn't hit anything, then test for vols.
 		if (scene.Intersect(shadowRay, shadowHit) == false)
 		{
-			//Get the volumes this ray intersects with.
-			auto vols = scene.IntersectVolumes(shadowRay);
+			//If reached this far, can assume ray that got us here intersects this volume.
 
 			//Homogenous volume, so attenuate by length of ray to light through vol
 			float length = glm::length(lightPos - pos);
 
-			//TODO: Evaluate extinction and multiply that into the color val
+			//Reuse the extinction to calculate the attenuation of the light through the volume.
+			EvaluateExtinction(illuminatedColor, scene, pos, length);
+			incomingRad.Add(illuminatedColor);
 		}
 	}
-
-	return 0;
 }
 
+//TODO: Figure this shit out.
 //Note: Matteo thinks that this should be some very small constant
-float FogVolume::EvaluateIndirectInScattering(const Scene & scene, const glm::vec3 & pos, float segment)
-{
-	return 0; //For now ignore.
-}
+void FogVolume::EvaluateIndirectInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
+{} //Do nothing, for now.
