@@ -31,7 +31,7 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
 
-	if (!rayTracer) rayTracer = new RayTrace(scene);
+	rayTracer = std::make_unique<RayTrace>(scene);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)

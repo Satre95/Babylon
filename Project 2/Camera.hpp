@@ -25,7 +25,7 @@ class Camera {
 public:
 	Camera() {}
 	Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up, float fov, glm::vec2 dims);
-	~Camera() { if (rayTracer) delete rayTracer; }
+	~Camera() {}
 
 	glm::mat4 GetViewMatrix() { return V; }
 	glm::mat4 GetCamMatrix() { return C; }
@@ -66,7 +66,7 @@ private:
 	bool shirleyEnabled = false;
 	std::atomic_int currX = 0;
 	std::atomic_int currY = 0;
-	RayTrace * rayTracer = nullptr;
+	std::unique_ptr<RayTrace> rayTracer;
 	std::atomic_int tileCoordIndex = 0;
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
