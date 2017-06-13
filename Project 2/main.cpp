@@ -17,8 +17,122 @@
 #include "BoxTreeObject.hpp"
 #include "LambertMaterial.hpp"
 #include "MetalMaterial.hpp"
+#include "Volume.hpp"
+#include "FogVolume.hpp"
 
 using namespace std::chrono;
+
+void finalProject()
+{
+	//----------------------------------------------------------
+	/// Create scene
+	auto begin = steady_clock::now();
+	Scene scn;
+	scn.SetSkyColor(Color(0.8f, 0.9f, 1.0f));
+
+	// Create boxes
+	LambertMaterial boxMtl;
+	boxMtl.SetColor(Color(0.25f, 0.25f, 0.25f));
+
+	MeshObject box1;
+	box1.MakeBox(5.0f, 0.1f, 5.0f);
+
+	InstanceObject ground(box1);
+	ground.SetMaterial(&boxMtl);
+	scn.AddObject(ground);
+
+	MeshObject box2;
+	box2.MakeBox(1.0f, 1.0f, 1.0f);
+
+	InstanceObject inst1(box2);
+	glm::mat4 mtx = glm::rotate(glm::mat4(), 0.5f, glm::vec3(1, 0, 0));
+	mtx[3][1] = 1.0f;
+	inst1.SetMatrix(mtx);
+	inst1.SetMaterial(&boxMtl);
+	scn.AddObject(inst1);
+
+	InstanceObject inst2(box2);
+	glm::mat4 mtx2 = glm::rotate(glm::mat4(), 1.0f, glm::vec3(0, 1, 0));
+	mtx2[3] = glm::vec4(-1, 0, 1, 1);
+	inst2.SetMatrix(mtx2);
+	inst2.SetMaterial(&boxMtl);
+	scn.AddObject(inst2);
+
+	//----------------------------------------------------------
+	// Create lights
+
+	PointLight pointLightRight;
+	pointLightRight.SetBaseColor(Color(1.0f, 0.f, 0.f));
+	pointLightRight.SetIntensity(10.0f);
+	pointLightRight.SetPosition(glm::vec3(2.0f, 2.f, 0.f));
+	scn.AddLight(pointLightRight);
+
+	PointLight pointLightLeft;
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f));
+	pointLightLeft.SetIntensity(5.0f);
+	pointLightLeft.SetPosition(glm::vec3(-2.0f, 1.f, 0.f));
+	scn.AddLight(pointLightLeft);
+
+	PointLight pointLightFront;
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.8f, 0.65f));
+	pointLightLeft.SetIntensity(10.0f);
+	pointLightLeft.SetPosition(glm::vec3(0, 1.f, 2.f));
+	scn.AddLight(pointLightFront);
+
+	PointLight pointLightBack;
+	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f));
+	pointLightBack.SetIntensity(15.f);
+	pointLightBack.SetPosition(glm::vec3(0, 1.f, -2.f));
+	scn.AddLight(pointLightBack);
+
+	//----------------------------------------------------------
+	//Add Volume
+	FogVolume fog;
+	fog.SetAbsroptionCoeff(Color(50.f, 62.f, 100.f));
+	fog.SetScatteringCoeff(Color(55.f, 75.f, 85.f));
+	scn.AddVolume(fog);
+
+	//----------------------------------------------------------
+	// Create camera
+	Camera cam;
+	cam.BuildCamera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
+	cam.SetResolution(800, 600);
+	cam.SetFoV(40.0f);
+	cam.SetAspect(1.33f);
+	cam.SetSuperSample(4, 4);
+	cam.SetJitter(true);
+	cam.SetShirley(true);
+
+	auto end = steady_clock::now();
+	std::cerr << "Scene construction took "
+		<< duration_cast<milliseconds> (end - begin).count()
+		<< "ms" << std::endl;
+
+	//----------------------------------------------------------
+	// Render image
+	begin = steady_clock::now();
+	cam.Render(scn, true);
+	end = steady_clock::now();
+	std::cerr << "Render took "
+		<< duration_cast<milliseconds> (end - begin).count()
+		<< "ms" << std::endl;
+
+	//----------------------------------------------------------
+	//Save Image
+	cam.SaveBitmap("finalProject.bmp");
+
+	//----------------------------------------------------------
+	//Open Image
+#ifdef _WIN32
+	std::system("finalProject.bmp");
+#else
+	std::system("open project2.bmp");
+#endif // _WIN32
+
+	//----------------------------------------------------------
+	//Wait a few seconds to give time to read vals
+	std::this_thread::sleep_for(milliseconds(5000));
+}
 
 void project3() {
 	//----------------------------------------------------------
@@ -57,22 +171,50 @@ void project3() {
 		inst->SetMaterial(mtl[i]);
 		scn.AddObject(*inst);
 	}
+
+	//----------------------------------------------------------
 	// Create lights
-	DirectLight sunlgt;
-	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(0.8f);
-	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
-	scn.AddLight(sunlgt);
+	//DirectLight sunlgt;
+	//sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
+	//sunlgt.SetIntensity(0.8f);
+	//sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
+	//scn.AddLight(sunlgt);
+
+	PointLight pointLightRight;
+	pointLightRight.SetBaseColor(Color(0.65f, 0.2f, 0.2f));
+	pointLightRight.SetIntensity(1.2f);
+	pointLightRight.SetPosition(glm::vec3(2.0f, 0.f, 0.f));
+	scn.AddLight(pointLightRight);
+
+	PointLight pointLightLeft;
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f));
+	pointLightLeft.SetIntensity(1.2f);
+	pointLightLeft.SetPosition(glm::vec3(-2.0f, 0.f, 0.f));
+	scn.AddLight(pointLightLeft);
+
+	PointLight pointLightFront;
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.2f, 0.65f));
+	pointLightLeft.SetIntensity(1.5f);
+	pointLightLeft.SetPosition(glm::vec3(0, 0.f, 2.f));
+	scn.AddLight(pointLightFront);
+
+	PointLight pointLightBack;
+	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f));
+	pointLightBack.SetIntensity(0.4f);
+	pointLightBack.SetPosition(glm::vec3(0, 0.f, -2.f));
+	scn.AddLight(pointLightBack);
+
+	//----------------------------------------------------------
 	// Create camera
 	Camera cam;
-	cam.SetResolution(1920, 1080);
+	cam.SetResolution(400, 400);
 	cam.SetAspect(1.33f);
 	cam.BuildCamera(glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(11, 11);
-	cam.SetJitter(true);
-	cam.SetShirley(true);
+	cam.SetSuperSample(2, 2);
+	//cam.SetJitter(true);
+	//cam.SetShirley(true);
 
 	auto end = steady_clock::now();
 	std::cerr << "Scene construction took "
@@ -246,8 +388,6 @@ void project1() {
 }
 
 int main() {
-	project3();
-	//project2();
-	//project1();
+	finalProject();
 	return 0;
 }
