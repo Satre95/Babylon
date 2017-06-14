@@ -44,6 +44,12 @@ public:
 	void SetSuperSample(int xSamples, int ySamples) {
 		superSamples = std::make_pair(xSamples, ySamples);
 	}
+
+	void SetFocus(float dist) { focalPlane = dist; }
+
+	void SetfStop(float fstop) {
+		aperture = focalPlane / fstop;
+	}
 	void SetJitter(bool enable) { jitterEnabled = enable; }
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
 
@@ -52,19 +58,23 @@ public:
 	void SaveBitmap(std::string filename);
 
 private:
+	//Camera params
 	int width, height;
 	glm::mat4 C;
 	glm::mat4 V;
 	float aspect;
 	float vFov;
 	float hFov;
-	float aperture, focalPlane;
+	float aperture, focalPlane = 1.f;
 	BitmapPtrUnique img;
-	std::mutex queryMutex;
+
+	//Sampling params.
 	std::pair<int, int> superSamples;
 	std::pair<float, float> subPixelDims;
 	bool jitterEnabled = false;
 	bool shirleyEnabled = false;
+
+	//Parallel scheduling params.
 	std::atomic_int currX = 0;
 	std::atomic_int currY = 0;
 	std::unique_ptr<RayTrace> rayTracer;

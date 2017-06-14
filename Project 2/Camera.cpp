@@ -12,6 +12,8 @@
 #include <vector>
 #include <thread>
 #include <iostream>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up, float fov, glm::vec2 dims) {
 	SetResolution(int(dims.x), int(dims.y));
@@ -20,9 +22,9 @@ Camera::Camera(glm::vec3 pos, glm::vec3 target, glm::vec3 up, float fov, glm::ve
 
 void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 	auto d = pos;
-	auto c = glm::normalize(d - target);
-	auto a = glm::normalize(glm::cross(up, c));
-	auto b = glm::cross(c, a);
+	auto c = glm::normalize(d - target); // z-axis in world space
+	auto a = glm::normalize(glm::cross(up, c)); //x axis in world space
+	auto b = glm::cross(c, a); // y-axis in world space
 
 	C = glm::mat4(glm::vec4(a, 0), glm::vec4(b, 0), glm::vec4(c, 0), glm::vec4(d, 1.0f));
 	V = glm::inverse(C);
@@ -93,7 +95,13 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 
 			Ray ray;
 			ray.Origin = d;
-			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - c);
+			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - (focalPlane *c));
+
+			//Randomize the origin point around the camera aperture
+			float displacement = aperture / 2.f;
+			glm::vec3 randX = a * Utilities::randomFloatInRange(-displacement, displacement);
+			glm::vec3 randY = b * Utilities::randomFloatInRange(-displacement, displacement);
+			ray.Origin += (a + b);
 
 			Intersection hitData;
 			rayTracer->TraceRay(hitData, ray);
@@ -136,7 +144,7 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 			RenderPixel(x, y, scene);
 		}
 	}
-}
+	}
 
 void Camera::RenderPixelsParallel(Scene &scene) {
 	while (tileCoordIndex >= 0) {
