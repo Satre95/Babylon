@@ -58,6 +58,7 @@ private:
 	float aspect;
 	float vFov;
 	float hFov;
+	float aperture, focalPlane;
 	BitmapPtrUnique img;
 	std::mutex queryMutex;
 	std::pair<int, int> superSamples;
@@ -71,6 +72,7 @@ private:
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
 	int tileWidth = 8, tileHeight = 6;
+
 #ifdef DEBUG
 	std::mutex logMutex;
 #endif // DEBUG

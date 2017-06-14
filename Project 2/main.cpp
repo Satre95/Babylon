@@ -31,74 +31,69 @@ void finalProject()
 	scn.SetSkyColor(Color(0.8f, 0.9f, 1.0f));
 
 	// Create boxes
-	LambertMaterial boxMtl;
-	boxMtl.SetColor(Color(0.25f, 0.25f, 0.25f));
+	MeshObject box;
+	box.MakeBox(1.0f, 1.0f, 1.0f);
 
-	MeshObject box1;
-	box1.MakeBox(5.0f, 0.1f, 5.0f);
+	LambertMaterial mtl1;
+	mtl1.SetColor(Color(0.4f, 0.8f, 0.2f));
+	InstanceObject box1(box);
+	box1.SetMatrix(glm::scale(glm::mat4(1.0f), glm::vec3(1.0f, 1.0f, 5.0f)));
+	box1.SetMaterial(&mtl1);
+	scn.AddObject(box1);
 
-	InstanceObject ground(box1);
-	ground.SetMaterial(&boxMtl);
-	scn.AddObject(ground);
-
-	MeshObject box2;
-	box2.MakeBox(1.0f, 1.0f, 1.0f);
-
-	InstanceObject inst1(box2);
-	glm::mat4 mtx = glm::rotate(glm::mat4(), 0.5f, glm::vec3(1, 0, 0));
-	mtx[3][1] = 1.0f;
-	inst1.SetMatrix(mtx);
-	inst1.SetMaterial(&boxMtl);
-	scn.AddObject(inst1);
-
-	InstanceObject inst2(box2);
-	glm::mat4 mtx2 = glm::rotate(glm::mat4(), 1.0f, glm::vec3(0, 1, 0));
-	mtx2[3] = glm::vec4(-1, 0, 1, 1);
-	inst2.SetMatrix(mtx2);
-	inst2.SetMaterial(&boxMtl);
-	scn.AddObject(inst2);
-
-	//----------------------------------------------------------
+	LambertMaterial mtl2;
+	mtl2.SetColor(Color(0.7f, 0.2f, 0.2f));
+	InstanceObject box2(box);
+	box2.SetMatrix(
+		glm::translate(
+			glm::scale(
+				glm::mat4(1.0f),
+				glm::vec3(5.0f, 1.0f, 1.0f)
+			),
+			glm::vec3(0.f, 1.1f, 0.f)
+		)
+	);
+	box2.SetMaterial(&mtl2);
+	scn.AddObject(box2);
 	// Create lights
 
 	PointLight pointLightRight;
 	pointLightRight.SetBaseColor(Color(1.0f, 0.f, 0.f));
-	pointLightRight.SetIntensity(10.0f);
-	pointLightRight.SetPosition(glm::vec3(2.0f, 2.f, 0.f));
+	pointLightRight.SetIntensity(2.0f);
+	pointLightRight.SetPosition(glm::vec3(5.0f, 3.f, 0.f));
 	scn.AddLight(pointLightRight);
 
 	PointLight pointLightLeft;
 	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f));
-	pointLightLeft.SetIntensity(5.0f);
-	pointLightLeft.SetPosition(glm::vec3(-2.0f, 1.f, 0.f));
+	pointLightLeft.SetIntensity(2.0f);
+	pointLightLeft.SetPosition(glm::vec3(-5.0f, 3.f, 0.f));
 	scn.AddLight(pointLightLeft);
 
 	PointLight pointLightFront;
 	pointLightLeft.SetBaseColor(Color(0.2f, 0.8f, 0.65f));
-	pointLightLeft.SetIntensity(10.0f);
-	pointLightLeft.SetPosition(glm::vec3(0, 1.f, 2.f));
+	pointLightLeft.SetIntensity(2.0f);
+	pointLightLeft.SetPosition(glm::vec3(0, 3.f, 5.f));
 	scn.AddLight(pointLightFront);
 
 	PointLight pointLightBack;
 	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f));
-	pointLightBack.SetIntensity(15.f);
-	pointLightBack.SetPosition(glm::vec3(0, 1.f, -2.f));
+	pointLightBack.SetIntensity(2.f);
+	pointLightBack.SetPosition(glm::vec3(0, 3.f, -5.f));
 	scn.AddLight(pointLightBack);
 
 	//----------------------------------------------------------
 	//Add Volume
-	FogVolume fog;
+	/*FogVolume fog;
 	fog.SetAbsroptionCoeff(Color(50.f, 62.f, 100.f));
 	fog.SetScatteringCoeff(Color(55.f, 75.f, 85.f));
-	scn.AddVolume(fog);
+	scn.AddVolume(fog);*/
 
 	//----------------------------------------------------------
 	// Create camera
 	Camera cam;
-	cam.BuildCamera(glm::vec3(2.0f, 2.0f, 5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
+	cam.BuildCamera(glm::vec3(5.0f, 0.f, 5.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
 	cam.SetResolution(800, 600);
 	cam.SetFoV(40.0f);
-	cam.SetAspect(1.33f);
 	cam.SetSuperSample(4, 4);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
