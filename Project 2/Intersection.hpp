@@ -8,12 +8,13 @@
 #include "glm/glm.hpp"
 class Material;
 #define HIT_THRESHOLD 1e-10
+#define MAX_HIT_DISTANCE 1e8
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Intersection {
 public:
-	Intersection() { HitDistance = 1e10; Mtl = 0; }
+	Intersection() : HitDistance(MAX_HIT_DISTANCE), Mtl(nullptr) {}
 
 public:
 	// Ray intersection data

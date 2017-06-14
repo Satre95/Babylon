@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/vec3.hpp>
+#include "Color.hpp"
 
 class ScatterPhase
 {
@@ -7,6 +8,5 @@ public:
 
 	virtual ~ScatterPhase() {}
 
-protected:
-	virtual float PhaseFn(float cosAngle) = 0;
+	virtual Color PhaseFn(float cosAngle) = 0;
 };

@@ -52,6 +52,7 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
 			Volume * aVol = scene.GetVolume(i);
 			aVol->EvaluateRadiance(
 				reflectHit.Shade, //L(x, w) radiance at this point
+				ray,
 				scene,
 				reflectHit.Position, // x' aka x + sw
 				glm::length(reflectHit.Position - hitData.Position) //length of segment b/w x & x'

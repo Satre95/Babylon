@@ -9,11 +9,11 @@ class LorenzMieScatter : ScatterPhase
 public:
 	LorenzMieScatter(float zIn = 8) : z(zIn) {}
 
-protected:
-	float PhaseFn(float cosAngle) override
+	Color PhaseFn(float cosAngle) override
 	{
-		return const1_4Pi *
-			(0.5f + 0.5f * (z + 1.f) * powf((1.f + cosAngle) * 0.5f, z));
+		return Color(const1_4Pi *
+			(0.5f + 0.5f * (z + 1.f) * powf((1.f + cosAngle) * 0.5f, z))
+		);
 	}
 private:
 	float z;

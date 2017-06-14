@@ -9,12 +9,11 @@ public:
 	IsotropicScatter() {}
 	~IsotropicScatter() {}
 
-protected:
-	float PhaseFn(float cosAngle) override
+	Color PhaseFn(float cosAngle) override
 	{
 		return sphereConst;
 	}
 
 private:
-	float sphereConst = 1.f / (4.f * glm::pi<float>());
+	Color sphereConst = Color(1.f / (4.f * glm::pi<float>()));
 };

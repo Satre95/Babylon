@@ -31,6 +31,16 @@ public:
 		return t;
 	}
 
+	Color operator*(const Color & other)
+	{
+		return Color(Red * other.Red, Green * other.Green, Blue * other.Blue);
+	}
+
+	Color operator*(const float & scale)
+	{
+		return Color(Red * scale, Blue * scale, Green * scale);
+	}
+
 	int ToInt() {
 		int r = (Red < 0) ? 0 : ((Red >= 1.0) ? 255 : int(Red*256.0f));
 		int g = (Green < 0) ? 0 : ((Green >= 1.0) ? 255 : int(Green*256.0f));

@@ -1,4 +1,5 @@
 #include "FogVolume.hpp"
+#include <glm/gtc/random.hpp>
 
 FogVolume::FogVolume()
 {
@@ -7,6 +8,7 @@ FogVolume::FogVolume()
 
 void FogVolume::EvaluateRadiance(
 	Color & incomingRad,
+	const Ray & incomingRay,
 	const Scene & scene,
 	const glm::vec3 & pos,
 	float segment)
@@ -15,7 +17,7 @@ void FogVolume::EvaluateRadiance(
 	EvaluateEmission(incomingRad, scene, pos, segment);
 
 	//2. Add In scattering, scaled by segment
-	EvaluateInScattering(incomingRad, scene, pos, segment);
+	EvaluateInScattering(incomingRad, incomingRay, scene, pos, segment);
 
 	//3. Multiply by extinction
 	EvaluateExtinction(incomingRad, scene, pos, segment);
@@ -28,8 +30,6 @@ bool FogVolume::Intersect(const Ray & ray)
 
 void FogVolume::EvaluateExtinction(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
 {
-	//TODO: Store this in a var instead of recalculating each tick.
-
 	//Calculate each spectrum individually.
 	float rScale = glm::pow(glm::e<float>(), -1.f * extinctionCoeff.GetRed() * step);
 	float gScale = glm::pow(glm::e<float>(), -1.f * extinctionCoeff.GetGreen() * step);
@@ -41,15 +41,15 @@ void FogVolume::EvaluateExtinction(Color & incomingRad, const Scene & scene, con
 void FogVolume::EvaluateEmission(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
 {} //Do nothing, as fog does not emit light.
 
-void FogVolume::EvaluateInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
+void FogVolume::EvaluateInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step)
 {
 	//1. compute in scattering from indirect sources around the environment. (only one)
-	EvaluateIndirectInScattering(incomingRad, scene, pos, step);
+	EvaluateIndirectInScattering(incomingRad, incomingRay, scene, pos, step);
 	//2. compute in scattering from direct lights.
-	EvaluateDirectInScattering(incomingRad, scene, pos, step);
+	EvaluateDirectInScattering(incomingRad, incomingRay, scene, pos, step);
 }
 
-void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
+void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step)
 {
 	for (int i = 0; i < scene.GetNumLights(); i++)
 	{
@@ -81,5 +81,46 @@ void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Scene & sc
 
 //TODO: Figure this shit out.
 //Note: Matteo thinks that this should be some very small constant
-void FogVolume::EvaluateIndirectInScattering(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step)
-{} //Do nothing, for now.
+void FogVolume::EvaluateIndirectInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step)
+{
+	//Generate a random ray
+	float u = glm::linearRand(0.f, 1.f);
+	float v = glm::linearRand(0.f, 1.f);
+	float theta = 2.f * glm::pi<float>();
+	float phi = acosf(2.f * v - 1.f);
+
+	float x = sinf(phi) * cosf(theta);
+	float y = sinf(phi) * sinf(phi);
+	float z = cosf(phi);
+
+	Ray randomRay;
+	randomRay.Direction = glm::vec3(x, y, z);
+	randomRay.Origin = pos;
+
+	//Evaluate the phase function between the scattered ray and the given ray.
+	Color phase = scatterPhase->PhaseFn(glm::dot(incomingRay.Direction, randomRay.Direction));
+
+	//Cast the ray into the volume to get back radiance
+	Intersection randIntersect;
+	Color randColor;
+	if (scene.Intersect(randomRay, randIntersect) == true) {
+		randColor = randIntersect.Shade;
+	}
+	else
+	{
+		randColor = scene.GetSkyColor();
+	}
+
+	Color L_i = scatteringCoeff * phase * randColor * 4.f * glm::pi<float>();
+	incomingRad.Add(randColor * -1.f);
+}
+
+void FogVolume::SetAbsroptionCoeff(Color & abIn)
+{
+	absorptionCoeff = abIn; extinctionCoeff = scatteringCoeff + abIn;
+}
+
+void FogVolume::SetScatteringCoeff(Color & scIn)
+{
+	scatteringCoeff = scIn; extinctionCoeff = absorptionCoeff + scIn;
+}
