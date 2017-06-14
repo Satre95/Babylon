@@ -48,7 +48,7 @@ public:
 	void SetFocus(float dist) { focalPlane = dist; }
 
 	void SetfStop(float fstop) {
-		aperture = focalPlane / fstop;
+		fStop = fstop;
 	}
 	void SetJitter(bool enable) { jitterEnabled = enable; }
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
@@ -65,11 +65,11 @@ private:
 	float aspect;
 	float vFov;
 	float hFov;
-	float aperture, focalPlane = 1.f;
+	float fStop = 1e10f, focalPlane = 1.f;
 	BitmapPtrUnique img;
 
 	//Sampling params.
-	std::pair<int, int> superSamples;
+	std::pair<int, int> superSamples = std::make_pair(1, 1);
 	std::pair<float, float> subPixelDims;
 	bool jitterEnabled = false;
 	bool shirleyEnabled = false;

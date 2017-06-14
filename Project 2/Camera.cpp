@@ -98,10 +98,11 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - (focalPlane *c));
 
 			//Randomize the origin point around the camera aperture
+			float aperture = focalPlane / fStop;
 			float displacement = aperture / 2.f;
 			glm::vec3 randX = a * Utilities::randomFloatInRange(-displacement, displacement);
 			glm::vec3 randY = b * Utilities::randomFloatInRange(-displacement, displacement);
-			ray.Origin += (a + b);
+			ray.Origin += (randX + randY);
 
 			Intersection hitData;
 			rayTracer->TraceRay(hitData, ray);
@@ -132,7 +133,7 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 			<< "(" << tileStartX << ", "
 			<< tileStartY << ")"
 			<< std::endl;
-	}
+}
 #endif // DEBUG
 
 	//Iterate over pixels in tile
@@ -144,7 +145,7 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 			RenderPixel(x, y, scene);
 		}
 	}
-	}
+}
 
 void Camera::RenderPixelsParallel(Scene &scene) {
 	while (tileCoordIndex >= 0) {

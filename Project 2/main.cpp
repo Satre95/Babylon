@@ -55,8 +55,15 @@ void finalProject()
 	);
 	box2.SetMaterial(&mtl2);
 	scn.AddObject(box2);
-	// Create lights
 
+	MeshObject dragon;
+	dragon.LoadPLY("dragon.ply");
+
+	InstanceObject dragonInstance(dragon);
+	dragonInstance.SetMatrix(glm::scale(glm::mat4(), glm::vec3(2.0f)));
+	scn.AddObject(dragonInstance);
+
+	// Create lights
 	PointLight pointLightRight;
 	pointLightRight.SetBaseColor(Color(1.0f, 0.f, 0.f));
 	pointLightRight.SetIntensity(2.0f);
@@ -91,10 +98,12 @@ void finalProject()
 	//----------------------------------------------------------
 	// Create camera
 	Camera cam;
-	cam.BuildCamera(glm::vec3(5.0f, 0.f, 5.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
+	cam.BuildCamera(glm::vec3(2.0f, 0.f, 2.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
 	cam.SetResolution(800, 600);
-	cam.SetFoV(40.0f);
-	cam.SetSuperSample(4, 4);
+	cam.SetFoV(20.f);
+	cam.SetFocus(0.3f);
+	cam.SetfStop(0.001f);
+	cam.SetSuperSample(3, 3);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 
@@ -166,50 +175,24 @@ void project3() {
 		inst->SetMaterial(mtl[i]);
 		scn.AddObject(*inst);
 	}
-
-	//----------------------------------------------------------
 	// Create lights
-	//DirectLight sunlgt;
-	//sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	//sunlgt.SetIntensity(0.8f);
-	//sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
-	//scn.AddLight(sunlgt);
-
-	PointLight pointLightRight;
-	pointLightRight.SetBaseColor(Color(0.65f, 0.2f, 0.2f));
-	pointLightRight.SetIntensity(1.2f);
-	pointLightRight.SetPosition(glm::vec3(2.0f, 0.f, 0.f));
-	scn.AddLight(pointLightRight);
-
-	PointLight pointLightLeft;
-	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f));
-	pointLightLeft.SetIntensity(1.2f);
-	pointLightLeft.SetPosition(glm::vec3(-2.0f, 0.f, 0.f));
-	scn.AddLight(pointLightLeft);
-
-	PointLight pointLightFront;
-	pointLightLeft.SetBaseColor(Color(0.2f, 0.2f, 0.65f));
-	pointLightLeft.SetIntensity(1.5f);
-	pointLightLeft.SetPosition(glm::vec3(0, 0.f, 2.f));
-	scn.AddLight(pointLightFront);
-
-	PointLight pointLightBack;
-	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f));
-	pointLightBack.SetIntensity(0.4f);
-	pointLightBack.SetPosition(glm::vec3(0, 0.f, -2.f));
-	scn.AddLight(pointLightBack);
-
-	//----------------------------------------------------------
+	DirectLight sunlgt;
+	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
+	sunlgt.SetIntensity(0.8f);
+	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
+	scn.AddLight(sunlgt);
 	// Create camera
 	Camera cam;
-	cam.SetResolution(400, 400);
+	cam.SetResolution(1200, 600);
 	cam.SetAspect(1.33f);
-	cam.BuildCamera(glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
+	cam.BuildCamera(0.45f * glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(2, 2);
-	//cam.SetJitter(true);
-	//cam.SetShirley(true);
+	cam.SetSuperSample(10, 10);
+	cam.SetJitter(true);
+	cam.SetShirley(true);
+	cam.SetFocus(0.2f);
+	cam.SetfStop(30.0f);
 
 	auto end = steady_clock::now();
 	std::cerr << "Scene construction took "
@@ -383,6 +366,7 @@ void project1() {
 }
 
 int main() {
-	finalProject();
+	//finalProject();
+	project3();
 	return 0;
 }
