@@ -16,7 +16,7 @@ void MetalMaterial::GenerateSample(const Intersection & isect, const glm::vec3 &
 	auto & normal = isect.Normal;
 
 	//Compute the reflection dir
-	outDir = glm::reflect(inDir, isect.Normal);
+	outDir = glm::reflect(inDir, normal);
 	//Set the color
 	outColor = matColor;
 }

@@ -24,6 +24,11 @@ public:
 		M = mtx;
 		M_Inverse = glm::inverse(mtx);
 	}
+    
+    void SetMatrix(glm::mat4 && mtx) {
+        M = mtx;
+        M_Inverse = glm::inverse(mtx);
+    }
 
 	glm::mat4 GetMatrix() { return M; }
 	glm::mat4 GetInverseMatrix() { return M_Inverse; }

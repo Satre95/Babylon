@@ -25,7 +25,8 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
 			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
 			if (!scene.Intersect(shadowRay, shadowHit)) {
 				Color matColor = Color::BLACK;
-				hitData.Mtl->ComputeReflectance(matColor, toLight, glm::vec3(), hitData);
+                glm::vec3 temp;
+				hitData.Mtl->ComputeReflectance(matColor, toLight, temp, hitData);
 				matColor.Multiply(lightColor);
 				matColor.Scale(glm::max(0.f, glm::dot(hitData.Normal, toLight)));
 				matColor.Scale(intensity);

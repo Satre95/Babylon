@@ -75,10 +75,10 @@ private:
 	bool shirleyEnabled = false;
 
 	//Parallel scheduling params.
-	std::atomic_int currX = 0;
-	std::atomic_int currY = 0;
+	std::atomic_int currX;
+	std::atomic_int currY;
 	std::unique_ptr<RayTrace> rayTracer;
-	std::atomic_int tileCoordIndex = 0;
+	std::atomic_int tileCoordIndex;
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
 	int tileWidth = 8, tileHeight = 6;

@@ -10,6 +10,7 @@ public:
 	void GenerateSample(const Intersection & isect, const glm::vec3 & inDir, glm::vec3 & outDir, Color & outColor);
 
 	void SetColor(Color & c) { matColor = c; }
+    void SetColor(Color && c) { matColor = c; }
 private:
 	Color matColor;
 };
