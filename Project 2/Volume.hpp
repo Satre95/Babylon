@@ -12,12 +12,13 @@
 class Volume
 {
 public:
+    ///Takes the radiance at a given point and marches back along the ray, modifying it by the volume.
 	virtual void EvaluateRadiance(
-		Color & incomingRad, // L(x, w)
+		Color & incomingRad,
 		const Ray & incomingRay,
+        const RayTrace & rayTracer,
 		const Scene & scene,
-		const glm::vec3 & pos, //x
-		float step //s
+		const glm::vec3 & pos //x
 	) = 0;
 
 	virtual bool Intersect(const Ray & ray) = 0;
@@ -25,9 +26,4 @@ public:
 
 protected:
 	ScatterPhase * scatterPhase;
-
-	virtual void EvaluateExtinction(Color & incomringRad, const Scene & scene, const glm::vec3 & pos, float step) = 0;
-	virtual void EvaluateEmission(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float step) = 0;
-	virtual void EvaluateInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step) = 0;
-private:
 };

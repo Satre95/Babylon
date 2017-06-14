@@ -1,7 +1,7 @@
 ﻿#include "RayTrace.hpp"
 #include "Volume.hpp"
 
-void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
+void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) const {
 	//If max depth reached, terminate recursion.
 	if (depth == maxDepth) return;
 
@@ -46,23 +46,20 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) {
 		//2. Trace the ray
 		TraceRay(reflectHit, reflectRay, depth + 1);
 		reflectHit.Shade.Multiply(tempColor);
-
-		//Now compute volumetric effects.
-		for (int i = 0; i < scene.GetNumVolumes(); i++)
-		{
-			Volume * aVol = scene.GetVolume(i);
-			aVol->EvaluateRadiance(
-				reflectHit.Shade, //L(x, w) radiance at this point
-				ray,
-				scene,
-				reflectHit.Position, // x' aka x + sw
-				glm::length(reflectHit.Position - hitData.Position) //length of segment b/w x & x'
-			);
-		}
-
-		hitData.Shade.Add(reflectHit.Shade);
+        hitData.Shade.Add(reflectHit.Shade);
+		
 	}
 	else {
 		hitData.Shade = scene.GetSkyColor();
 	}
+    
+    //hitData.Shade = L at point at this level of recursion
+    
+    //Now compute volumetric effects.
+    //Walk back along the ray, modifying the radiance with the volume
+    for (int i = 0; i < scene.GetNumVolumes(); i++)
+    {
+        Volume * aVol = scene.GetVolume(i);
+        aVol->EvaluateRadiance(hitData.Shade, ray, *this, scene, hitData.Position);
+    }
 }
