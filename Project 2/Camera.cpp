@@ -11,6 +11,7 @@
 #include "BoxTreeNode.hpp"
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
@@ -32,12 +33,13 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	img = std::make_unique<Bitmap>(width, height);
 	finished = false;
-    previewThreadWriting = false;
-    
-    if (showProgress)
-        previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
-	
-	rayTracer = std::make_unique<RayTrace>(scene, 5);
+	previewThreadWriting = false;
+	finishedTiles = 0;
+
+	if (showProgress)
+		previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+
+	rayTracer = std::make_unique<RayTrace>(scene, 7);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
@@ -61,9 +63,11 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 		}
 	}
 
-    finished = true;
-    previewThreadCV.notify_all();
-	previewThread->join();
+	finished = true;
+	if (showProgress) {
+		previewThreadCV.notify_all();
+		previewThread->join();
+	}
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
@@ -141,16 +145,16 @@ void Camera::RenderTile(int aTile, Scene & scene)
 			RenderPixel(x, y, scene);
 		}
 	}
-    
-    //report finishing the tile and wake up the preview thread
-    finishedTiles++;
-    previewThreadCV.notify_one();
-    //wait if preview thread is writing.
-    std::unique_lock<std::mutex> lk(previewMutex);
-    renderThreadsCV.wait(lk, [this] {
-        return !previewThreadWriting;
-    });
-    lk.unlock();
+
+	//report finishing the tile and wake up the preview thread
+	finishedTiles++;
+	previewThreadCV.notify_one();
+	//wait if preview thread is writing.
+	std::unique_lock<std::mutex> lk(previewMutex);
+	renderThreadsCV.wait(lk, [this] {
+		return !previewThreadWriting;
+	});
+	lk.unlock();
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
@@ -193,40 +197,45 @@ void Camera::SetResolution(int x, int y) {
 	}
 	tileCoordIndex = int(tileCoords.size()) - 1;
 	SetAspect(float(width) / float(height));
-    
-    numTilesPerBlock = 0.15f * float(tileCoords.size());
-    
+
+	numTilesPerBlock = 0.20f * float(tileCoords.size());
 }
 
 void Camera::PreviewImageFunc()
 {
 	using namespace std::chrono;
 
-    while (!finished)
+	static int previewNum = 0;
+	while (!finished)
 	{
-        previewThreadWriting = true;
-		img->SaveBMP("tempPreview.bmp");
-        previewThreadWriting = false;
-        
-        renderThreadsCV.notify_all();
+		std::unique_lock<std::mutex> lk(previewMutex);
+		previewThreadCV.wait(lk, [this]
+		{
+			if (finished) return true;
+
+			if (finishedTiles == numTilesPerBlock) {
+				finishedTiles = 0;
+				return true;
+			}
+			return false;
+		});
+
+		previewNum++;
+		previewThreadWriting = true;
+		std::stringstream ss;
+		ss << "tempPreview_" << previewNum << ".bmp";
+		img->SaveBMP(ss.str().c_str());
+		previewThreadWriting = false;
+		lk.unlock();
+		renderThreadsCV.notify_all();
 
 #ifdef _WIN32
-		std::system("tempPreview.bmp");
+		std::system(ss.str().c_str());
 #else
 		std::system("open -a Fragment tempPreview.bmp");
 #endif
-        
-        std::unique_lock<std::mutex> lk(previewMutex);
-        previewThreadCV.wait(lk, [this]
-        {
-            if(finished) return true;
-            
-            if(finishedTiles == numTilesPerBlock){
-                finishedTiles = 0;
-                return true;
-            }
-            return false;
-        });
-        lk.unlock();
 	}
+
+	//Delete the temporary images
+	std::system("del tempPreview*");
 }
