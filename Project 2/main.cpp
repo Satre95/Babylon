@@ -81,7 +81,7 @@ void simpleBoxFogTest()
 	//----------------------------------------------------------
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, true, false);
+	cam.Render(scn, true, true);
 	end = steady_clock::now();
 	std::cerr << "Render took "
 		<< duration_cast<seconds> (end - begin).count()
@@ -100,7 +100,7 @@ void simpleBoxFogTest()
 		if (_kbhit() != 0) break;
 	}
 #else
-	std::system("open -a Fragment finalProject.bmp");
+	std::system("open -a Fragment simpleBoxAndFogTest.bmp");
 	std::this_thread::sleep_for(milliseconds(5000));
 #endif // _WIN32
 }

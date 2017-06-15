@@ -39,7 +39,7 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	if (showProgress)
 		previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
 
-	rayTracer = std::make_unique<RayTrace>(scene, 7);
+	rayTracer = std::make_unique<RayTrace>(scene, 3);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
@@ -232,7 +232,9 @@ void Camera::PreviewImageFunc()
 #ifdef _WIN32
 		std::system(ss.str().c_str());
 #else
-		std::system("open -a Fragment tempPreview.bmp");
+        std::stringstream ss2;
+        ss2 << "open -a Fragment " << ss.str();
+		std::system(ss2.str().c_str());
 #endif
 	}
 
