@@ -132,7 +132,7 @@ void finalProject()
 #ifdef _WIN32
 	std::system("finalProject.bmp");
 #else
-	std::system("open finalProject.bmp");
+	std::system("open -a Fragment finalProject.bmp");
 #endif // _WIN32
 
 	//----------------------------------------------------------
