@@ -17,7 +17,7 @@ public:
 
 	void Add(const Color & c) { Red += c.Red; Green += c.Green; Blue += c.Blue; }
 	void AddScaled(const Color & c, float s) { Red += s*c.Red; Green += s*c.Green; Blue += s*c.Blue; }
-	void Scale(float s) { Red *= s; Green *= s; Blue *= s; }
+    Color & Scale(float s) { Red *= s; Green *= s; Blue *= s; return *this; }
 	void Scale(const Color c, float s) { Red = s*c.Red; Green = s*c.Green; Blue = s*c.Blue; }
 	void Multiply(const Color c) { Red *= c.Red; Green *= c.Green; Blue *= c.Blue; }
 	const float & GetRed() { return Red; }

@@ -1,3 +1,5 @@
+#define GLM_FORCE_AVX2
+#define GLM_FORCE_INLINE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstdlib>
@@ -56,54 +58,54 @@ void finalProject()
 	box2.SetMaterial(&mtl2);
 	scn.AddObject(box2);
 
-	MeshObject dragon;
-	dragon.LoadPLY("dragon.ply");
+//	MeshObject dragon;
+//	dragon.LoadPLY("dragon.ply");
 
-	InstanceObject dragonInstance(dragon);
-	dragonInstance.SetMatrix(glm::scale(glm::mat4(), glm::vec3(2.0f)));
-	scn.AddObject(dragonInstance);
+//	InstanceObject dragonInstance(dragon);
+//	dragonInstance.SetMatrix(glm::scale(glm::mat4(), glm::vec3(2.0f)));
+//	scn.AddObject(dragonInstance);
 
 	// Create lights
 	PointLight pointLightRight;
-	pointLightRight.SetBaseColor(Color(1.0f, 0.f, 0.f));
+	pointLightRight.SetBaseColor(Color(1.f, 0.f, 0.f).Scale(3.f));
 	pointLightRight.SetIntensity(2.0f);
 	pointLightRight.SetPosition(glm::vec3(5.0f, 3.f, 0.f));
 	scn.AddLight(pointLightRight);
 
 	PointLight pointLightLeft;
-	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f));
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.65f, 0.2f).Scale(2.f));
 	pointLightLeft.SetIntensity(2.0f);
 	pointLightLeft.SetPosition(glm::vec3(-5.0f, 3.f, 0.f));
 	scn.AddLight(pointLightLeft);
 
 	PointLight pointLightFront;
-	pointLightLeft.SetBaseColor(Color(0.2f, 0.8f, 0.65f));
+	pointLightLeft.SetBaseColor(Color(0.2f, 0.8f, 0.65f).Scale(4.f));
 	pointLightLeft.SetIntensity(2.0f);
 	pointLightLeft.SetPosition(glm::vec3(0, 3.f, 5.f));
 	scn.AddLight(pointLightFront);
 
 	PointLight pointLightBack;
-	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f));
+	pointLightBack.SetBaseColor(Color(0.2f, 0.2f, 0.2f).Scale(2.f));
 	pointLightBack.SetIntensity(2.f);
 	pointLightBack.SetPosition(glm::vec3(0, 3.f, -5.f));
 	scn.AddLight(pointLightBack);
 
 	//----------------------------------------------------------
 	//Add Volume
-	/*FogVolume fog;
-	fog.SetAbsroptionCoeff(Color(50.f, 62.f, 100.f));
-	fog.SetScatteringCoeff(Color(55.f, 75.f, 85.f));
-	scn.AddVolume(fog);*/
+	FogVolume fog;
+    fog.SetAbsroptionCoeff(Color(0.3f));
+	fog.SetScatteringCoeff(Color(0.3f));
+	scn.AddVolume(fog);
 
 	//----------------------------------------------------------
 	// Create camera
 	Camera cam;
-	cam.BuildCamera(glm::vec3(2.0f, 0.f, 2.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
-	cam.SetResolution(800, 600);
+	cam.BuildCamera(glm::vec3(3.0f, 4.f, 3.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
+	cam.SetResolution(200, 200);
 	cam.SetFoV(20.f);
 	cam.SetFocus(0.3f);
-	cam.SetfStop(0.001f);
-	cam.SetSuperSample(3, 3);
+	cam.SetfStop(200000.f);
+	cam.SetSuperSample(1, 1);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 
@@ -130,7 +132,7 @@ void finalProject()
 #ifdef _WIN32
 	std::system("finalProject.bmp");
 #else
-	std::system("open project2.bmp");
+	std::system("open finalProject.bmp");
 #endif // _WIN32
 
 	//----------------------------------------------------------
@@ -188,7 +190,7 @@ void project3() {
 	cam.BuildCamera(0.45f * glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(4,4);
+	cam.SetSuperSample(2,2);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(0.2f);
@@ -366,7 +368,6 @@ void project1() {
 }
 
 int main() {
-	//finalProject();
-	project3();
+	finalProject();
 	return 0;
 }

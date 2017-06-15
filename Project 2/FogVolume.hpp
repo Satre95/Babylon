@@ -2,6 +2,7 @@
 
 #include "Volume.hpp"
 #include "IsotropicScatter.h"
+#include "LorenzMieScatter.hpp"
 #include "RayTrace.hpp"
 
 //A homogenous, infinite volume
@@ -15,7 +16,8 @@ public:
         const Ray & incomingRay,
         const RayTrace & rayTracer,
         const Scene & scene,
-        const glm::vec3 & pos //x
+        const glm::vec3 & pos, //x
+        int depth
     ) override;
 
 	void SetAbsroptionCoeff(Color & abIn);
@@ -31,11 +33,11 @@ protected:
     
 	void EvaluateEmission(Color & incomingRad, const Scene & scene, const glm::vec3 & pos, float dist);
     
-	void EvaluateInScattering(Color & incomingRad, const Ray & incomingRay, const RayTrace & rayTracer, const Scene & scene, const glm::vec3 & pos, float step);
+	void EvaluateInScattering(Color & incomingRad, const Ray & incomingRay, const RayTrace & rayTracer, const Scene & scene, const glm::vec3 & pos, float step, int depth);
 
 	void EvaluateDirectInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step);
     
-	void EvaluateIndirectInScattering(Color & incomingRad, const Ray & incomingRay, const RayTrace & rayTracer, const Scene & scene, const glm::vec3 & pos, float step);
+	void EvaluateIndirectInScattering(Color & incomingRad, const Ray & incomingRay, const RayTrace & rayTracer, const Scene & scene, const glm::vec3 & pos, float step, int depth);
 
 private:
 	Color absorptionCoeff; //sigma_a

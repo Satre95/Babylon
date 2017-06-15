@@ -3,7 +3,7 @@
 
 FogVolume::FogVolume()
 {
-	scatterPhase = new IsotropicScatter();
+	scatterPhase = new LorenzMieScatter();
 }
 
 void FogVolume::EvaluateRadiance(
@@ -11,7 +11,8 @@ void FogVolume::EvaluateRadiance(
     const Ray & incomingRay,
     const RayTrace & rayTracer,
     const Scene & scene,
-    const glm::vec3 & pos //x
+    const glm::vec3 & pos, //x
+    int depth
 )
 {
     //Walk back along the ray
@@ -34,7 +35,7 @@ void FogVolume::EvaluateRadiance(
         EvaluateEmission(incomingRad, scene, samplePoint, sampleDist);
         
         //2. Add In scattering, scaled by segment
-        EvaluateInScattering(incomingRad, incomingRay, rayTracer, scene, samplePoint, sampleDist);
+        EvaluateInScattering(incomingRad, incomingRay, rayTracer, scene, samplePoint, sampleDist, depth);
         
         
         //3. Multiply by extinction
@@ -67,10 +68,11 @@ void FogVolume::EvaluateInScattering(
                                      const RayTrace & rayTracer,
                                      const Scene & scene,
                                      const glm::vec3 & pos,
-                                     float step)
+                                     float step,
+                                     int depth)
 {
 	//1. compute in scattering from indirect sources around the environment. (only one)
-	EvaluateIndirectInScattering(incomingRad, incomingRay, rayTracer, scene, pos, step);
+	EvaluateIndirectInScattering(incomingRad, incomingRay, rayTracer, scene, pos, step, depth);
 	//2. compute in scattering from direct lights.
 	EvaluateDirectInScattering(incomingRad, incomingRay, scene, pos, step);
     
@@ -102,7 +104,7 @@ void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Ray & inco
 			//Homogenous volume, so attenuate by length of ray to light through vol
 			float length = glm::length(lightPos - pos);
 
-			//Reuse the extinction to calculate the attenuation of the light through the volume.
+			//Reuse the extinction fn to calculate the attenuation of the light through the volume.
 			EvaluateExtinction(illuminatedColor, pos, length);
 			incomingRad.Add(illuminatedColor);
 		}
@@ -117,7 +119,8 @@ void FogVolume::EvaluateIndirectInScattering(
                                              const RayTrace & rayTrace,
                                              const Scene & scene,
                                              const glm::vec3 & pos,
-                                             float step
+                                             float step,
+                                             int depth
                                              )
 {
 	//Generate a random ray
@@ -136,7 +139,7 @@ void FogVolume::EvaluateIndirectInScattering(
     
     //Recursively cast the generated ray into the volume.
     Intersection randHit;
-    rayTrace.TraceRay(randHit, randomRay);
+    rayTrace.TraceRay(randHit, randomRay, depth + 1);
     
     //calc the phase fn
     Color phase = scatterPhase->PhaseFn(glm::dot(incomingRay.Direction, randomRay.Direction));
@@ -147,7 +150,7 @@ void FogVolume::EvaluateIndirectInScattering(
     EvaluateExtinction(randHit.Shade, pos, step);
     
     //Multiply by 4π for solid angle
-    randHit.Shade.Scale(4.f * glm::pi<float>());
+//    randHit.Shade.Scale(4.f * glm::pi<float>());
     
     //Finally add it into the incoming radiance
     incomingRad.Add(randHit.Shade);

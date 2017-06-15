@@ -15,6 +15,7 @@
 #include <string>
 #include <mutex>
 #include <atomic>
+#include <thread>
 
 #include "Scene.hpp"
 #include "Bitmap.hpp"
@@ -82,7 +83,10 @@ private:
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
 	int tileWidth = 8, tileHeight = 6;
-
+    std::unique_ptr<std::thread> previewThread;
+    std::atomic_bool previewWrite;
+    std::atomic_bool finished;
+    
 #ifdef DEBUG
 	std::mutex logMutex;
 #endif // DEBUG
@@ -97,4 +101,7 @@ private:
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
 	void RenderPixelsParallel(Scene & scene);
+    
+    ///Thread that allows one to preview the image as it is begin generated.
+    void PreviewImageFunc();
 };

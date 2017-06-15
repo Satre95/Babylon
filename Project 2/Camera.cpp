@@ -10,7 +10,6 @@
 #include "Utilities.hpp"
 #include "BoxTreeNode.hpp"
 #include <vector>
-#include <thread>
 #include <iostream>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -32,8 +31,10 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
-
-	rayTracer = std::make_unique<RayTrace>(scene);
+    finished = false;
+    previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+    
+	rayTracer = std::make_unique<RayTrace>(scene, 5);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
@@ -56,14 +57,15 @@ void Camera::Render(Scene & scene, bool parallel) {
 			}
 		}
 	}
+    
+    finished = true;
+    previewThread->join();
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
-	float halfSubPixelWidth = subPixelDims.first * 0.5f;
-	float halfSubPixelHeight = subPixelDims.second * 0.5f;
 
 	for (int v = 0; v < superSamples.second; v++) {
 		for (int u = 0; u < superSamples.first; u++) {
@@ -112,6 +114,12 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	}
 
 	//Average out the colors from the rays and save them to the image.
+    //Stall if preview thread is writing
+    //TODO: replace with cond var.
+    while (true) {
+        if(!previewWrite) break;
+        //spin
+    }
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
@@ -178,7 +186,6 @@ void Camera::ApplyShirleyWeight(float & s, float & t) {
 void Camera::SetResolution(int x, int y) {
 	width = x; height = y;
 	//Calculate the number of tiles.
-	int tileArea = tileWidth * tileHeight;
 	numTilesX = (x + tileWidth - 1) / tileWidth; //round up
 	numTilesY = (y + tileHeight - 1) / tileHeight; //round up
 	for (int j = 0; j < numTilesY; j++) {
@@ -186,6 +193,26 @@ void Camera::SetResolution(int x, int y) {
 			tileCoords.push_back(std::make_pair(i, j));
 		}
 	}
-	tileCoordIndex = tileCoords.size() - 1;
+	tileCoordIndex = int(tileCoords.size()) - 1;
 	SetAspect(float(width) / float(height));
+}
+
+void Camera::PreviewImageFunc()
+{
+    using namespace std::chrono;
+    
+    while(!finished)
+    {
+        std::this_thread::sleep_for(15s);
+        
+        previewWrite = true;
+        img->SaveBMP("tempPreview.bmp");
+        previewWrite = false;
+        
+#ifdef _WIN32
+        std::system("tempPreview.bmp");
+#else
+        std::system("open tempPreview.bmp");
+#endif
+    }
 }

@@ -18,7 +18,9 @@ public:
 		const Ray & incomingRay,
         const RayTrace & rayTracer,
 		const Scene & scene,
-		const glm::vec3 & pos //x
+		const glm::vec3 & pos,
+        int depth
+    
 	) = 0;
 
 	virtual bool Intersect(const Ray & ray) = 0;

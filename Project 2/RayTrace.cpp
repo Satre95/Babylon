@@ -60,6 +60,6 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) cons
     for (int i = 0; i < scene.GetNumVolumes(); i++)
     {
         Volume * aVol = scene.GetVolume(i);
-        aVol->EvaluateRadiance(hitData.Shade, ray, *this, scene, hitData.Position);
+        aVol->EvaluateRadiance(hitData.Shade, ray, *this, scene, hitData.Position, depth);
     }
 }

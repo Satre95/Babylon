@@ -4,7 +4,7 @@
 
 #include "ScatterPhase.hpp"
 
-class LorenzMieScatter : ScatterPhase
+class LorenzMieScatter : public ScatterPhase
 {
 public:
 	LorenzMieScatter(float zIn = 8) : z(zIn) {}
