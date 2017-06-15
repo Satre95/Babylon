@@ -44,5 +44,5 @@ private:
 	Color scatteringCoeff; //sigma_s
 	Color extinctionCoeff; //sigma_t
 
-	int numMarchSamples = 2;
+	int numMarchSamples = 3;
 };
