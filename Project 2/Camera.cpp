@@ -31,9 +31,9 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 
 void Camera::Render(Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
-    finished = false;
-    previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
-    
+	finished = false;
+	previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+
 	rayTracer = std::make_unique<RayTrace>(scene, 5);
 
 	if (parallel) {
@@ -57,9 +57,9 @@ void Camera::Render(Scene & scene, bool parallel) {
 			}
 		}
 	}
-    
-    finished = true;
-    previewThread->join();
+
+	finished = true;
+	previewThread->join();
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
@@ -114,12 +114,12 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	}
 
 	//Average out the colors from the rays and save them to the image.
-    //Stall if preview thread is writing
-    //TODO: replace with cond var.
-    while (true) {
-        if(!previewWrite) break;
-        //spin
-    }
+	//Stall if preview thread is writing
+	//TODO: replace with cond var.
+	while (true) {
+		if (!previewWrite) break;
+		//spin
+	}
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
@@ -141,7 +141,7 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 			<< "(" << tileStartX << ", "
 			<< tileStartY << ")"
 			<< std::endl;
-}
+	}
 #endif // DEBUG
 
 	//Iterate over pixels in tile
@@ -199,20 +199,20 @@ void Camera::SetResolution(int x, int y) {
 
 void Camera::PreviewImageFunc()
 {
-    using namespace std::chrono;
-    
-    while(!finished)
-    {
-        std::this_thread::sleep_for(15s);
-        
-        previewWrite = true;
-        img->SaveBMP("tempPreview.bmp");
-        previewWrite = false;
-        
+	using namespace std::chrono;
+	std::this_thread::sleep_for(15s);
+
+	while (!finished)
+	{
+		previewWrite = true;
+		img->SaveBMP("tempPreview.bmp");
+		previewWrite = false;
+
 #ifdef _WIN32
-        std::system("tempPreview.bmp");
+		std::system("tempPreview.bmp");
 #else
-        std::system("open tempPreview.bmp");
+		std::system("open tempPreview.bmp");
 #endif
-    }
+		std::this_thread::sleep_for(15s);
+	}
 }

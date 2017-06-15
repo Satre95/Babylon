@@ -7,41 +7,39 @@ FogVolume::FogVolume()
 }
 
 void FogVolume::EvaluateRadiance(
-    Color & incomingRad,
-    const Ray & incomingRay,
-    const RayTrace & rayTracer,
-    const Scene & scene,
-    const glm::vec3 & pos, //x
-    int depth
+	Color & incomingRad,
+	const Ray & incomingRay,
+	const RayTrace & rayTracer,
+	const Scene & scene,
+	const glm::vec3 & pos, //x
+	int depth
 )
 {
-    //Walk back along the ray
-    float dist = glm::distance(pos, incomingRay.Origin);
-    float step = dist / float(numMarchSamples);
-    glm::vec3 reverseRay = -incomingRay.Direction;
-    
-    for(int i = 0; i < numMarchSamples; i++)
-    {
-        //Get the bounds of this segment
-        float low = float(i) * step;
-        float high = float(i+1) * step;
-        
-        //Sample at random point in the segment
-        float sampleDist = Utilities::randomFloatInRange(low, high);
-        glm::vec3 samplePoint = pos + reverseRay * sampleDist;
-        
-        //Now to real business, compute parts of eq
-        //1. Add Emission scaled by segment
-        EvaluateEmission(incomingRad, scene, samplePoint, sampleDist);
-        
-        //2. Add In scattering, scaled by segment
-        EvaluateInScattering(incomingRad, incomingRay, rayTracer, scene, samplePoint, sampleDist, depth);
-        
-        
-        //3. Multiply by extinction
-        EvaluateExtinction(incomingRad, samplePoint, sampleDist);
+	//Walk back along the ray
+	float dist = glm::distance(pos, incomingRay.Origin);
+	float step = dist / float(numMarchSamples);
+	glm::vec3 reverseRay = -incomingRay.Direction;
 
-    }
+	for (int i = 0; i < numMarchSamples; i++)
+	{
+		//Get the bounds of this segment
+		float low = float(i) * step;
+		float high = float(i + 1) * step;
+
+		//Sample at random point in the segment
+		float sampleDist = Utilities::randomFloatInRange(low, high);
+		glm::vec3 samplePoint = pos + reverseRay * sampleDist;
+
+		//Now to real business, compute parts of eq
+		//1. Add Emission scaled by segment
+		EvaluateEmission(incomingRad, scene, samplePoint, sampleDist);
+
+		//2. Add In scattering, scaled by segment
+		EvaluateInScattering(incomingRad, incomingRay, rayTracer, scene, samplePoint, sampleDist, depth);
+
+		//3. Multiply by extinction
+		EvaluateExtinction(incomingRad, samplePoint, sampleDist);
+	}
 }
 
 bool FogVolume::Intersect(const Ray & ray)
@@ -63,22 +61,21 @@ void FogVolume::EvaluateEmission(Color & incomingRad, const Scene & scene, const
 {} //Do nothing, as fog does not emit light.
 
 void FogVolume::EvaluateInScattering(
-                                     Color & incomingRad,
-                                     const Ray & incomingRay,
-                                     const RayTrace & rayTracer,
-                                     const Scene & scene,
-                                     const glm::vec3 & pos,
-                                     float step,
-                                     int depth)
+	Color & incomingRad,
+	const Ray & incomingRay,
+	const RayTrace & rayTracer,
+	const Scene & scene,
+	const glm::vec3 & pos,
+	float step,
+	int depth)
 {
 	//1. compute in scattering from indirect sources around the environment. (only one)
 	EvaluateIndirectInScattering(incomingRad, incomingRay, rayTracer, scene, pos, step, depth);
 	//2. compute in scattering from direct lights.
 	EvaluateDirectInScattering(incomingRad, incomingRay, scene, pos, step);
-    
-    //Finally scale by the distance
-    incomingRad.Multiply(step);
-    
+
+	//Finally scale by the distance
+	incomingRad.Multiply(step);
 }
 
 void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Ray & incomingRay, const Scene & scene, const glm::vec3 & pos, float step)
@@ -114,17 +111,17 @@ void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Ray & inco
 //TODO: Figure this shit out.
 //Note: Matteo thinks that this should be some very small constant
 void FogVolume::EvaluateIndirectInScattering(
-                                             Color & incomingRad,
-                                             const Ray & incomingRay,
-                                             const RayTrace & rayTrace,
-                                             const Scene & scene,
-                                             const glm::vec3 & pos,
-                                             float step,
-                                             int depth
-                                             )
+	Color & incomingRad,
+	const Ray & incomingRay,
+	const RayTrace & rayTrace,
+	const Scene & scene,
+	const glm::vec3 & pos,
+	float step,
+	int depth
+)
 {
 	//Generate a random ray
-    float u = Utilities::randomFloatInRange(0.f, 1.f);
+	float u = Utilities::randomFloatInRange(0.f, 1.f);
 	float v = Utilities::randomFloatInRange(0.f, 1.f);
 	float theta = 2.f * glm::pi<float>() * u;
 	float phi = acosf(2.f * v - 1.f);
@@ -136,24 +133,24 @@ void FogVolume::EvaluateIndirectInScattering(
 	Ray randomRay;
 	randomRay.Direction = glm::vec3(x, y, z);
 	randomRay.Origin = pos;
-    
-    //Recursively cast the generated ray into the volume.
-    Intersection randHit;
-    rayTrace.TraceRay(randHit, randomRay, depth + 1);
-    
-    //calc the phase fn
-    Color phase = scatterPhase->PhaseFn(glm::dot(incomingRay.Direction, randomRay.Direction));
-    //Apply phase
-    randHit.Shade.Multiply(phase);
-    
-    //Apply extinction
-    EvaluateExtinction(randHit.Shade, pos, step);
-    
-    //Multiply by 4π for solid angle
-//    randHit.Shade.Scale(4.f * glm::pi<float>());
-    
-    //Finally add it into the incoming radiance
-    incomingRad.Add(randHit.Shade);
+
+	//Recursively cast the generated ray into the volume.
+	Intersection randHit;
+	rayTrace.TraceRay(randHit, randomRay, depth + 1);
+
+	//calc the phase fn
+	Color phase = scatterPhase->PhaseFn(glm::dot(incomingRay.Direction, randomRay.Direction));
+	//Apply phase
+	randHit.Shade.Multiply(phase);
+
+	//Apply extinction
+	EvaluateExtinction(randHit.Shade, pos, step);
+
+	//Multiply by 4π for solid angle
+	randHit.Shade.Scale(4.f * glm::pi<float>());
+
+	//Finally add it into the incoming radiance
+	incomingRad.Add(randHit.Shade);
 }
 
 void FogVolume::SetAbsroptionCoeff(Color & abIn)
@@ -168,10 +165,10 @@ void FogVolume::SetScatteringCoeff(Color & scIn)
 
 void FogVolume::SetAbsroptionCoeff(Color && abIn)
 {
-    absorptionCoeff = abIn; extinctionCoeff = scatteringCoeff + abIn;
+	absorptionCoeff = abIn; extinctionCoeff = scatteringCoeff + abIn;
 }
 
 void FogVolume::SetScatteringCoeff(Color && scIn)
 {
-    scatteringCoeff = scIn; extinctionCoeff = absorptionCoeff + scIn;
+	scatteringCoeff = scIn; extinctionCoeff = absorptionCoeff + scIn;
 }
