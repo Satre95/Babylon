@@ -58,14 +58,14 @@ void finalProject()
 	box2.SetMaterial(&mtl2);
 	scn.AddObject(box2);
 
-//	MeshObject dragon;
-//	dragon.LoadPLY("dragon.ply");
+	//	MeshObject dragon;
+	//	dragon.LoadPLY("dragon.ply");
 
-//	InstanceObject dragonInstance(dragon);
-//	dragonInstance.SetMatrix(glm::scale(glm::mat4(), glm::vec3(2.0f)));
-//	scn.AddObject(dragonInstance);
+	//	InstanceObject dragonInstance(dragon);
+	//	dragonInstance.SetMatrix(glm::scale(glm::mat4(), glm::vec3(2.0f)));
+	//	scn.AddObject(dragonInstance);
 
-	// Create lights
+		// Create lights
 	PointLight pointLightRight;
 	pointLightRight.SetBaseColor(Color(1.f, 0.f, 0.f).Scale(3.f));
 	pointLightRight.SetIntensity(2.0f);
@@ -93,7 +93,7 @@ void finalProject()
 	//----------------------------------------------------------
 	//Add Volume
 	FogVolume fog;
-    fog.SetAbsroptionCoeff(Color(0.3f));
+	fog.SetAbsroptionCoeff(Color(0.3f));
 	fog.SetScatteringCoeff(Color(0.3f));
 	scn.AddVolume(fog);
 
@@ -101,8 +101,8 @@ void finalProject()
 	// Create camera
 	Camera cam;
 	cam.BuildCamera(glm::vec3(3.0f, 4.f, 3.f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0, 1, 0));
-	cam.SetResolution(200, 200);
-	cam.SetFoV(20.f);
+	cam.SetResolution(500, 500);
+	cam.SetFoV(60.f);
 	cam.SetFocus(0.3f);
 	cam.SetfStop(200000.f);
 	cam.SetSuperSample(1, 1);
@@ -190,7 +190,7 @@ void project3() {
 	cam.BuildCamera(0.45f * glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(2,2);
+	cam.SetSuperSample(2, 2);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(0.2f);
