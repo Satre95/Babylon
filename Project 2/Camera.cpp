@@ -29,11 +29,14 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 	V = glm::inverse(C);
 }
 
-void Camera::Render(Scene & scene, bool parallel) {
+void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	img = std::make_unique<Bitmap>(width, height);
 	finished = false;
-	previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
-
+    previewThreadWriting = false;
+    
+    if (showProgress)
+        previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+	
 	rayTracer = std::make_unique<RayTrace>(scene, 5);
 
 	if (parallel) {
@@ -58,7 +61,8 @@ void Camera::Render(Scene & scene, bool parallel) {
 		}
 	}
 
-	finished = true;
+    finished = true;
+    previewThreadCV.notify_all();
 	previewThread->join();
 }
 
@@ -114,16 +118,10 @@ void Camera::RenderPixel(int x, int y, Scene &scene) {
 	}
 
 	//Average out the colors from the rays and save them to the image.
-	//Stall if preview thread is writing
-	//TODO: replace with cond var.
-	while (true) {
-		if (!previewWrite) break;
-		//spin
-	}
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
-void Camera::RenderPixel(int aTile, Scene & scene)
+void Camera::RenderTile(int aTile, Scene & scene)
 {
 	if (aTile < 0) return; //Sanity check
 	//Compute the pixel bounds for the given tile.
@@ -134,16 +132,6 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 	int tileStartY = tile.second * tileHeight;
 	int tileEndY = tileStartY + tileHeight;
 
-#ifdef DEBUG
-	{
-		std::lock_guard<std::mutex> lk(logMutex);
-		std::cerr << "Thread " << std::this_thread::get_id() << " processing tile " << aTile
-			<< "(" << tileStartX << ", "
-			<< tileStartY << ")"
-			<< std::endl;
-	}
-#endif // DEBUG
-
 	//Iterate over pixels in tile
 	for (int y = tileStartY; y < tileEndY; y++)
 	{
@@ -153,11 +141,21 @@ void Camera::RenderPixel(int aTile, Scene & scene)
 			RenderPixel(x, y, scene);
 		}
 	}
+    
+    //report finishing the tile and wake up the preview thread
+    finishedTiles++;
+    previewThreadCV.notify_one();
+    //wait if preview thread is writing.
+    std::unique_lock<std::mutex> lk(previewMutex);
+    renderThreadsCV.wait(lk, [this] {
+        return !previewThreadWriting;
+    });
+    lk.unlock();
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
 	while (tileCoordIndex >= 0) {
-		RenderPixel(tileCoordIndex--, scene);
+		RenderTile(tileCoordIndex--, scene);
 	}
 }
 
@@ -195,24 +193,40 @@ void Camera::SetResolution(int x, int y) {
 	}
 	tileCoordIndex = int(tileCoords.size()) - 1;
 	SetAspect(float(width) / float(height));
+    
+    numTilesPerBlock = 0.15f * float(tileCoords.size());
+    
 }
 
 void Camera::PreviewImageFunc()
 {
 	using namespace std::chrono;
-	std::this_thread::sleep_for(15s);
 
-	while (!finished)
+    while (!finished)
 	{
-		previewWrite = true;
+        previewThreadWriting = true;
 		img->SaveBMP("tempPreview.bmp");
-		previewWrite = false;
+        previewThreadWriting = false;
+        
+        renderThreadsCV.notify_all();
 
 #ifdef _WIN32
 		std::system("tempPreview.bmp");
 #else
-		std::system("open tempPreview.bmp");
+		std::system("open -a Fragment tempPreview.bmp");
 #endif
-		std::this_thread::sleep_for(15s);
+        
+        std::unique_lock<std::mutex> lk(previewMutex);
+        previewThreadCV.wait(lk, [this]
+        {
+            if(finished) return true;
+            
+            if(finishedTiles == numTilesPerBlock){
+                finishedTiles = 0;
+                return true;
+            }
+            return false;
+        });
+        lk.unlock();
 	}
 }

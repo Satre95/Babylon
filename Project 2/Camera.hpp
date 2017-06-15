@@ -16,6 +16,7 @@
 #include <mutex>
 #include <atomic>
 #include <thread>
+#include <condition_variable>
 
 #include "Scene.hpp"
 #include "Bitmap.hpp"
@@ -55,7 +56,7 @@ public:
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
-	void Render(Scene & scene, bool parallel = false);
+    void Render(Scene & scene, bool parallel = false, bool showProgress = false);
 	void SaveBitmap(std::string filename);
 
 private:
@@ -82,17 +83,19 @@ private:
 	std::atomic_int tileCoordIndex;
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
-	int tileWidth = 8, tileHeight = 6;
+	int tileWidth = 10, tileHeight = 10;
     std::unique_ptr<std::thread> previewThread;
-    std::atomic_bool previewWrite;
-    std::atomic_bool finished;
+    int numTilesPerBlock; //Grouping of tiles. useful for reporting progress.
+    std::atomic_int finishedTiles;
     
-#ifdef DEBUG
-	std::mutex logMutex;
-#endif // DEBUG
-
+    std::atomic_bool finished;
+    std::atomic_bool previewThreadWriting;
+    std::condition_variable previewThreadCV;
+    std::condition_variable renderThreadsCV;
+    std::mutex previewMutex;
+    
 	void RenderPixel(int x, int y, Scene & scene);
-	void RenderPixel(int aTile, Scene & scene);
+	void RenderTile(int aTile, Scene & scene);
 
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
