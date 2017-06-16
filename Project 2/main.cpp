@@ -218,20 +218,26 @@ void simpleDragonFogTest() {
 	scn.AddObject(inst2);
 
 	// Create lights
-	DirectLight sunlgt;
-	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
-	sunlgt.SetIntensity(0.8f);
-	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
-	scn.AddLight(sunlgt);
+    PointLight rightLight;
+    rightLight.SetBaseColor(Color(0.8f, 0.4f, 0.f));
+    rightLight.SetIntensity(4.0f);
+    rightLight.SetPosition(glm::vec3(2.5f, 0.f, 0.f));
+    scn.AddLight(rightLight);
+    
+    PointLight leftLight;
+    leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.f));
+    leftLight.SetIntensity(4.0f);
+    leftLight.SetPosition(glm::vec3(2.5f, 0.f, 0.f));
+    scn.AddLight(leftLight);
 
 	// Create camera
 	Camera cam;
-	cam.SetResolution(1000, 1000);
+	cam.SetResolution(400, 400);
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
 	cam.SetMaxPathLength(3);
-	cam.SetSuperSample(15, 15);
+	cam.SetSuperSample(4, 4);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(1.f);
@@ -262,10 +268,6 @@ void simpleDragonFogTest() {
 #else
 	std::system("open -a Fragment simpleDragonFogTest.bmp");
 #endif // _WIN32
-
-	//----------------------------------------------------------
-	//Wait a few seconds to give time to read vals
-	std::this_thread::sleep_for(milliseconds(5000));
 }
 
 int main() {
