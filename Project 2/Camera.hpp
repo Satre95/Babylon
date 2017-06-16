@@ -54,9 +54,10 @@ public:
 	}
 	void SetJitter(bool enable) { jitterEnabled = enable; }
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
+	void SetMaxPathLength(int length) { maxPathLength = length; }
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
-    void Render(Scene & scene, bool parallel = false, bool showProgress = false);
+	void Render(Scene & scene, bool parallel = false, bool showProgress = false);
 	void SaveBitmap(std::string filename);
 
 private:
@@ -83,17 +84,19 @@ private:
 	std::atomic_int tileCoordIndex;
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
-	int tileWidth = 10, tileHeight = 10;
-    std::unique_ptr<std::thread> previewThread;
-    int numTilesPerBlock; //Grouping of tiles. useful for reporting progress.
-    std::atomic_int finishedTiles;
-    
-    std::atomic_bool finished;
-    std::atomic_bool previewThreadWriting;
-    std::condition_variable previewThreadCV;
-    std::condition_variable renderThreadsCV;
-    std::mutex previewMutex;
-    
+	int tileWidth = 5, tileHeight = 5;
+	std::unique_ptr<std::thread> previewThread;
+	int numTilesPerBlock; //Grouping of tiles. useful for reporting progress.
+	std::atomic_int finishedTiles;
+	int maxPathLength = 5;
+
+	std::atomic_bool finished;
+	std::atomic_bool previewThreadWriting;
+	std::condition_variable previewThreadCV;
+	std::condition_variable renderThreadsCV;
+	std::mutex previewMutex;
+	std::mutex logMutex;
+	bool showProgress = false;
 	void RenderPixel(int x, int y, Scene & scene);
 	void RenderTile(int aTile, Scene & scene);
 
@@ -104,7 +107,7 @@ private:
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
 	void RenderPixelsParallel(Scene & scene);
-    
-    ///Thread that allows one to preview the image as it is begin generated.
-    void PreviewImageFunc();
+
+	///Thread that allows one to preview the image as it is begin generated.
+	void PreviewImageFunc();
 };

@@ -35,11 +35,14 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	finished = false;
 	previewThreadWriting = false;
 	finishedTiles = 0;
+	this->showProgress = showProgress;
 
-	if (showProgress)
-		previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+	std::cout << tileCoords.size() << " tiles in " << width
+		<< "x" << height << " image." << std::endl;
 
-	rayTracer = std::make_unique<RayTrace>(scene, 3);
+	previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+
+	rayTracer = std::make_unique<RayTrace>(scene, maxPathLength);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
@@ -64,10 +67,8 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	}
 
 	finished = true;
-	if (showProgress) {
-		previewThreadCV.notify_all();
-		previewThread->join();
-	}
+	previewThreadCV.notify_all();
+	previewThread->join();
 }
 
 void Camera::RenderPixel(int x, int y, Scene &scene) {
@@ -215,29 +216,33 @@ void Camera::PreviewImageFunc()
 
 			if (finishedTiles == numTilesPerBlock) {
 				finishedTiles = 0;
+				std::cout << "Finished Rendering 20% of image" << std::endl;
 				return true;
 			}
 			return false;
 		});
 
-		previewNum++;
-		previewThreadWriting = true;
-		std::stringstream ss;
-		ss << "tempPreview_" << previewNum << ".bmp";
-		img->SaveBMP(ss.str().c_str());
-		previewThreadWriting = false;
-		lk.unlock();
-		renderThreadsCV.notify_all();
+		if (showProgress)
+		{
+			previewNum++;
+			previewThreadWriting = true;
+			std::stringstream ss;
+			ss << "tempPreview_" << previewNum << ".bmp";
+			img->SaveBMP(ss.str().c_str());
+			previewThreadWriting = false;
+			lk.unlock();
 
 #ifdef _WIN32
-		std::system(ss.str().c_str());
+			std::system(ss.str().c_str());
 #else
-        std::stringstream ss2;
-        ss2 << "open -a Fragment " << ss.str();
-		std::system(ss2.str().c_str());
+			std::stringstream ss2;
+			ss2 << "open -a Fragment " << ss.str();
+			std::system(ss2.str().c_str());
 #endif
+		}
 	}
 
+	renderThreadsCV.notify_all();
 	//Delete the temporary images
 	std::system("del tempPreview*");
 }
