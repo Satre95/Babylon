@@ -51,12 +51,11 @@ public:
 
 	void SetFocus(float dist) { focalPlane = dist; }
 
-	void SetfStop(float fstop) {
-		fStop = fstop;
-	}
+	void SetfStop(float fstop) {fStop = fstop;}
 	void SetJitter(bool enable) { jitterEnabled = enable; }
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
 	void SetMaxPathLength(int length) { maxPathLength = length; }
+	void SetTileDimensions(int xDim, int yDim) { tileWidth = xDim; tileHeight = yDim; }
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
 	void Render(Scene & scene, bool parallel = false, bool showProgress = false);

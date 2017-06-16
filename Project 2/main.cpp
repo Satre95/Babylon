@@ -194,8 +194,8 @@ void simpleDragonFogTest() {
 	tree.Construct(dragon);
 
 	// Materials
-	MetalMaterial metalMtl1;
-	metalMtl1.SetColor(Color(0.66f, 0.2f, 0.35f));
+	LambertMaterial diffuseMtl1;
+	diffuseMtl1.SetColor(Color(0.66f, 0.2f, 0.35f));
 
 	// Create dragon instances
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
@@ -203,7 +203,7 @@ void simpleDragonFogTest() {
 
 	InstanceObject inst(tree);
 	inst.SetMatrix(finalMat);
-	inst.SetMaterial(&metalMtl1);
+	inst.SetMaterial(&diffuseMtl1);
 	scn.AddObject(inst);
 
 	LambertMaterial diffuseMtl2;
@@ -225,7 +225,7 @@ void simpleDragonFogTest() {
 	scn.AddLight(rightLight);
 
 	PointLight leftLight;
-	leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.3f));
+	leftLight.SetBaseColor(Color(0.f, 0.8f, 0.3f));
 	leftLight.SetIntensity(1.5f);
 	leftLight.SetPosition(glm::vec3(-1.f, 0.f, 0.f));
 	scn.AddLight(leftLight);
