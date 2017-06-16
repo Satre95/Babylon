@@ -234,7 +234,11 @@ void Camera::PreviewImageFunc()
 		}
 		lk.unlock();
 	}
-
+#ifdef _WIN32
 	//Delete the temporary images
 	std::system("del tempPreview*");
+#else
+    std::system("rm -f tempPreview*");
+#endif
+    
 }
