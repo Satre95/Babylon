@@ -194,8 +194,8 @@ void simpleDragonFogTest() {
 	tree.Construct(dragon);
 
 	// Materials
-	LambertMaterial diffuseMtl;
-	diffuseMtl.SetColor(Color(0.35f, 0.64f, 0.54f));
+	MetalMaterial metalMtl1;
+	metalMtl1.SetColor(Color(0.66f, 0.2f, 0.35f));
 
 	// Create dragon instances
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
@@ -203,11 +203,11 @@ void simpleDragonFogTest() {
 
 	InstanceObject inst(tree);
 	inst.SetMatrix(finalMat);
-	inst.SetMaterial(&diffuseMtl);
+	inst.SetMaterial(&metalMtl1);
 	scn.AddObject(inst);
 
 	LambertMaterial diffuseMtl2;
-	diffuseMtl2.SetColor(Color(0.66f, 0.2f, 0.35f));
+	diffuseMtl2.SetColor(Color(0.35f, 0.64f, 0.54f));
 
 	scale = glm::scale(glm::mat4(1.0f), glm::vec3(3.0f));
 	finalMat = glm::translate(scale, glm::vec3(0.f, -0.05f, -0.1f));
@@ -218,25 +218,32 @@ void simpleDragonFogTest() {
 	scn.AddObject(inst2);
 
 	// Create lights
-    PointLight rightLight;
-    rightLight.SetBaseColor(Color(0.8f, 0.4f, 0.f));
-    rightLight.SetIntensity(8.0f);
-    rightLight.SetPosition(glm::vec3(1.5f, 0.f, 0.f));
-    scn.AddLight(rightLight);
-    
-    PointLight leftLight;
-    leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.f));
-    leftLight.SetIntensity(8.0f);
-    leftLight.SetPosition(glm::vec3(1.5f, 0.f, 0.f));
-    scn.AddLight(leftLight);
+	PointLight rightLight;
+	rightLight.SetBaseColor(Color(0.8f, 0.f, 0.4f));
+	rightLight.SetIntensity(1.5f);
+	rightLight.SetPosition(glm::vec3(1.f, 0.f, 0.f));
+	scn.AddLight(rightLight);
+
+	PointLight leftLight;
+	leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.3f));
+	leftLight.SetIntensity(1.5f);
+	leftLight.SetPosition(glm::vec3(-1.f, 0.f, 0.f));
+	scn.AddLight(leftLight);
+
+	//Create
+	FogVolume fog;
+	fog.SetAbsroptionCoeff(0.1f);
+	fog.SetScatteringCoeff(0.25f);
+	fog.SetMarchSamples(3);
+	scn.AddVolume(fog);
 
 	// Create camera
 	Camera cam;
-	cam.SetResolution(400, 400);
+	cam.SetResolution(100, 100);
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(50.0f);
-	cam.SetMaxPathLength(3);
+	cam.SetMaxPathLength(8);
 	cam.SetSuperSample(3, 3);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
@@ -251,7 +258,7 @@ void simpleDragonFogTest() {
 	//----------------------------------------------------------
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, true);
+	cam.Render(scn, true, true);
 	end = steady_clock::now();
 	std::cerr << "Render took "
 		<< duration_cast<seconds> (end - begin).count()
@@ -283,3 +290,4 @@ int main() {
 #endif // _WIN32
 	return 0;
 }
+>>>>>>> 9396f87767f53a276c36cf36e14df743bb43b237
