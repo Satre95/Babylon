@@ -230,7 +230,8 @@ void simpleDragonFogTest() {
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(40.0f);
-	cam.SetSuperSample(10, 10);
+	cam.SetMaxPathLength(3);
+	cam.SetSuperSample(15, 15);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(1.f);
@@ -244,7 +245,7 @@ void simpleDragonFogTest() {
 	//----------------------------------------------------------
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, true);
+	cam.Render(scn, true, true);
 	end = steady_clock::now();
 	std::cerr << "Render took "
 		<< duration_cast<seconds> (end - begin).count()
@@ -270,13 +271,13 @@ void simpleDragonFogTest() {
 int main() {
 	simpleDragonFogTest();
 
-	//#ifdef _WIN32
-		//	std::cout << "Press any key to exit" << std::endl;
-		//	while (true) {
-		//		if (_kbhit() != 0) break;
-		//	}
-		//#else
-		//	std::this_thread::sleep_for(milliseconds(5000));
-		//#endif // _WIN32
-		//	return 0;
+#ifdef _WIN32
+	std::cout << "Press any key to exit" << std::endl;
+	while (true) {
+		if (_kbhit() != 0) break;
+	}
+#else
+	std::this_thread::sleep_for(milliseconds(5000));
+#endif // _WIN32
+	return 0;
 }
