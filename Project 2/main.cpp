@@ -221,13 +221,13 @@ void simpleDragonFogTest() {
 	PointLight rightLight;
 	rightLight.SetBaseColor(Color(0.8f, 0.f, 0.4f));
 	rightLight.SetIntensity(1.5f);
-	rightLight.SetPosition(glm::vec3(1.f, 0.f, 0.f));
+	rightLight.SetPosition(glm::vec3(0.8f, 0.f, 0.f));
 	scn.AddLight(rightLight);
 
 	PointLight leftLight;
-	leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.3f));
+	leftLight.SetBaseColor(Color(0.f, 0.8f, 0.3f));
 	leftLight.SetIntensity(1.5f);
-	leftLight.SetPosition(glm::vec3(-1.f, 0.f, 0.f));
+	leftLight.SetPosition(glm::vec3(-0.8f, 0.f, 0.f));
 	scn.AddLight(leftLight);
 
 	//Create
@@ -243,7 +243,7 @@ void simpleDragonFogTest() {
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(50.0f);
-	cam.SetMaxPathLength(8);
+	cam.SetMaxPathLength(5);
 	cam.SetSuperSample(3, 3);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
@@ -290,4 +290,3 @@ int main() {
 #endif // _WIN32
 	return 0;
 }
->>>>>>> 9396f87767f53a276c36cf36e14df743bb43b237
