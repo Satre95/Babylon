@@ -220,14 +220,14 @@ void simpleDragonFogTest() {
 	// Create lights
     PointLight rightLight;
     rightLight.SetBaseColor(Color(0.8f, 0.4f, 0.f));
-    rightLight.SetIntensity(4.0f);
-    rightLight.SetPosition(glm::vec3(2.5f, 0.f, 0.f));
+    rightLight.SetIntensity(8.0f);
+    rightLight.SetPosition(glm::vec3(1.5f, 0.f, 0.f));
     scn.AddLight(rightLight);
     
     PointLight leftLight;
     leftLight.SetBaseColor(Color(0.4f, 0.8f, 0.f));
-    leftLight.SetIntensity(4.0f);
-    leftLight.SetPosition(glm::vec3(2.5f, 0.f, 0.f));
+    leftLight.SetIntensity(8.0f);
+    leftLight.SetPosition(glm::vec3(1.5f, 0.f, 0.f));
     scn.AddLight(leftLight);
 
 	// Create camera
@@ -235,9 +235,9 @@ void simpleDragonFogTest() {
 	cam.SetResolution(400, 400);
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
-	cam.SetFoV(40.0f);
+	cam.SetFoV(50.0f);
 	cam.SetMaxPathLength(3);
-	cam.SetSuperSample(4, 4);
+	cam.SetSuperSample(3, 3);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(1.f);
@@ -251,7 +251,7 @@ void simpleDragonFogTest() {
 	//----------------------------------------------------------
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, true, true);
+	cam.Render(scn, true);
 	end = steady_clock::now();
 	std::cerr << "Render took "
 		<< duration_cast<seconds> (end - begin).count()
