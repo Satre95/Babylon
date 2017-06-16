@@ -8,6 +8,8 @@
 
 #pragma once
 
+#define GLM_FORCE_AVX2
+#define GLM_FORCE_INLINE
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/matrix.hpp>
@@ -93,7 +95,6 @@ private:
 	std::atomic_bool finished;
 	std::atomic_bool previewThreadWriting;
 	std::condition_variable previewThreadCV;
-	std::condition_variable renderThreadsCV;
 	std::mutex previewMutex;
 	std::mutex logMutex;
 	bool showProgress = false;

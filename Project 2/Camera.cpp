@@ -150,12 +150,6 @@ void Camera::RenderTile(int aTile, Scene & scene)
 	//report finishing the tile and wake up the preview thread
 	finishedTiles++;
 	previewThreadCV.notify_one();
-	//wait if preview thread is writing.
-	std::unique_lock<std::mutex> lk(previewMutex);
-	renderThreadsCV.wait(lk, [this] {
-		return !previewThreadWriting;
-	});
-	lk.unlock();
 }
 
 void Camera::RenderPixelsParallel(Scene &scene) {
@@ -230,8 +224,6 @@ void Camera::PreviewImageFunc()
 			ss << "tempPreview_" << previewNum << ".bmp";
 			img->SaveBMP(ss.str().c_str());
 			previewThreadWriting = false;
-			lk.unlock();
-
 #ifdef _WIN32
 			std::system(ss.str().c_str());
 #else
@@ -240,9 +232,9 @@ void Camera::PreviewImageFunc()
 			std::system(ss2.str().c_str());
 #endif
 		}
+		lk.unlock();
 	}
 
-	renderThreadsCV.notify_all();
 	//Delete the temporary images
 	std::system("del tempPreview*");
 }

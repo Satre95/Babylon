@@ -47,19 +47,6 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 		return false;
 	}
 
-	//Compute intersection point on this node's bounding volume.
-	//glm::vec3 intersection;
-	//float dist = 0;
-	//if (t_min >= 0)
-		//dist = t_min;
-	//else
-		//dist = t_max;
-
-	//Compare distance with already set value
-	//if (dist < hit.HitDistance) {
-		//hit.HitDistance = dist;
-		//hit.Position = intersection;
-	//}
 	return true;
 }
 

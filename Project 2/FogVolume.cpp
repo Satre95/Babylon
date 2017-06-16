@@ -147,7 +147,7 @@ void FogVolume::EvaluateIndirectInScattering(
 	EvaluateExtinction(randHit.Shade, pos, step);
 
 	//Multiply by 4π for solid angle
-	randHit.Shade.Scale(4.f * glm::pi<float>());
+	//randHit.Shade.Scale(4.f * glm::pi<float>());
 
 	//Finally add it into the incoming radiance
 	incomingRad.Add(randHit.Shade);

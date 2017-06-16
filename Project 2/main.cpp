@@ -62,9 +62,10 @@ void simplePointLightFogTest() {
 	cam.SetFoV(60.f);
 	cam.SetFocus(0.5f);
 	cam.SetfStop(20.f);
-	cam.SetSuperSample(10, 10);
+	cam.SetSuperSample(1, 1);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
+	cam.SetMaxPathLength(3);
 
 	auto end = steady_clock::now();
 	std::cerr << "Scene construction took "
@@ -169,40 +170,53 @@ void simpleBoxFogTest()
 #endif // _WIN32
 }
 
-void dragonFogTest()
-{
+void simpleDragonFogTest() {
 	//----------------------------------------------------------
 	//Construct Scene
 	auto begin = steady_clock::now();
 	// Create scene
 	Scene scn;
 	scn.SetSkyColor(Color(0.8f, 0.9f, 1.0f));
+
 	// Create ground
 	LambertMaterial groundMtl;
 	groundMtl.SetColor(Color(0.25f, 0.25f, 0.25f));
 	MeshObject ground;
 	ground.MakeBox(2.0f, 0.11f, 2.0f, &groundMtl);
 	scn.AddObject(ground);
+
 	// Load dragon mesh
 	MeshObject dragon;
-	dragon.LoadPLY("dragon.ply");
+	dragon.LoadPLY("happy_buddha.ply");
+
 	// Create box tree
 	BoxTreeObject tree;
 	tree.Construct(dragon);
+
 	// Materials
-	MetalMaterial metal;
-	metal.SetColor(Color(0.95f, 0.64f, 0.54f));
-	const int numDragons = 1;
-	Material *mtl[numDragons] = { &metal };
+	LambertMaterial diffuseMtl;
+	diffuseMtl.SetColor(Color(0.35f, 0.64f, 0.54f));
+
 	// Create dragon instances
-	glm::mat4 mtx;
-	for (int i = 0; i < numDragons; i++) {
-		InstanceObject *inst = new InstanceObject(tree);
-		mtx[3] = glm::vec4(0.0f, 0.0f, 0.3f*(float(i) / float(numDragons - 1) - 0.5f), 1.0f);
-		inst->SetMatrix(mtx);
-		inst->SetMaterial(mtl[i]);
-		scn.AddObject(*inst);
-	}
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f));
+	glm::mat4 finalMat = glm::translate(scale, glm::vec3(0.f, -0.05, 0.5f));
+
+	InstanceObject inst(tree);
+	inst.SetMatrix(finalMat);
+	inst.SetMaterial(&diffuseMtl);
+	scn.AddObject(inst);
+
+	LambertMaterial diffuseMtl2;
+	diffuseMtl2.SetColor(Color(0.66f, 0.2f, 0.35f));
+
+	scale = glm::scale(glm::mat4(1.0f), glm::vec3(3.0f));
+	finalMat = glm::translate(scale, glm::vec3(0.f, -0.05f, -0.1f));
+
+	InstanceObject inst2(tree);
+	inst2.SetMatrix(finalMat);
+	inst2.SetMaterial(&diffuseMtl2);
+	scn.AddObject(inst2);
+
 	// Create lights
 	DirectLight sunlgt;
 	sunlgt.SetBaseColor(Color(1.0f, 1.0f, 0.9f));
@@ -210,49 +224,42 @@ void dragonFogTest()
 	sunlgt.SetDirection(glm::vec3(2.0f, -3.0f, -2.0f));
 	scn.AddLight(sunlgt);
 
-	//Add fog
-	//FogVolume fog;
-	//fog.SetAbsroptionCoeff(0.2f);
-	//fog.SetScatteringCoeff(0.25f);
-	//fog.SetMarchSamples(2);
-
 	// Create camera
 	Camera cam;
-	cam.SetResolution(100, 100);
-	cam.BuildCamera(glm::vec3(-0.5f, 0.25f, -0.2f), glm::vec3(0.0f, 0.15f, 0.0f),
+	cam.SetResolution(1000, 1000);
+	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
-	cam.SetFoV(60.f);
-	cam.SetFocus(0.1f);
-	cam.SetfStop(2000000.f);
-	cam.SetSuperSample(2, 2);
+	cam.SetFoV(40.0f);
+	cam.SetSuperSample(10, 10);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
-	cam.SetMaxPathLength(3);
+	cam.SetFocus(1.f);
+	cam.SetfStop(80.0f);
 
 	auto end = steady_clock::now();
 	std::cerr << "Scene construction took "
-		<< duration_cast<seconds> (end - begin).count()
-		<< "s" << std::endl;
-
-	//----------------------------------------------------------
-	// Render image
-	begin = steady_clock::now();
-	cam.Render(scn, true, true);
-	end = steady_clock::now();
-	std::cerr << "Render took "
 		<< duration_cast<milliseconds> (end - begin).count()
 		<< "ms" << std::endl;
 
 	//----------------------------------------------------------
+	// Render image
+	begin = steady_clock::now();
+	cam.Render(scn, true);
+	end = steady_clock::now();
+	std::cerr << "Render took "
+		<< duration_cast<seconds> (end - begin).count()
+		<< "s" << std::endl;
+
+	//----------------------------------------------------------
 	//Save Image
-	cam.SaveBitmap("simpleFogDragonTest.bmp");
+	cam.SaveBitmap("simpleDragonFogTest.bmp");
 
 	//----------------------------------------------------------
 	//Open Image
 #ifdef _WIN32
-	std::system("simpleFogDragonTest.bmp");
+	std::system("simpleDragonFogTest.bmp");
 #else
-	std::system("open -a Fragment simpleFogDragonTest.bmp");
+	std::system("open -a Fragment simpleDragonFogTest.bmp");
 #endif // _WIN32
 
 	//----------------------------------------------------------
@@ -261,17 +268,15 @@ void dragonFogTest()
 }
 
 int main() {
-	//simpleBoxFogTest();
-	//simplePointLightFogTest();
-	dragonFogTest();
+	simpleDragonFogTest();
 
-#ifdef _WIN32
-	std::cout << "Press any key to exit" << std::endl;
-	while (true) {
-		if (_kbhit() != 0) break;
-	}
-#else
-	std::this_thread::sleep_for(milliseconds(5000));
-#endif // _WIN32
-	return 0;
-	}
+	//#ifdef _WIN32
+		//	std::cout << "Press any key to exit" << std::endl;
+		//	while (true) {
+		//		if (_kbhit() != 0) break;
+		//	}
+		//#else
+		//	std::this_thread::sleep_for(milliseconds(5000));
+		//#endif // _WIN32
+		//	return 0;
+}

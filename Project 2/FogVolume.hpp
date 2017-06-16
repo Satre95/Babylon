@@ -1,5 +1,7 @@
 #pragma once
 
+#define GLM_FORCE_AVX2
+#define GLM_FORCE_INLINE
 #include "Volume.hpp"
 #include "IsotropicScatter.h"
 #include "LorenzMieScatter.hpp"

@@ -1,5 +1,7 @@
 #pragma once
 
+#define GLM_FORCE_AVX2
+#define GLM_FORCE_INLINE
 #include "Material.hpp"
 #include <glm/gtc/constants.hpp>
 
@@ -10,7 +12,7 @@ public:
 	void GenerateSample(const Intersection & isect, const glm::vec3 & inDir, glm::vec3 & outDir, Color & outColor);
 
 	void SetColor(Color & c) { matColor = c; }
-    void SetColor(Color && c) { matColor = c; }
+	void SetColor(Color && c) { matColor = c; }
 private:
 	Color matColor;
 };
