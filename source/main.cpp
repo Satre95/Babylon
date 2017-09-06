@@ -226,32 +226,25 @@ void simpleDragonFogTest() {
 
 	PointLight leftLight;
 	leftLight.SetBaseColor(Color(0.f, 0.8f, 0.3f));
-	leftLight.SetIntensity(3.0f);
-	leftLight.SetPosition(glm::vec3(-1.f, 0.f, 0.f));
+	leftLight.SetIntensity(1.5f);
+	leftLight.SetPosition(glm::vec3(-0.8f, 0.f, 0.f));
 	scn.AddLight(leftLight);
-
-	PointLight topLight;
-	topLight.SetBaseColor(Color(0.f, 1.0f, 1.0f));
-	topLight.SetIntensity(5.0f);
-	topLight.SetPosition(glm::vec3(0, 0, 1.0f));
-	scn.AddLight(topLight);
 
 	//Create
 	FogVolume fog;
 	fog.SetAbsroptionCoeff(0.1f);
 	fog.SetScatteringCoeff(0.25f);
-	fog.SetMarchSamples(5);
+	fog.SetMarchSamples(3);
 	scn.AddVolume(fog);
 
 	// Create camera
 	Camera cam;
-	cam.SetResolution(500, 500);
+	cam.SetResolution(100, 100);
 	cam.BuildCamera(glm::vec3(0.0f, 0.6f, 1.3f), glm::vec3(0.0f, 0.f, 0.0f),
 		glm::vec3(0, 1, 0));
 	cam.SetFoV(50.0f);
-	cam.SetMaxPathLength(8);
-	cam.SetSuperSample(10, 10);
-	cam.SetTileDimensions(3, 3);
+	cam.SetMaxPathLength(5);
+	cam.SetSuperSample(3, 3);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetFocus(1.f);
@@ -296,4 +289,4 @@ int main() {
 	std::this_thread::sleep_for(milliseconds(5000));
 #endif // _WIN32
 	return 0;
-	}
+}
