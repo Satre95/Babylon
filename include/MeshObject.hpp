@@ -4,8 +4,6 @@
 
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #include <vector>
 #include "Object.hpp"
 #include "Triangle.hpp"
