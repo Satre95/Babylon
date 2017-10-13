@@ -2,6 +2,7 @@
 // MeshObject.cpp
 ////////////////////////////////////////
 
+#include <cstring>
 #include "MeshObject.hpp"
 #include "LambertMaterial.hpp"
 #include "glm/glm.hpp"
