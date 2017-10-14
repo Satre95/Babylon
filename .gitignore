@@ -668,3 +668,5 @@ __pycache__/
 *.ply
 *.diagsession
 *.diagsession
+lib
+bin

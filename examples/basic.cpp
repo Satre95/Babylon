@@ -258,7 +258,7 @@ void simpleDragonFogTest() {
 	//----------------------------------------------------------
 	// Render image
 	begin = steady_clock::now();
-	cam.Render(scn, true, true);
+	cam.Render(scn, false, true);
 	end = steady_clock::now();
 	std::cerr << "Render took "
 		<< duration_cast<seconds> (end - begin).count()

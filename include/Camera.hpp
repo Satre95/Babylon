@@ -19,6 +19,7 @@
 #include <atomic>
 #include <thread>
 #include <condition_variable>
+#include <functional>
 
 #include "Scene.hpp"
 #include "Bitmap.hpp"
@@ -86,7 +87,7 @@ private:
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
 	int tileWidth = 5, tileHeight = 5;
-	std::unique_ptr<std::thread> previewThread;
+	std::thread previewThread;
 	int numTilesPerBlock; //Grouping of tiles. useful for reporting progress.
 	std::atomic_int finishedTiles;
 	int maxPathLength = 5;

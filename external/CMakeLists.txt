@@ -5,3 +5,4 @@ option(ASSIMP_BUILD_TESTS OFF)
 
 add_subdirectory(glm)
 add_subdirectory(assimp)
+add_subdirectory(SDL2)

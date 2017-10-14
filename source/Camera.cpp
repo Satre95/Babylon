@@ -40,14 +40,14 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 	std::cout << tileCoords.size() << " tiles in " << width
 		<< "x" << height << " image." << std::endl;
 
-	previewThread = std::make_unique<std::thread>(&Camera::PreviewImageFunc, this);
+	previewThread = std::thread(&Camera::PreviewImageFunc, this);
 
 	rayTracer = std::make_unique<RayTrace>(scene, maxPathLength);
 
 	if (parallel) {
 		//Use hyperthreading (# threads = 2 x # cores)
-		//unsigned numThreads = std::thread::hardware_concurrency() * 2;
-		unsigned numThreads = std::thread::hardware_concurrency();
+		unsigned numThreads = std::thread::hardware_concurrency() * 2;
+		//unsigned numThreads = std::thread::hardware_concurrency();
 		std::vector<std::thread> threads;
 
 		for (size_t i = 0; i < numThreads; i++) {
@@ -68,10 +68,10 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 
 	finished = true;
 	previewThreadCV.notify_all();
-	previewThread->join();
+	previewThread.join();
 }
 
-void Camera::RenderPixel(int x, int y, Scene &scene) {
+void Camera::RenderPixel(int x, int y, Scene & scene) {
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
@@ -152,7 +152,7 @@ void Camera::RenderTile(int aTile, Scene & scene)
 	previewThreadCV.notify_one();
 }
 
-void Camera::RenderPixelsParallel(Scene &scene) {
+void Camera::RenderPixelsParallel(Scene & scene) {
 	while (tileCoordIndex >= 0) {
 		RenderTile(tileCoordIndex--, scene);
 	}
