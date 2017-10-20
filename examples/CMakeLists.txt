@@ -21,7 +21,7 @@ endif()
 set(WINDOWS_BINARIES basic)
 
 set_target_properties(${WINDOWS_BINARIES} PROPERTIES
-                      FOLDER "StarForge-Examples")
+                      FOLDER "Babylon-Examples")
 					  
 
 if (APPLE)
