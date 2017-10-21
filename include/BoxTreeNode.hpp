@@ -1,14 +1,12 @@
 #pragma once
 
-#define GLM_FORCE_AVX2
-#define GLM_FORCE_INLINE
 #include <glm/vec3.hpp>
+#include <array>
 
 #include "Object.hpp"
 #include "Ray.hpp"
 #include "Intersection.hpp"
 #include "Triangle.hpp"
-#include <array>
 
 #define MAX_TRIANGLES_PER_BOX 10
 

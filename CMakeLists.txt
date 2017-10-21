@@ -9,6 +9,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_MACOSX_RPATH 1)
 
+find_package(Boost 1.61 REQUIRED) # Boost >= v1.61 is required, but not shipped in the repo due to its massive size
+
 if(MSVC)
 	add_compile_options(/MP)
 endif()

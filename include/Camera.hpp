@@ -8,8 +8,6 @@
 
 #pragma once
 
-#define GLM_FORCE_AVX2
-#define GLM_FORCE_INLINE
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <glm/matrix.hpp>
@@ -52,7 +50,7 @@ public:
 
 	void SetFocus(float dist) { focalPlane = dist; }
 
-	void SetfStop(float fstop) {fStop = fstop;}
+	void SetfStop(float fstop) { fStop = fstop; }
 	void SetJitter(bool enable) { jitterEnabled = enable; }
 	void SetShirley(bool enable) { shirleyEnabled = enable; }
 	void SetMaxPathLength(int length) { maxPathLength = length; }
