@@ -4,3 +4,6 @@
 [submodule "external/assimp"]
 	path = external/assimp
 	url = https://github.com/assimp/assimp.git
+[submodule "external/boost.simd"]
+	path = external/boost.simd
+	url = https://github.com/NumScale/boost.simd.git
