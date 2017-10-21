@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 #include <array>
+#include <boost/simd/pack.hpp>
 
 #include "Object.hpp"
 #include "Ray.hpp"

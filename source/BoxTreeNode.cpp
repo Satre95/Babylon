@@ -5,6 +5,8 @@
 #include <glm/ext.hpp>
 
 int BoxTreeNode::splitCount = 0;
+//Use an alias for the boost::simd namespace
+namespace bs = boost::simd;
 
 BoxTreeNode::BoxTreeNode()
 {

@@ -17,5 +17,5 @@ set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
 
 add_library(Babylon STATIC ${HEADER_FILES} ${SOURCE_FILES})
 			
-target_link_libraries(Babylon glm assimp)
-target_include_directories(Babylon PUBLIC ../include)
+target_link_libraries(Babylon glm assimp ${Boost_LIBRARIES})
+target_include_directories(Babylon PUBLIC ../include ${Boost_INCLUDE_DIRS} ${EXTERNALS_DIR}/boost.simd/include)
