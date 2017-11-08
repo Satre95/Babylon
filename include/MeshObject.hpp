@@ -19,19 +19,15 @@ public:
 	bool LoadPLY(const char * filename, Material * mtl = nullptr);
 	void Smooth();
 
-	int GetNumTriangles() const { return NumTriangles; }
-	int GetNumVertexes() const { return NumVertexes; }
-	Triangle * GetTriangles() { return Triangles; }
-	Triangle ** GetTrianglePtrs();
+	size_t GetNumTriangles() const { return m_triangles.size(); }
+	size_t GetNumVertexes() const { return m_vertices.size(); }
+	Triangle * GetTriangles() { return m_triangles.data(); }
+	Vertex * GetVertices() { return m_vertices.data(); }
 
 private:
 
-	void BuildTrianglePointerArray();
-
-	int NumVertexes, NumTriangles;
-	Vertex * Vertexes;
-	Triangle * Triangles;
-	Triangle ** TrianglePtrs;
+	std::vector<Vertex> m_vertices;
+	std::vector<Triangle> m_triangles;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -51,6 +51,9 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 		hit.TangentU = glm::normalize(hit.TangentU);
 		hit.TangentV = glm::cross(hit.Normal, hit.TangentU);
 
+		//Interpolate the texture coords of the three vertices.
+		hit.TexCoord = (1.f - alpha - beta) * vertices[0]->TexCoord + alpha * vertices[1]->TexCoord + beta * vertices[2]->TexCoord;
+
 		return true;
 	}
 	return false;

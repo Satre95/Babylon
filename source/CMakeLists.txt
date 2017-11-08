@@ -8,12 +8,13 @@ set( HEADER_FILES ../include/Bitmap.hpp ../include/BoxTreeNode.hpp ../include/Bo
 			../include/MetalMaterial.hpp ../include/Object.hpp ../include/PointLight.hpp
 			../include/Ray.hpp ../include/RayTrace.hpp ../include/ScatterPhase.hpp 
 			../include/Scene.hpp ../include/Triangle.hpp ../include/Utilities.hpp
-			../include/Vertex.hpp ../include/Volume.hpp)
+			../include/Vertex.hpp ../include/Volume.hpp ../include/ModelObject.hpp)
 set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
 			Camera.cpp Color.cpp DirectLight.cpp
 			FogVolume.cpp InstanceObject.cpp LambertMaterial.cpp
 			MeshObject.cpp MetalMaterial.cpp PointLight.cpp
-			RayTrace.cpp Scene.cpp Triangle.cpp )
+			RayTrace.cpp Scene.cpp Triangle.cpp
+			ModelObject.cpp )
 
 add_library(Babylon STATIC ${HEADER_FILES} ${SOURCE_FILES})
 			
