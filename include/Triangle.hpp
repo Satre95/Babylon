@@ -13,18 +13,17 @@
 
 class Triangle {
 public:
-	Triangle() {}
+	Triangle(Vertex * v0, Vertex * v1, Vertex * v2, Material * m);
 	void Init(Vertex * v0, Vertex * v1, Vertex * v2, Material * m);
 
 	bool Intersect(const Ray &ray, Intersection &hit) const;
 
-	Vertex & GetVertex(int i) const { return *(vertices[i]); }
+	const Vertex & GetVertex(int i) const { return *(m_vertices.at(i)); }
 
 	glm::vec3 GetCenter()const;
 
 private:
-	//    std::array<Vertex *, 3> vertices;
-	Vertex * vertices[3];
+	std::array<Vertex *, 3> m_vertices;
 	Material * material;
 };
 

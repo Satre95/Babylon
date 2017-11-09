@@ -8,17 +8,21 @@
 
 #include "Triangle.hpp"
 
+Triangle::Triangle(Vertex * v0, Vertex * v1, Vertex * v2, Material * m) {
+	Init(v0, v1, v2, m);
+}
+
 void Triangle::Init(Vertex * v0, Vertex * v1, Vertex * v2, Material * m) {
-	vertices[0] = v0;
-	vertices[1] = v1;
-	vertices[2] = v2;
+	m_vertices[0] = v0;
+	m_vertices[1] = v1;
+	m_vertices[2] = v2;
 	material = m;
 }
 
 bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
-	const auto & a = vertices[0]->Position;
-	const auto & b = vertices[1]->Position;
-	const auto & c = vertices[2]->Position;
+	const auto & a = m_vertices[0]->Position;
+	const auto & b = m_vertices[1]->Position;
+	const auto & c = m_vertices[2]->Position;
 	const auto & p = ray.Origin;
 	const auto & d = ray.Direction;
 
@@ -42,7 +46,7 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 	if (dist < hit.HitDistance && dist > FLOAT_THRESHOLD) {
 		hit.HitDistance = dist;
 		hit.Position = position;
-		hit.Normal = glm::normalize((1 - alpha - beta) * vertices[0]->Normal + alpha * vertices[1]->Normal + beta * vertices[2]->Normal);
+		hit.Normal = glm::normalize((1 - alpha - beta) * m_vertices[0]->Normal + alpha * m_vertices[1]->Normal + beta * m_vertices[2]->Normal);
 		hit.Mtl = material;
 
 		hit.TangentU = glm::cross(glm::vec3(0, 1.f, 0), hit.Normal);
@@ -52,7 +56,7 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 		hit.TangentV = glm::cross(hit.Normal, hit.TangentU);
 
 		//Interpolate the texture coords of the three vertices.
-		hit.TexCoord = (1.f - alpha - beta) * vertices[0]->TexCoord + alpha * vertices[1]->TexCoord + beta * vertices[2]->TexCoord;
+		hit.TexCoord = (1.f - alpha - beta) * m_vertices[0]->TexCoord + alpha * m_vertices[1]->TexCoord + beta * m_vertices[2]->TexCoord;
 
 		return true;
 	}
@@ -61,5 +65,5 @@ bool Triangle::Intersect(const Ray &ray, Intersection &hit) const {
 
 glm::vec3 Triangle::GetCenter() const {
 	//Avg the coordinates
-	return (vertices[0]->Position + vertices[1]->Position + vertices[2]->Position) / 3.f;
+	return (m_vertices[0]->Position + m_vertices[1]->Position + m_vertices[2]->Position) / 3.f;
 }
