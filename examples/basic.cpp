@@ -25,6 +25,7 @@
 #endif // _WIN32
 
 using namespace std::chrono;
+/*
 void simplePointLightFogTest() {
 	//----------------------------------------------------------
 	/// Create scene
@@ -274,9 +275,9 @@ void simpleDragonFogTest() {
 	std::system("open -a Fragment simpleDragonFogTest.bmp");
 #endif // _WIN32
 }
+*/
 
 int main() {
-	simpleDragonFogTest();
 
 #ifdef _WIN32
 	std::cout << "Press any key to exit" << std::endl;
