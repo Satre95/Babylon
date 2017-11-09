@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <string>
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 #include "Object.hpp"
 #include "MeshObject.hpp"
 
@@ -14,6 +17,10 @@ public:
 	void Load(std::string path);
 
 private:
+	void ProcessNode(aiNode *node, const aiScene *scene);
+    MeshObject* ProcessMesh(aiMesh *mesh, const aiScene *scene);
+
+
 	std::vector<MeshObject*> m_meshes;
 
 };
