@@ -1,15 +1,11 @@
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <cstdlib>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtx/euler_angles.hpp>
 #include <thread>
 #include <chrono>
 #include <ctime>
 #include <cstdlib>
-
 #include <iostream>
-#include "InstanceObject.hpp"
+#include <limits>
+
 #include "Camera.hpp"
 #include "PointLight.hpp"
 #include "DirectLight.hpp"
@@ -17,14 +13,18 @@
 #include "BoxTreeObject.hpp"
 #include "LambertMaterial.hpp"
 #include "MetalMaterial.hpp"
-#include "Volume.hpp"
-#include "FogVolume.hpp"
-
-#ifdef _WIN32
-#include <conio.h>
-#endif // _WIN32
+#include "ModelObject.hpp"
 
 using namespace std::chrono;
+
+int main() {
+
+
+	//----------------------------------------------------------
+	std::cout << "Press ENTER to exit" << std::endl;
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
 /*
 void simplePointLightFogTest() {
 	//----------------------------------------------------------
@@ -276,16 +276,3 @@ void simpleDragonFogTest() {
 #endif // _WIN32
 }
 */
-
-int main() {
-
-#ifdef _WIN32
-	std::cout << "Press any key to exit" << std::endl;
-	while (true) {
-		if (_kbhit() != 0) break;
-	}
-#else
-	std::this_thread::sleep_for(milliseconds(5000));
-#endif // _WIN32
-	return 0;
-}
