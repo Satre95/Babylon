@@ -18,16 +18,19 @@ public:
 	bool Intersect(const Ray &ray, Intersection &hit);
 	void MakeBox(float x, float y, float z, Material * mtl = nullptr);
 
-	size_t GetNumTriangles() const { return m_triangles.size(); }
-	size_t GetNumVertexes() const { return m_vertices.size(); }
-	Triangle * GetTriangles() { return m_triangles.data(); }
-	Vertex * GetVertices() { return m_vertices.data(); }
+	size_t GetNumTriangles()		{ return m_triangles.size();	}
+	size_t GetNumVertexes()			{ return m_vertices.size();		}
+	Triangle * GetTriangles()		{ return m_triangles.data();	}
+	Triangle ** GetTrianglePtrs()	{ return m_trianglePtrs;		}
+	Vertex * GetVertices()			{ return m_vertices.data();		}
 
 private:
-	void GenerateTriangles(std::vector<size_t> & indices);
+	void GenerateTriangles(const std::vector<size_t> & indices);
+	void BuildTrianglePointerArray();
 	std::vector<Vertex> m_vertices;
 	std::vector<Triangle> m_triangles;
-	Material * m_material;
+	Material * m_material = nullptr;
+	Triangle ** m_trianglePtrs = nullptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

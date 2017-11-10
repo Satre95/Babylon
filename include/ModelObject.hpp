@@ -15,6 +15,7 @@ public:
 	virtual ~ModelObject() override;
 	virtual bool Intersect(const Ray &ray, Intersection &hit) override;
 	void Load(std::string path);
+	const std::vector<MeshObject *> & GetMeshes() { return m_meshes; }
 
 private:
 	void ProcessNode(aiNode *node, const aiScene *scene);

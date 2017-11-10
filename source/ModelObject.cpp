@@ -40,6 +40,8 @@ bool ModelObject::Intersect(const Ray &ray, Intersection &hit) {
 	return success;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 void ModelObject::ProcessNode(aiNode *node, const aiScene *scene)
 {
     // process all the node's meshes (if any)
@@ -54,6 +56,8 @@ void ModelObject::ProcessNode(aiNode *node, const aiScene *scene)
         ProcessNode(node->mChildren[i], scene);
     }
 }  
+
+////////////////////////////////////////////////////////////////////////////////
 
 MeshObject* ModelObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 	std::vector<Vertex> vertices;

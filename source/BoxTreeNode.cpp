@@ -7,6 +7,7 @@
 int BoxTreeNode::splitCount = 0;
 //Use an alias for the boost::simd namespace
 namespace bs = boost::simd;
+////////////////////////////////////////////////////////////////////////////////
 
 BoxTreeNode::BoxTreeNode()
 {
@@ -16,6 +17,8 @@ BoxTreeNode::BoxTreeNode()
 	Tri.fill(nullptr);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 BoxTreeNode::~BoxTreeNode() {
 	if (child1)
 		delete child1;
@@ -23,9 +26,13 @@ BoxTreeNode::~BoxTreeNode() {
 		delete child2;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit, int & depth) {
 	return IntersectChildren(ray, hit, depth);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	//test if ray intersects our bounding box.
@@ -52,6 +59,8 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
 	return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit, int & depth) {
 	//depth++;
 	//if (depth == 55)
@@ -75,6 +84,8 @@ bool BoxTreeNode::IntersectChildren(const Ray & ray, Intersection & hit, int & d
 	return success;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
 	bool intersection = false;
 	//If we are a leaf node, test against our triangles.
@@ -83,6 +94,8 @@ bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
 	}
 	return intersection;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 void BoxTreeNode::Construct(int count, Triangle ** tri) {
 	// Compute BoxMin & BoxMax to fit around all tri’s

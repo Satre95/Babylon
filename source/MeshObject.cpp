@@ -19,6 +19,7 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indice
 MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris) {
 	m_vertices = verts;
 	m_triangles = tris;
+	BuildTrianglePointerArray();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +28,8 @@ MeshObject::~MeshObject() {
 	m_vertices.clear();
 	m_triangles.clear();
 	delete m_material;
+	delete[] m_trianglePtrs;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +45,7 @@ bool MeshObject::Intersect(const Ray &ray, Intersection &hit) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void MeshObject::GenerateTriangles(std::vector<size_t> & indices) {
+void MeshObject::GenerateTriangles(const std::vector<size_t> & indices) {
 	m_triangles.clear();
 	m_triangles.reserve(indices.size() / 3);
 	for (int i = 0; i < indices.size(); i+=3) {
@@ -53,6 +56,8 @@ void MeshObject::GenerateTriangles(std::vector<size_t> & indices) {
 			nullptr
 			);
 	}
+
+	BuildTrianglePointerArray();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +144,17 @@ void MeshObject::MakeBox(float x, float y, float z, Material *mtl) {
 	m_vertices[23].Set(p110, -zAxis, t01);
 	m_triangles[10].Init(&m_vertices[20], &m_vertices[21], &m_vertices[22], mtl);
 	m_triangles[11].Init(&m_vertices[20], &m_vertices[22], &m_vertices[23], mtl);
+
+	BuildTrianglePointerArray();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void MeshObject::BuildTrianglePointerArray() {
+	delete[] m_trianglePtrs;
+	m_trianglePtrs = new Triangle*[GetNumTriangles()];
+	for (int i = 0; i < GetNumTriangles(); ++i)
+		m_trianglePtrs[i] = &m_triangles.at(i);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
