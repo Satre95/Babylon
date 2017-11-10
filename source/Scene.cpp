@@ -19,13 +19,11 @@ bool Scene::Intersect(const Ray &ray, Intersection &hit) const {
 	return success;
 }
 
-void Scene::AddVolume(Volume & vol)
-{
+void Scene::AddVolume(Volume & vol) {
 	Volumes.push_back(&vol);
 }
 
-std::vector<Volume *> Scene::IntersectVolumes(const Ray & ray) const
-{
+std::vector<Volume *> Scene::IntersectVolumes(const Ray & ray) const {
 	std::vector<Volume *> hitVols;
 	for (auto & aVol : Volumes)
 	{
