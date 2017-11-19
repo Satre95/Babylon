@@ -9,6 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_MACOSX_RPATH 1)
 set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
+set(CMAKE_BUILD_TYPE DEBUG)
 
 find_package(Boost 1.61 REQUIRED) # Boost >= v1.61 is required, but not shipped in the repo due to its massive size
 
