@@ -30,17 +30,17 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 	V = glm::inverse(C);
 }
 
-void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
+void Camera::Render(const Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
 	finished = false;
 	previewThreadWriting = false;
 	finishedTiles = 0;
-	this->showProgress = showProgress;
+	// this->showProgress = showProgress;
 
 	std::cout << tileCoords.size() << " tiles in " << width
 		<< "x" << height << " image." << std::endl;
 
-	previewThread = std::thread(&Camera::PreviewImageFunc, this);
+	//previewThread = std::thread(&Camera::PreviewImageFunc, this);
 
 	rayTracer = std::make_unique<RayTrace>(scene, maxPathLength);
 
@@ -48,30 +48,32 @@ void Camera::Render(Scene & scene, bool parallel, bool showProgress) {
 		//Use hyperthreading (# threads = 2 x # cores)
 		unsigned numThreads = std::thread::hardware_concurrency() * 2;
 		//unsigned numThreads = std::thread::hardware_concurrency();
-		std::vector<std::thread> threads;
+		std::vector<std::thread *> threads;
 
 		for (size_t i = 0; i < numThreads; i++) {
-			threads.emplace_back(&Camera::RenderPixelsParallel, this, std::ref(scene));
+			std::thread * t = new std::thread([scene, this] { RenderPixelsParallel(&scene); } );
+			threads.push_back(t);
 		}
 
 		for (auto & aThread : threads) {
-			aThread.join();
+			aThread->join();
 		}
 	}
 	else {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				RenderPixel(x, y, scene);
+				RenderPixel(x, y, &scene);
 			}
 		}
 	}
 
 	finished = true;
 	previewThreadCV.notify_all();
-	previewThread.join();
+	// previewThread.join();
 }
 
-void Camera::RenderPixel(int x, int y, Scene & scene) {
+void Camera::RenderPixel(int x, int y, const Scene * scenePtr) {
+	const Scene & scene = *scenePtr;
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
@@ -126,8 +128,9 @@ void Camera::RenderPixel(int x, int y, Scene & scene) {
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
-void Camera::RenderTile(int aTile, Scene & scene)
+void Camera::RenderTile(int aTile, const Scene * scenePtr)
 {
+	const Scene & scene = *scenePtr;
 	if (aTile < 0) return; //Sanity check
 	//Compute the pixel bounds for the given tile.
 	auto tile = tileCoords.at(aTile);
@@ -143,7 +146,7 @@ void Camera::RenderTile(int aTile, Scene & scene)
 		for (int x = tileStartX; x < tileEndX; x++)
 		{
 			if (x >= width || y >= height) break; //In case image dims not multiple of tile size
-			RenderPixel(x, y, scene);
+			RenderPixel(x, y, scenePtr);
 		}
 	}
 
@@ -152,9 +155,9 @@ void Camera::RenderTile(int aTile, Scene & scene)
 	previewThreadCV.notify_one();
 }
 
-void Camera::RenderPixelsParallel(Scene & scene) {
+void Camera::RenderPixelsParallel(const Scene * scenePtr) {
 	while (tileCoordIndex >= 0) {
-		RenderTile(tileCoordIndex--, scene);
+		RenderTile(tileCoordIndex--, scenePtr);
 	}
 }
 
@@ -216,6 +219,7 @@ void Camera::PreviewImageFunc()
 			return false;
 		});
 
+		/*
 		if (showProgress)
 		{
 			previewNum++;
@@ -232,6 +236,7 @@ void Camera::PreviewImageFunc()
 			std::system(ss2.str().c_str());
 #endif
 		}
+		*/
 		lk.unlock();
 	}
 #ifdef _WIN32

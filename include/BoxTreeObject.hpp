@@ -4,6 +4,7 @@
 #include "MeshObject.hpp"
 #include "InstanceObject.hpp"
 #include "BoxTreeNode.hpp"
+#include "Model.hpp"
 
 class BoxTreeObject : public Object
 {

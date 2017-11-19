@@ -1,9 +1,9 @@
-#include "ModelObject.hpp"
+#include "Model.hpp"
 
 #include <iostream>
 ////////////////////////////////////////////////////////////////////////////////
 
-ModelObject::~ModelObject() {
+Model::~Model() {
 	for(auto aMesh: m_meshes)
 		delete aMesh;
 	m_meshes.clear();
@@ -11,7 +11,7 @@ ModelObject::~ModelObject() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void ModelObject::Load(std::string path) {
+void Model::Load(std::string path) {
 	Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, 
     					aiProcess_Triangulate 
@@ -30,7 +30,7 @@ void ModelObject::Load(std::string path) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void ModelObject::ProcessNode(aiNode *node, const aiScene *scene)
+void Model::ProcessNode(aiNode *node, const aiScene *scene)
 {
     // process all the node's meshes (if any)
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -47,7 +47,7 @@ void ModelObject::ProcessNode(aiNode *node, const aiScene *scene)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MeshObject* ModelObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
+MeshObject* Model::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 	std::vector<Vertex> vertices;
     std::vector<size_t> indices;
 
@@ -82,4 +82,15 @@ MeshObject* ModelObject::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 
     return new MeshObject(vertices, indices);
 }
+////////////////////////////////////////////////////////////////////////////////
+
+void Model::PrintInfo(std::ostream & stream) {
+    stream << "This model contains " << NumMeshes() << ((NumMeshes() == 1) ? " mesh." : " meshes.") << std::endl;
+    size_t count = 0;
+    for(auto & aMesh: m_meshes) {
+        stream << "\tMesh " << count << " has " << aMesh->GetNumVertexes() << " vertices";
+        stream << " and " << aMesh->GetNumTriangles() * 3 << " indices." << std::endl;
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////

@@ -7,12 +7,12 @@
 
 class RayTrace {
 public:
-	RayTrace(Scene & scn, int maxD = 15) : scene(scn), maxDepth(maxD)
+	RayTrace(const Scene & scn, int maxD = 15) : scene(scn), maxDepth(maxD)
 	{}
 
 	void TraceRay(Intersection & hit, const Ray & ray, int depth = 1) const;
 
 private:
-	Scene & scene;
+	const Scene & scene;
 	int maxDepth;
 };

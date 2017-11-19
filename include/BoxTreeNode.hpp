@@ -8,7 +8,6 @@
 #include "Ray.hpp"
 #include "Intersection.hpp"
 #include "Triangle.hpp"
-#include "ModelObject.hpp"
 
 #define MAX_TRIANGLES_PER_BOX 10
 

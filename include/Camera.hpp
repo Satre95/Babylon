@@ -57,7 +57,7 @@ public:
 	void SetTileDimensions(int xDim, int yDim) { tileWidth = xDim; tileHeight = yDim; }
 
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
-	void Render(Scene & scene, bool parallel = false, bool showProgress = false);
+	void Render(const Scene & scene, bool parallel = false);
 	void SaveBitmap(std::string filename);
 
 private:
@@ -85,7 +85,7 @@ private:
 	std::vector<std::pair<uint32_t, uint32_t>> tileCoords;
 	int numTilesX, numTilesY;
 	int tileWidth = 5, tileHeight = 5;
-	std::thread previewThread;
+	// std::thread previewThread;
 	int numTilesPerBlock; //Grouping of tiles. useful for reporting progress.
 	std::atomic_int finishedTiles;
 	int maxPathLength = 5;
@@ -95,9 +95,9 @@ private:
 	std::condition_variable previewThreadCV;
 	std::mutex previewMutex;
 	std::mutex logMutex;
-	bool showProgress = false;
-	void RenderPixel(int x, int y, Scene & scene);
-	void RenderTile(int aTile, Scene & scene);
+	// bool showProgress = false;
+	void RenderPixel(int x, int y, const Scene *);
+	void RenderTile(int aTile, const Scene * );
 
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
@@ -105,7 +105,7 @@ private:
 	void ApplyShirleyWeight(float & subX, float & subY);
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
-	void RenderPixelsParallel(Scene & scene);
+	void RenderPixelsParallel(const Scene * );
 
 	///Thread that allows one to preview the image as it is begin generated.
 	void PreviewImageFunc();
