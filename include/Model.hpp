@@ -8,12 +8,11 @@
 #include "Object.hpp"
 #include "MeshObject.hpp"
 
-class ModelObject: public Object {
+class ModelObject{
 public:
 	ModelObject() {}
 	ModelObject(std::string path) { Load(path); }
-	virtual ~ModelObject() override;
-	virtual bool Intersect(const Ray &ray, Intersection &hit) override;
+	~ModelObject();
 	void Load(std::string path);
 	const std::vector<MeshObject *> & GetMeshes() { return m_meshes; }
 

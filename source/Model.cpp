@@ -11,7 +11,6 @@ ModelObject::~ModelObject() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// TODO: Implement 
 void ModelObject::Load(std::string path) {
 	Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, 
@@ -27,17 +26,6 @@ void ModelObject::Load(std::string path) {
     }
 
     ProcessNode(scene->mRootNode, scene);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-bool ModelObject::Intersect(const Ray &ray, Intersection &hit) {
-	bool success = false;
-	for(auto aMesh: m_meshes)
-		if(aMesh->Intersect(ray, hit))
-			success = true;
-
-	return success;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
