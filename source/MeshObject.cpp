@@ -11,6 +11,7 @@
 
 MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indices) {
 	m_vertices = verts;
+	m_material = new LambertMaterial(Color(0.3f, 0.3f, 0.6f));
 	GenerateTriangles(indices);
 }
 
@@ -19,7 +20,10 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indice
 MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris) {
 	m_vertices = verts;
 	m_triangles = tris;
+	m_material = new LambertMaterial(Color(0.3f, 0.3f, 0.6f));
+
 	BuildTrianglePointerArray();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +57,7 @@ void MeshObject::GenerateTriangles(const std::vector<size_t> & indices) {
 			&m_vertices.at(i),
 			&m_vertices.at(i+1),
 			&m_vertices.at(i+2),
-			nullptr
+			m_material
 			);
 	}
 

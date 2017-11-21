@@ -28,11 +28,11 @@ int main(int argc, char* argv[]) {
 	// ----------------------------------------------------------
 	// Scene Construction
 	Scene scene;
-	scene.SetSkyColor(Color(0.5f, 0.5f, 1.0f));
+	scene.SetSkyColor(Color(0.4f, 0.4f, 0.8f));
 
 	//Add lights
 	DirectLight dLight;
-	dLight.SetDirection(glm::vec3(-1.f));
+	dLight.SetDirection(glm::vec3(0, -1.f, -1.f));
 	scene.AddLight(dLight);
 
 	//Construct BoxTreeObjects from Model's meshes
@@ -50,12 +50,12 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0, 0, 10.f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
-	cam.SetResolution(100, 100);
+	cam.BuildCamera( glm::vec3(0, 0.5f, 0.5f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
+	cam.SetResolution(400, 400);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
 	cam.SetfStop(2000.f);
-	cam.SetSuperSample(1, 1);
+	cam.SetSuperSample(2, 2);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetMaxPathLength(3);
@@ -65,8 +65,8 @@ int main(int argc, char* argv[]) {
 	auto begin = steady_clock::now();
 	cam.Render(scene, true);
 	auto end = steady_clock::now();
-	std::cerr << "Render took "
-		<< duration_cast<seconds> (end - begin).count()
+	std::cout << "Render took "
+		<< duration_cast<milliseconds> (end - begin).count() / 1000.f
 		<< "s" << std::endl;
 
 	// ----------------------------------------------------------
