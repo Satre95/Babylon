@@ -17,6 +17,11 @@
 class Utilities {
 public:
 
+	/// Extracts the file name from the given path.
+	static std::string FilenameFromPath(std::string & path) {
+		return path.substr(0, path.find_last_of('/'));
+	}
+
 	static float randomFloatInRange(const float & LO, const float & HI) {
 		std::random_device rand_dev;
 		std::mt19937 generator(rand_dev());
