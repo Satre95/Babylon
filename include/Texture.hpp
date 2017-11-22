@@ -21,6 +21,8 @@ public:
 	int NumComponents() const { return m_numComponents; }
 	/// Query a pixel color. Indices range from [0, width) & [0, height)
 	Color GetPixelColor(int x, int y);
+	/// Sample the texture with normalized texture coordinates.
+	Color SampleTexture(float u, float v);
 	const std::string & Name() const { return m_name; }
 	bool operator ==(const Texture & other) const {
 		return other.m_name == m_name;

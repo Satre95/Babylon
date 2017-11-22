@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Utilities.hpp"
+#include "glm/glm.hpp"
 
 Texture::Texture(std::string path, TEXTURE_TYPE type) {
 	m_data = stbi_load(path.c_str(), &m_width, &m_height, &m_numComponents, 0);
@@ -41,4 +42,16 @@ Color Texture::GetPixelColor(int x, int y) {
 			return Color(red, blue, green);
 		}
 	}
+}
+
+Color Texture::SampleTexture(float u, float v) {
+	glm::clamp(u, 0.f, 1.f);
+	glm::clamp(v, 0.f, 1.f);
+
+	//TODO: Implement bilinear, trilinear, and/or bicubic filtering.
+
+	//For now, scale to image dims and round to nearest pixel index.
+	int x = int(u * float(m_width) + 0.5f);
+	int y = int(v * float(m_height) + 0.5f);
+	return GetPixelColor(x, y);
 }
