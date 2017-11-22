@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0, 0.5f, 0.5f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
+	cam.BuildCamera( glm::vec3(0, 0.5f, 10.f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
 	cam.SetResolution(400, 400);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
