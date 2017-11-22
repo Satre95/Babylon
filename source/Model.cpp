@@ -7,6 +7,9 @@ Model::~Model() {
 	for(auto aMesh: m_meshes)
 		delete aMesh;
 	m_meshes.clear();
+    for(auto aTexPair: m_textures)
+        delete aTexPair.second;
+    m_textures.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +53,7 @@ void Model::ProcessNode(aiNode *node, const aiScene *scene)
 MeshObject* Model::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 	std::vector<Vertex> vertices;
     std::vector<size_t> indices;
+    std::vector<Texture *> meshTextures;
 
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -84,9 +88,22 @@ MeshObject* Model::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 	        indices.push_back(face.mIndices[j]);
 	} 
 
-	//TODO: Process Textures & Materials.
+	// Process Material
+    aiMaterial * material = scene->mMaterials[mesh->mMaterialIndex];
 
-    return new MeshObject(vertices, indices);
+    // 3 categories of supported textures: diffuse, specular, & normal maps
+    // 1. Diffuse maps
+    auto diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE);
+    meshTextures.insert(meshTextures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    // 2. Specular maps
+    auto specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR);
+    meshTextures.insert(meshTextures.end(), specularMaps.begin(), specularMaps.end());
+    // 3. Normal Maps
+    auto normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS);
+    meshTextures.insert(meshTextures.end(), normalMaps.begin(), normalMaps.end());
+
+
+    return new MeshObject(vertices, indices, meshTextures);
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -94,23 +111,51 @@ void Model::PrintInfo(std::ostream & stream) {
     stream << "This model contains " << NumMeshes() << ((NumMeshes() == 1) ? " mesh." : " meshes.") << std::endl;
     size_t count = 0;
     for(auto & aMesh: m_meshes) {
-        stream << "\tMesh " << count << " has " << aMesh->GetNumVertexes() << " vertices";
-        stream << " and " << aMesh->GetNumTriangles() * 3 << " indices." << std::endl;
+        stream << "\tMesh " << count << " has " << aMesh->GetNumVertexes() << " vertices, ";
+        stream << aMesh->GetNumTriangles() * 3 << " indices, and ";
+        stream << aMesh->GetNumTextures() << " textures." << std::endl;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Model::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
+std::vector<Texture *> Model::LoadMaterialTextures(aiMaterial *mat, aiTextureType type) {
+    std::vector<Texture *> textures;
+    textures.reserve(mat->GetTextureCount(type));
+
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+        TEXTURE_TYPE texType;
+        switch(type) {
+            case aiTextureType_SPECULAR:
+            texType = TEXTURE_TYPE::SPECULAR;
+            break;
+
+            case aiTextureType_NORMALS:
+            texType = TEXTURE_TYPE::NORMAL;
+            break;
+
+            default:
+            texType = TEXTURE_TYPE::DIFFUSE;
+            break;
+        }
+
         aiString str;
         mat->GetTexture(type, i, &str);
-        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-        if(m_textureNames.find(std::string(str.C_Str())) == m_textureNames.end()) {
-            m_textureNames.insert(std::string(str.C_Str()));
-            m_textures.emplace(std::string(str.C_Str()));
+        std::string texName(str.C_Str());
+
+        Texture * tex;
+
+        // Only load a new texture if this texture hasn't been seen before.
+        if(m_textures.find(texName) == m_textures.end()) {
+            tex = new Texture(texName, texType);
+            m_textures.insert(std::make_pair(texName, tex));
+        } else {
+            tex = m_textures.at(texName);
         }
+        textures.push_back(tex);
     }
+
+    return textures; 
 }
 
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <unordered_set>
+#include <unordered_map>
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
@@ -24,10 +24,8 @@ public:
 private:
 	void ProcessNode(aiNode *node, const aiScene *scene);
     MeshObject* ProcessMesh(aiMesh *mesh, const aiScene *scene);
-    void LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+    std::vector<Texture *> LoadMaterialTextures(aiMaterial *mat, aiTextureType type);
 
 	std::vector<MeshObject*> m_meshes;
-	std::unordered_set<Texture> m_textures;
-	std::unordered_set<std::string> m_textureNames;
-
+	std::unordered_map<std::string, Texture *> m_textures;
 };

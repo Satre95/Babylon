@@ -9,19 +9,22 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indices) {
+MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indices,
+	std::vector<Texture *> textures) {
 	m_vertices = verts;
 	m_material = new LambertMaterial(Color(1.0f));
 	GenerateTriangles(indices);
+	m_textures = textures;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris) {
+MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris,
+	std::vector<Texture *> textures) {
 	m_vertices = verts;
 	m_triangles = tris;
 	m_material = new LambertMaterial(Color(1.0f));
-
+	m_textures = textures;
 	BuildTrianglePointerArray();
 
 }

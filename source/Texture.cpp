@@ -3,7 +3,7 @@
 #include "stb_image.h"
 #include "Utilities.hpp"
 
-Texture::Texture(std::string path) {
+Texture::Texture(std::string path, TEXTURE_TYPE type) {
 	m_data = stbi_load(path.c_str(), &m_width, &m_height, &m_numComponents, 0);
 	if(m_numComponents == 1)
 		m_format = TEXTURE_FORMAT::GREY;
@@ -12,6 +12,7 @@ Texture::Texture(std::string path) {
 	else if( m_numComponents == 4)
 		m_format = TEXTURE_FORMAT::RGBA;
 	m_name = Utilities::FilenameFromPath(path);
+	m_type = type;
 }
 
 Texture::~Texture() {

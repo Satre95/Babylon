@@ -8,12 +8,12 @@ enum class TEXTURE_FORMAT:uint8_t {
 };
 
 enum class TEXTURE_TYPE: uint8_t {
-	DIFFUSE, SPECULAR, HEIGHT, AMBIENT
+	DIFFUSE, SPECULAR, NORMAL
 };
 
 class Texture {
 public:
-	Texture(std::string path);
+	Texture(std::string path, TEXTURE_TYPE type = TEXTURE_TYPE::DIFFUSE);
 	~Texture();
 	
 	int Width() const { return m_width;}
