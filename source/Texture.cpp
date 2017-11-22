@@ -14,7 +14,10 @@ Texture::Texture(std::string path) {
 	m_name = Utilities::FilenameFromPath(path);
 }
 
-
 Texture::~Texture() {
 	 stbi_image_free(m_data);
+}
+
+unsigned char Texture::GetPixelColor(int x, int y) {
+	return m_data[y * m_width + x];
 }
