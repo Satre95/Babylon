@@ -51,7 +51,7 @@ void Camera::Render(const Scene & scene, bool parallel) {
 		std::vector<std::thread *> threads;
 
 		for (size_t i = 0; i < numThreads; i++) {
-			std::thread * t = new std::thread([scene, this] { RenderPixelsParallel(&scene); } );
+			std::thread * t = new std::thread(&Camera::RenderPixelsParallel, this, std::ref(scene) );
 			threads.push_back(t);
 		}
 
@@ -62,7 +62,7 @@ void Camera::Render(const Scene & scene, bool parallel) {
 	else {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
-				RenderPixel(x, y, &scene);
+				RenderPixel(x, y, scene);
 			}
 		}
 	}
@@ -72,8 +72,7 @@ void Camera::Render(const Scene & scene, bool parallel) {
 	// previewThread.join();
 }
 
-void Camera::RenderPixel(int x, int y, const Scene * scenePtr) {
-	const Scene & scene = *scenePtr;
+void Camera::RenderPixel(int x, int y, const Scene & scene) {
 	std::vector<Color> pixelColors;
 	subPixelDims.first = 1.0f / superSamples.first / float(width);
 	subPixelDims.second = 1.0f / superSamples.second / float(height);
@@ -128,9 +127,8 @@ void Camera::RenderPixel(int x, int y, const Scene * scenePtr) {
 	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
 }
 
-void Camera::RenderTile(int aTile, const Scene * scenePtr)
+void Camera::RenderTile(int aTile, const Scene & scene)
 {
-	const Scene & scene = *scenePtr;
 	if (aTile < 0) return; //Sanity check
 	//Compute the pixel bounds for the given tile.
 	auto tile = tileCoords.at(aTile);
@@ -146,7 +144,7 @@ void Camera::RenderTile(int aTile, const Scene * scenePtr)
 		for (int x = tileStartX; x < tileEndX; x++)
 		{
 			if (x >= width || y >= height) break; //In case image dims not multiple of tile size
-			RenderPixel(x, y, scenePtr);
+			RenderPixel(x, y, scene);
 		}
 	}
 
@@ -155,9 +153,9 @@ void Camera::RenderTile(int aTile, const Scene * scenePtr)
 	previewThreadCV.notify_one();
 }
 
-void Camera::RenderPixelsParallel(const Scene * scenePtr) {
+void Camera::RenderPixelsParallel(const Scene & scene) {
 	while (tileCoordIndex >= 0) {
-		RenderTile(tileCoordIndex--, scenePtr);
+		RenderTile(tileCoordIndex--, scene);
 	}
 }
 

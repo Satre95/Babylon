@@ -96,8 +96,8 @@ private:
 	std::mutex previewMutex;
 	std::mutex logMutex;
 	// bool showProgress = false;
-	void RenderPixel(int x, int y, const Scene *);
-	void RenderTile(int aTile, const Scene * );
+	void RenderPixel(int x, int y, const Scene &);
+	void RenderTile(int aTile, const Scene & );
 
 	///Modifies the subpixel sample point to be randomized within the subpixel
 	void JitterSubPixel(float & subX, float & subY);
@@ -105,7 +105,7 @@ private:
 	void ApplyShirleyWeight(float & subX, float & subY);
 
 	///Renders the pixel with CPU parallelism. Range is not inclusive of ending point.
-	void RenderPixelsParallel(const Scene * );
+	void RenderPixelsParallel(const Scene & );
 
 	///Thread that allows one to preview the image as it is begin generated.
 	void PreviewImageFunc();
