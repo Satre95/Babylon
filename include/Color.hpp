@@ -15,11 +15,12 @@ public:
 
 	void Set(float r, float g, float b) { Red = r; Green = g; Blue = b; }
 
-	void Add(const Color & c) { Red += c.Red; Green += c.Green; Blue += c.Blue; }
-	void AddScaled(const Color & c, float s) { Red += s*c.Red; Green += s*c.Green; Blue += s*c.Blue; }
-    Color & Scale(float s) { Red *= s; Green *= s; Blue *= s; return *this; }
-	void Scale(const Color c, float s) { Red = s*c.Red; Green = s*c.Green; Blue = s*c.Blue; }
-	void Multiply(const Color c) { Red *= c.Red; Green *= c.Green; Blue *= c.Blue; }
+	void Add(const Color & c);
+	void AddScaled(const Color & c, float s);
+    Color & Scale(float s);
+	void Scale(const Color c, float s);
+	void Multiply(const Color c);
+
 	const float & GetRed() { return Red; }
 	const float & GetGreen() { return Green; }
 	const float & GetBlue() { return Blue; }
@@ -41,13 +42,8 @@ public:
 		return Color(Red * scale, Blue * scale, Green * scale);
 	}
 
-	int ToInt() {
-		int r = (Red < 0) ? 0 : ((Red >= 1.0) ? 255 : int(Red*256.0f));
-		int g = (Green < 0) ? 0 : ((Green >= 1.0) ? 255 : int(Green*256.0f));
-		int b = (Blue < 0) ? 0 : ((Blue >= 1.0) ? 255 : int(Blue*256.0f));
-		return (r << 16) | (g << 8) | b;
-	}
-	void FromInt(int c) { Set(float((c >> 16) & 0xff) / 255.0f, float((c >> 8) & 0xff) / 255.0f, float(c & 0xff) / 255.0f); }
+	int ToInt();
+	void FromInt(int c);
 
 	static Color AverageColors(std::vector<Color> & colors);
 
