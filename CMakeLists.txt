@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-project(Babylon)
+project(Babylon C CXX)
+find_package(Threads REQUIRED)
+find_package(Boost 1.61 REQUIRED) # Boost >= v1.61 is required, but not shipped in the repo due to its massive size
+
 set(CMAKE_CXX_STANDARD 14) # C++14 beacuse it's 2017...
 set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
 set(CMAKE_CXX_EXTENSIONS OFF) #...without compiler extensions like gnu++11
@@ -10,8 +13,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_MACOSX_RPATH 1)
 set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
 set(CMAKE_BUILD_TYPE DEBUG)
+set(THREADS_PREFER_PTHREAD ON)
 
-find_package(Boost 1.61 REQUIRED) # Boost >= v1.61 is required, but not shipped in the repo due to its massive size
 
 if(MSVC)
 	add_compile_options(/MP)

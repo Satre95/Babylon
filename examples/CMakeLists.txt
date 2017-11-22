@@ -1,5 +1,7 @@
-link_libraries(Babylon)
+link_libraries(Babylon Threads::Threads)
+add_executable(basic WIN32 MACOSX_BUNDLE basic.cpp ${ICON})
 
+# Windows config stuff
 if(MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
@@ -10,20 +12,15 @@ elseif (APPLE)
     set(ICON example.icns)
     set_source_files_properties(example.icns PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
-
-add_executable(basic WIN32 MACOSX_BUNDLE basic.cpp ${ICON})
-
 if(WIN32)
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(basic PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
 	endif()
 endif()
 set(WINDOWS_BINARIES basic)
-
 set_target_properties(${WINDOWS_BINARIES} PROPERTIES
                       FOLDER "Babylon-Examples")
-					  
-
+# Mac Configs
 if (APPLE)
     set_target_properties(basic PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Basic Example")
 
@@ -33,4 +30,4 @@ if (APPLE)
                           MACOSX_BUNDLE_LONG_VERSION_STRING 1.0.0.0
                           MACOSX_BUNDLE_ICON_FILE example.icns
                           MACOSX_BUNDLE_INFO_PLIST "${StarForge_SOURCE_DIR}/CMake/MacOSXBundleInfo.plist.in")
-endif()					  
+endif()
