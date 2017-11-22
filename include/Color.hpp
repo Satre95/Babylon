@@ -9,9 +9,9 @@
 
 class Color {
 public:
-	Color() { Red = Green = Blue = 1.0; }
-	Color(float r, float g, float b) { Red = r; Green = g; Blue = b; }
-	Color(float val) { Red = Blue = Green = val; }
+	Color() { Red = Green = Blue = Alpha = 1.0; }
+	Color(float r, float g, float b, float alpha = 1.f) { Red = r; Green = g; Blue = b; Alpha = alpha; }
+	Color(float val) { Red = Blue = Green = val; Alpha = 1.f; }
 
 	void Set(float r, float g, float b) { Red = r; Green = g; Blue = b; }
 
@@ -51,7 +51,7 @@ public:
 	static Color RED, YELLOW, BLUE, GREEN;
 
 private:
-	float Red, Green, Blue;
+	float Red, Green, Blue, Alpha;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

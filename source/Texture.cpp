@@ -18,6 +18,26 @@ Texture::~Texture() {
 	 stbi_image_free(m_data);
 }
 
-unsigned char Texture::GetPixelColor(int x, int y) {
-	return m_data[y * m_width + x];
+Color Texture::GetPixelColor(int x, int y) {
+	switch(m_format) {
+		case TEXTURE_FORMAT::GREY: {
+			auto grey = m_data[y * m_width * m_numComponents + x];
+			return Color(float(grey) / 255.f);
+		}
+
+		case TEXTURE_FORMAT::RGBA: {
+			float red = float(m_data[y * m_width *m_numComponents + x]) / 255.f;
+			float blue = float(m_data[y * m_width *m_numComponents + x + 1]) / 255.f;
+			float green = float(m_data[y * m_width *m_numComponents + x + 2]) / 255.f;
+			float alpha = float(m_data[y * m_width *m_numComponents + x + 3]) / 255.f;
+			return Color(red, blue, green, alpha);
+		}
+
+		default: {
+			float red = float(m_data[y * m_width *m_numComponents + x]) / 255.f;
+			float blue = float(m_data[y * m_width *m_numComponents + x + 1]) / 255.f;
+			float green = float(m_data[y * m_width *m_numComponents + x + 2]) / 255.f;
+			return Color(red, blue, green);
+		}
+	}
 }

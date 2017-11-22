@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Color.hpp"
 
 
 enum class TEXTURE_FORMAT:uint8_t {
@@ -15,7 +16,7 @@ public:
 	int Height() const { return m_height; }
 	int NumComponents() const { return m_numComponents; }
 	/// Query a pixel color. Indices range from [0, width) & [0, height)
-	unsigned char GetPixelColor(int x, int y);
+	Color GetPixelColor(int x, int y);
 	const std::string & Name() { return m_name; }
 
 private:
