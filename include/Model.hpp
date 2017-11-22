@@ -3,11 +3,13 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <unordered_set>
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 #include "Object.hpp"
 #include "MeshObject.hpp"
+#include "Texture.hpp"
 
 class Model{
 public:
@@ -22,8 +24,10 @@ public:
 private:
 	void ProcessNode(aiNode *node, const aiScene *scene);
     MeshObject* ProcessMesh(aiMesh *mesh, const aiScene *scene);
-
+    void LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
 	std::vector<MeshObject*> m_meshes;
+	std::unordered_set<Texture> m_textures;
+	std::unordered_set<std::string> m_textureNames;
 
 };

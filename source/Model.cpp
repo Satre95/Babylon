@@ -66,7 +66,13 @@ MeshObject* Model::ProcessMesh(aiMesh *mesh, const aiScene *scene) {
 		vector.z = mesh->mNormals[i].z;
 		vertex.Normal = vector;  
 
-		//TODO: Load Texcoords
+		// For now, only take the first set of texture coordinates.
+        if(mesh->mTextureCoords[0]) {
+            glm::vec2 texCoords;
+            texCoords.x = mesh->mTextureCoords[0][i].x;
+            texCoords.y = mesh->mTextureCoords[0][i].y;
+            vertex.TexCoord = texCoords;
+        }
 
         vertices.push_back(vertex);
     }
@@ -92,5 +98,20 @@ void Model::PrintInfo(std::ostream & stream) {
         stream << " and " << aMesh->GetNumTriangles() * 3 << " indices." << std::endl;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Model::LoadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
+    for(unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+        if(m_textureNames.find(std::string(str.C_Str())) == m_textureNames.end()) {
+            m_textureNames.insert(std::string(str.C_Str()));
+            m_textures.emplace(std::string(str.C_Str()));
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
