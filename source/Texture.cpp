@@ -55,3 +55,7 @@ Color Texture::SampleTexture(float u, float v) {
 	int y = int(v * float(m_height) + 0.5f);
 	return GetPixelColor(x, y);
 }
+
+Color Texture::SampleTexture(glm::vec2 texCoords) {
+	return SampleTexture(texCoords.x, texCoords.y);
+}

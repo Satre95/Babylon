@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <glm/vec2.hpp>
 #include "Color.hpp"
 
 
@@ -23,6 +24,7 @@ public:
 	Color GetPixelColor(int x, int y);
 	/// Sample the texture with normalized texture coordinates.
 	Color SampleTexture(float u, float v);
+	Color SampleTexture(glm::vec2 texCoords);
 	const std::string & Name() const { return m_name; }
 	bool operator ==(const Texture & other) const {
 		return other.m_name == m_name;
