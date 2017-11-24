@@ -25,5 +25,6 @@ endif()
 add_subdirectory(external)
 # Build Babylon
 add_subdirectory(source)
+add_subdirectory(include)
 # Build examples
 add_subdirectory(examples)

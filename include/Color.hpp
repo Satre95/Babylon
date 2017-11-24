@@ -4,6 +4,8 @@
 
 #pragma once
 #include <vector>
+#include <cstdint>
+#include <array>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +43,8 @@ public:
 	{
 		return Color(Red * scale, Blue * scale, Green * scale);
 	}
+
+	std::array<uint8_t, 4> ToSeparateComponents();
 
 	int ToInt();
 	void FromInt(int c);

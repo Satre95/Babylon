@@ -68,3 +68,17 @@ Color Color::AverageColors(std::vector<Color> & colors) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+std::array<uint8_t, 4> Color::ToSeparateComponents() {
+	uint8_t r = (Red < 0) ? 0 : ((Red >= 1.0) ? 255 : uint8_t(Red*256.0f));
+	uint8_t g = (Green < 0) ? 0 : ((Green >= 1.0) ? 255 : uint8_t(Green*256.0f));
+	uint8_t b = (Blue < 0) ? 0 : ((Blue >= 1.0) ? 255 : uint8_t(Blue*256.0f));
+	uint8_t a = (Alpha < 0) ? 0 : ((Alpha >= 1.0) ? 255 : uint8_t(Alpha*256.0f));
+
+	return {r, g, b, a};
+
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////

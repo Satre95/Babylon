@@ -4,7 +4,8 @@ set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
 			FogVolume.cpp InstanceObject.cpp LambertMaterial.cpp
 			MeshObject.cpp MetalMaterial.cpp PointLight.cpp
 			RayTrace.cpp Scene.cpp Triangle.cpp
-            Model.cpp Texture.cpp Image.cpp)
+            Model.cpp Texture.cpp Image.cpp
+            TextureMaterial.cpp)
 
 add_library(Babylon STATIC ${HEADER_FILES} ${SOURCE_FILES})
 

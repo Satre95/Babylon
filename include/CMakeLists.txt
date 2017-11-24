@@ -7,5 +7,5 @@ set(HEADER_FILES Bitmap.hpp BoxTreeNode.hpp BoxTreeObject.hpp
 			Ray.hpp RayTrace.hpp ScatterPhase.hpp
 			Scene.hpp Triangle.hpp Utilities.hpp
             Vertex.hpp Volume.hpp Model.hpp
-            Image.hpp
+            Image.hpp TextureMaterial.hpp
             stb_image.h stb_image_write.h)
