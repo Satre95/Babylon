@@ -50,12 +50,12 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0, 0.5f, 1.f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
-	cam.SetResolution(1000, 1000);
+	cam.BuildCamera( glm::vec3(0, 5.f, 15.f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
+	cam.SetResolution(400, 400);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
 	cam.SetfStop(20000.f);
-	cam.SetSuperSample(1, 1);
+	cam.SetSuperSample(4, 4);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetMaxPathLength(3);
@@ -72,6 +72,9 @@ int main(int argc, char* argv[]) {
 	// ----------------------------------------------------------
 	// Write image to file.
 	cam.SaveBitmap("basic.bmp");
+	// if(!cam.SaveImage("basic")) {
+	// 	std::cerr << "Failed to write image basic to file" << std::endl;
+	// }
 
 
 	// ----------------------------------------------------------
