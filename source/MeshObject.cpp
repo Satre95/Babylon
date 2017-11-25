@@ -5,6 +5,7 @@
 #include <cstring>
 #include "MeshObject.hpp"
 #include "LambertMaterial.hpp"
+#include "TextureMaterial.hpp"
 #include "glm/glm.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -12,7 +13,13 @@
 MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indices,
 	std::vector<Texture *> textures) {
 	m_vertices = verts;
-	m_material = new LambertMaterial(Color(1.0f));
+
+	if(textures.empty())
+		m_material = new LambertMaterial(Color(1.0f));
+	// TODO: Replace with correct allocation of specific texture types.
+	else 
+		m_material = new TextureMaterial(textures.front());
+
 	GenerateTriangles(indices);
 	m_textures = textures;
 }
@@ -23,7 +30,15 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris
 	std::vector<Texture *> textures) {
 	m_vertices = verts;
 	m_triangles = tris;
-	m_material = new LambertMaterial(Color(1.0f));
+	
+	if(textures.empty())
+		m_material = new LambertMaterial(Color(1.0f));
+	// TODO: Replace with correct allocation of specific texture types.
+	else 
+		m_material = new TextureMaterial(textures.front());
+    
+    for(auto & aTri: tris) aTri.SetMaterial(m_material);
+    
 	m_textures = textures;
 	BuildTrianglePointerArray();
 

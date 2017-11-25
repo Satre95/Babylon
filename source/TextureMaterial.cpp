@@ -1,3 +1,4 @@
+
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 
@@ -19,9 +20,7 @@ m_texture(new Texture(file)) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-TextureMaterial::~TextureMaterial() {
-	delete m_texture;
-}
+TextureMaterial::~TextureMaterial() {}
 
 ////////////////////////////////////////////////////////////////////////////////
 

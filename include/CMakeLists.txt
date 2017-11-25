@@ -1,4 +1,4 @@
-set(HEADER_FILES Bitmap.hpp BoxTreeNode.hpp BoxTreeObject.hpp
+set(SOURCE_FILES Bitmap.hpp BoxTreeNode.hpp BoxTreeObject.hpp
 			Camera.hpp Color.hpp DirectLight.hpp
 			FogVolume.hpp InstanceObject.hpp Intersection.hpp
 			IsotropicScatter.hpp LambertMaterial.hpp Light.hpp

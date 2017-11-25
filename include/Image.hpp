@@ -14,7 +14,7 @@ public:
 		GREY = 1, GREYALPHA = 2, RGB = 3, RGBA = 4
 	};
 
-	Image(int x, int y, Components comp = Components::RGB, Format Format = Format::JPEG);
+	Image(int x, int y, Components comp = Components::RGBA, Format Format = Format::JPEG);
 	~Image();
 
 	int GetWidth() const		{ return m_width; 	}
@@ -24,7 +24,7 @@ public:
 	/// The data arg is expected to be a pointer to a contiguous set of memory of 
 	/// the set number of components.
 	/// (0, 0) is at the top left corner.
-	void SetPixel(size_t x, size_t y, unsigned char * data);
+	void SetPixel(size_t x, size_t y, uint8_t * data);
 	/// Writes the image out to file.
 	bool Write(std::string file);
 
@@ -33,7 +33,7 @@ private:
 	const Components m_components;
 	const int m_width;
 	const int m_height;
-	unsigned char * m_pixelData = nullptr;
+	uint8_t * m_pixelData = nullptr;
 	
 };
 

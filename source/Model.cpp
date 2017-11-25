@@ -111,7 +111,7 @@ void Model::PrintInfo(std::ostream & stream) {
     stream << "This model contains " << NumMeshes() << ((NumMeshes() == 1) ? " mesh." : " meshes.") << std::endl;
     size_t count = 0;
     for(auto & aMesh: m_meshes) {
-        stream << "\tMesh " << count << " has " << aMesh->GetNumVertexes() << " vertices, ";
+        stream << "\tMesh " << count++ << " has " << aMesh->GetNumVertexes() << " vertices, ";
         stream << aMesh->GetNumTriangles() * 3 << " indices, and ";
         stream << aMesh->GetNumTextures() << " textures." << std::endl;
     }

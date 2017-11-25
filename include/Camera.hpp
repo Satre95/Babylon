@@ -23,6 +23,7 @@
 #include "Bitmap.hpp"
 #include "Material.hpp"
 #include "RayTrace.hpp"
+#include "Image.hpp"
 
 class Camera {
 public:
@@ -59,6 +60,7 @@ public:
 	void BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3 up);
 	void Render(const Scene & scene, bool parallel = false);
 	void SaveBitmap(std::string filename);
+	bool SaveImage(std::string filename);
 
 private:
 	//Camera params
@@ -70,6 +72,7 @@ private:
 	float hFov;
 	float fStop = 1e10f, focalPlane = 1.f;
 	BitmapPtrUnique img;
+	ImageRef image;
 
 	//Sampling params.
 	std::pair<int, int> superSamples = std::make_pair(1, 1);

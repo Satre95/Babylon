@@ -32,6 +32,7 @@ void Camera::BuildCamera(glm::vec3 pos, glm::vec3 target, glm::vec3  up) {
 
 void Camera::Render(const Scene & scene, bool parallel) {
 	img = std::make_unique<Bitmap>(width, height);
+	image = std::make_shared<Image>(width, height);
 	finished = false;
 	previewThreadWriting = false;
 	finishedTiles = 0;
@@ -124,7 +125,9 @@ void Camera::RenderPixel(int x, int y, const Scene & scene) {
 	}
 
 	//Average out the colors from the rays and save them to the image.
-	img->SetPixel(x, y, Color::AverageColors(pixelColors).ToInt());
+
+	image->SetPixel(x, y, &(Color::AverageColors(pixelColors).ToSeparateComponents().front()));
+	img->SetPixel(x, y, (Color::AverageColors(pixelColors)).ToInt());
 }
 
 void Camera::RenderTile(int aTile, const Scene & scene)
@@ -161,6 +164,10 @@ void Camera::RenderPixelsParallel(const Scene & scene) {
 
 void Camera::SaveBitmap(std::string filename) {
 	img->SaveBMP(filename.c_str());
+}
+
+bool Camera::SaveImage(std::string filename) {
+	return image->Write(filename);
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {

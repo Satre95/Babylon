@@ -19,8 +19,8 @@ public:
 	bool Intersect(const Ray &ray, Intersection &hit) const;
 
 	const Vertex & GetVertex(int i) const { return *(m_vertices.at(i)); }
-
 	glm::vec3 GetCenter()const;
+    void SetMaterial(Material * mat) { material = mat; }
 
 private:
 	std::array<Vertex *, 3> m_vertices;
