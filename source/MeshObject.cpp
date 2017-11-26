@@ -72,9 +72,9 @@ void MeshObject::GenerateTriangles(const std::vector<size_t> & indices) {
 	m_triangles.reserve(indices.size() / 3);
 	for (int i = 0; i < indices.size(); i+=3) {
 		m_triangles.emplace_back(
-			&m_vertices.at(i),
-			&m_vertices.at(i+1),
-			&m_vertices.at(i+2),
+			&m_vertices.at(indices.at(i)),
+			&m_vertices.at(indices.at(i+1)),
+			&m_vertices.at(indices.at(i+2)),
 			m_material
 			);
 	}

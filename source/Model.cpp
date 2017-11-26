@@ -17,8 +17,9 @@ Model::~Model() {
 void Model::Load(std::string path) {
 	Assimp::Importer import;
     const aiScene *scene = import.ReadFile(path, 
-    					aiProcess_Triangulate 
-    					| aiProcess_GenNormals
+    					aiProcess_Triangulate
+                        | aiProcess_GenNormals
+                        | aiProcess_JoinIdenticalVertices
     					| aiProcess_OptimizeMeshes
     					| aiProcess_OptimizeGraph);	
 	
