@@ -8,4 +8,5 @@ set(SOURCE_FILES Bitmap.hpp BoxTreeNode.hpp BoxTreeObject.hpp
 			Scene.hpp Triangle.hpp Utilities.hpp
             Vertex.hpp Volume.hpp Model.hpp
             Image.hpp TextureMaterial.hpp
+            AnisotropicPhongMaterial.hpp
             stb_image.h stb_image_write.h)
