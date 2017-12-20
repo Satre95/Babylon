@@ -1,7 +1,8 @@
-#include "AnisotropicPhongMaterial.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <cmath>
+#include "AnisotropicPhongMaterial.hpp"
+#include "Rand.hpp"
 
 AnisotropicPhongMaterial::AnisotropicPhongMaterial(glm::vec3 diffuse, glm::vec3 specular) : m_RDiffuse(diffuse), m_RSpecular(specular)
 {}
@@ -14,7 +15,18 @@ void AnisotropicPhongMaterial::ComputeReflectance(Color &col, const glm::vec3 &i
 
 //TODO: Implement sampe generation fn.
 void AnisotropicPhongMaterial::GenerateSample(const Intersection & isect, const glm::vec3 & inDir, glm::vec3 & outDir, Color & outColor) {
+    float rand1 = Rand::randFloat();
+    float rand2 = Rand::randFloat();
     
+    float term1 = glm::sqrt((m_specU + 1.f) / (m_specV + 1.f));
+    float term2 = glm::tan(glm::pi<float>() * rand1 * 0.5f);
+    float phi = glm::atan(term1 * term2);
+    
+    float base = 1.f - rand2;
+    float exponent = 1.f / (m_specU * glm::cos(phi) * glm::cos(phi) + m_specV * glm::sin(phi) * glm::sin(phi) + 1.f);
+    float cosTheta = glm::pow(base, exponent);
+    
+
 }
 
 
