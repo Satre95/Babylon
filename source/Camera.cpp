@@ -9,6 +9,7 @@
 #include "Camera.hpp"
 #include "Utilities.hpp"
 #include "BoxTreeNode.hpp"
+#include "Rand.hpp"
 #include <vector>
 #include <iostream>
 #include <sstream>
@@ -113,8 +114,8 @@ void Camera::RenderPixel(int x, int y, const Scene & scene) {
 			//Randomize the origin point around the camera aperture
 			float aperture = focalPlane / fStop;
 			float displacement = aperture / 2.f;
-			glm::vec3 randX = a * Utilities::randomFloatInRange(-displacement, displacement);
-			glm::vec3 randY = b * Utilities::randomFloatInRange(-displacement, displacement);
+			glm::vec3 randX = a * Rand::randFloat(-displacement, displacement);
+			glm::vec3 randY = b * Rand::randFloat(-displacement, displacement);
 			ray.Origin += (randX + randY);
 
 			Intersection hitData;
@@ -171,8 +172,8 @@ bool Camera::SaveImage(std::string filename) {
 }
 
 void Camera::JitterSubPixel(float & subX, float & subY) {
-	subX = Utilities::randomFloatInRange(0.f, 1.f);
-	subY = Utilities::randomFloatInRange(0.f, 1.f);
+	subX = Rand::randFloat(0.f, 1.f);
+	subY = Rand::randFloat(0.f, 1.f);
 }
 
 void Camera::ApplyShirleyWeight(float & s, float & t) {

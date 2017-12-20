@@ -8,11 +8,11 @@
 
 #pragma once
 
-#define FLOAT_THRESHOLD 1e-10f
+#define FLOAT_THRESHOLD 1e-8f
 
 #include <ctime>
 #include <cstdlib>
-#include <random>
+#include <string>
 
 class Utilities {
 public:
@@ -20,13 +20,6 @@ public:
 	/// Extracts the file name from the given path.
 	static std::string FilenameFromPath(std::string & path) {
 		return path.substr(0, path.find_last_of('/'));
-	}
-
-	static float randomFloatInRange(const float & LO, const float & HI) {
-		std::random_device rand_dev;
-		std::mt19937 generator(rand_dev());
-		std::uniform_real_distribution<float> dist(LO, HI);
-		return dist(generator);
 	}
 };
 

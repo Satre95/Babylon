@@ -1,5 +1,8 @@
 #include "FogVolume.hpp"
-#include <glm/gtc/random.hpp>
+#include "Rand.hpp"
+
+std::mt19937 Rand::sBase (214u);
+std::uniform_real_distribution<float> Rand::sFloatGen;
 
 FogVolume::FogVolume()
 {
@@ -27,7 +30,7 @@ void FogVolume::EvaluateRadiance(
 		float high = float(i + 1) * step;
 
 		//Sample at random point in the segment
-		float sampleDist = Utilities::randomFloatInRange(low, high);
+        float sampleDist = Rand::randFloat(low, high);
 		glm::vec3 samplePoint = pos + reverseRay * sampleDist;
 
 		//Now to real business, compute parts of eq
@@ -121,8 +124,8 @@ void FogVolume::EvaluateIndirectInScattering(
 )
 {
 	//Generate a random ray
-	float u = Utilities::randomFloatInRange(0.f, 1.f);
-	float v = Utilities::randomFloatInRange(0.f, 1.f);
+	float u = Rand::randFloat();
+	float v = Rand::randFloat();
 	float theta = 2.f * glm::pi<float>() * u;
 	float phi = acosf(2.f * v - 1.f);
 

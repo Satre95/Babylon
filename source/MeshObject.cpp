@@ -14,11 +14,11 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indice
 	std::vector<Texture *> textures) {
 	m_vertices = verts;
 
-	if(textures.empty())
-		m_material = new LambertMaterial(Color(1.0f));
-	// TODO: Replace with correct allocation of specific texture types.
-	else 
-		m_material = new TextureMaterial(textures.front());
+    if(textures.empty())
+        m_material = new LambertMaterial(Color(0.8f, 0.5f, 0.6f));
+    // TODO: Replace with correct allocation of specific texture types.
+    else
+        m_material = new TextureMaterial(textures.front());
 
 	GenerateTriangles(indices);
 	m_textures = textures;
@@ -31,11 +31,11 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris
 	m_vertices = verts;
 	m_triangles = tris;
 	
-	if(textures.empty())
-		m_material = new LambertMaterial(Color(1.0f));
-	// TODO: Replace with correct allocation of specific texture types.
-	else 
-		m_material = new TextureMaterial(textures.front());
+    if(textures.empty())
+        m_material = new LambertMaterial(Color(0.8f, 0.5f, 0.6f));
+    // TODO: Replace with correct allocation of specific texture types.
+    else
+        m_material = new TextureMaterial(textures.front());
     
     for(auto & aTri: tris) aTri.SetMaterial(m_material);
     

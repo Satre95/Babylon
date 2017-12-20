@@ -10,7 +10,7 @@ set(HEADER_FILES ../include/Bitmap.hpp ../include/BoxTreeNode.hpp ../include/Box
 		../include/Scene.hpp ../include/Triangle.hpp ../include/Utilities.hpp
 		../include/Vertex.hpp ../include/Volume.hpp ../include/Model.hpp
 		../include/Image.hpp ../include/TextureMaterial.hpp
-		../include/AnisotropicPhongMaterial.hpp
+		../include/AnisotropicPhongMaterial.hpp ../Rand.hpp
 		../include/stb_image.h ../include/stb_image_write.h)
 
 set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
