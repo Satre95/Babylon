@@ -49,7 +49,21 @@ glm::vec3 AnisotropicPhongMaterial::ComputeDiffuseReflectance(
         const glm::vec3 & k2,
         const Intersection & isect)
 {
+    const auto & norm = isect.Normal;
+    const auto k1DotNorm = glm::dot(k1, norm);
+    const auto k2DotNorm = glm::dot(k2, norm);
     
+    // First term
+    const auto term1 = 28.f * m_RDiffuse
+                        / (23.f * glm::pi<float>())
+                        * (glm::vec3(1.f) - m_RSpecular);
     
-    return glm::vec3(0.f);
+    // Second term
+    const auto term2 = 1.f - glm::pow(1.f - 0.5f * k1DotNorm, 5.f);
+    
+    // Third term
+    const auto term3 = 1.f - glm::pow(1.f - 0.5f * k2DotNorm, 5.f);
+    
+    auto diffuseReflectance = term1 * term2 * term3;
+    return diffuseReflectance;
 }
