@@ -1,6 +1,7 @@
 #include "FogVolume.hpp"
 #include "Rand.hpp"
 
+//Initialize the static Rand num generator member vars.
 std::mt19937 Rand::sBase (214u);
 std::uniform_real_distribution<float> Rand::sFloatGen;
 
