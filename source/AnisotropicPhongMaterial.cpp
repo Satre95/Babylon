@@ -7,7 +7,17 @@ AnisotropicPhongMaterial::AnisotropicPhongMaterial(glm::vec3 diffuse, glm::vec3 
 {}
 AnisotropicPhongMaterial::~AnisotropicPhongMaterial() {}
 
-/// Implement specular reflectance
+//TODO: Implement reflectance calculation fn.
+void AnisotropicPhongMaterial::ComputeReflectance(Color &col, const glm::vec3 &in, glm::vec3 &out, const Intersection &hit)  {
+    
+}
+
+//TODO: Implement sampe generation fn.
+void AnisotropicPhongMaterial::GenerateSample(const Intersection & isect, const glm::vec3 & inDir, glm::vec3 & outDir, Color & outColor) {
+    
+}
+
+
 glm::vec3 AnisotropicPhongMaterial::ComputeSpecularReflectance(
         const glm::vec3 & k1,
         const glm::vec3 & k2,
@@ -43,7 +53,6 @@ glm::vec3 AnisotropicPhongMaterial::ComputeSpecularReflectance(
     return specularReflectance;
 }
 
-//TODO: Implement diffuse reflectance.
 glm::vec3 AnisotropicPhongMaterial::ComputeDiffuseReflectance(
         const glm::vec3 & k1,
         const glm::vec3 & k2,
