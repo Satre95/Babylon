@@ -14,4 +14,5 @@ public:
 private:
 	Texture * m_texture = nullptr;
 
+
 };
