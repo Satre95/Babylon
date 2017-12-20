@@ -1,4 +1,5 @@
 link_libraries(Babylon Threads::Threads)
+include_directories( ${INCLUDES} )
 add_executable(basic WIN32 basic.cpp ${ICON})
 
 # Windows config stuff

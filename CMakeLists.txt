@@ -14,6 +14,11 @@ set(CMAKE_MACOSX_RPATH 1)
 set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
 set(CMAKE_BUILD_TYPE DEBUG)
 set(THREADS_PREFER_PTHREAD ON)
+set (INCLUDES 
+		${EXTERNALS_DIR}/assimp/include 
+		${CMAKE_SOURCE_DIR}/include
+		${Boost_INCLUDE_DIRS}
+		${EXTERNALS_DIR}/boost.simd/include )
 
 
 if(MSVC)
@@ -25,6 +30,5 @@ endif()
 add_subdirectory(external)
 # Build Babylon
 add_subdirectory(source)
-add_subdirectory(include)
 # Build examples
 add_subdirectory(examples)
