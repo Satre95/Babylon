@@ -28,12 +28,15 @@ int main(int argc, char* argv[]) {
 	// ----------------------------------------------------------
 	// Scene Construction
 	Scene scene;
-	scene.SetSkyColor(Color(0.4f, 0.4f, 0.8f));
+	scene.SetSkyColor(Color(0.9f, 0.9f, 0.9f));
 
 	//Add lights
 	DirectLight dLight;
 	dLight.SetDirection(glm::vec3(0, -1.f, -1.f));
 	scene.AddLight(dLight);
+    DirectLight dLight1;
+    dLight1.SetDirection(glm::vec3(0, 0, -1.f));
+    scene.AddLight(dLight1);
 
 	//Construct BoxTreeObjects from Model's meshes
 	std::vector<BoxTreeObject> treeObjects;
@@ -50,12 +53,12 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0, 5.f, 15.f), glm::vec3(0), glm::vec3(0, 1.0f, 0));
+	cam.BuildCamera( glm::vec3(0, 20.f, 20.f), glm::vec3(0, 10.f, 0), glm::vec3(0, 1.0f, 0));
 	cam.SetResolution(400, 400);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
 	cam.SetfStop(20000.f);
-	cam.SetSuperSample(4, 4);
+	cam.SetSuperSample(1, 1);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetMaxPathLength(3);
@@ -78,8 +81,8 @@ int main(int argc, char* argv[]) {
 
 
 	// ----------------------------------------------------------
-	std::cout << "Press ENTER to exit" << std::endl;
-	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+//    std::cout << "Press ENTER to exit" << std::endl;
+//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 
 /*
