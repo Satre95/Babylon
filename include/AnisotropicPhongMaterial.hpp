@@ -18,12 +18,12 @@ private:
     glm::vec3 ComputeDiffuseReflectance(const glm::vec3 & k1, const glm::vec3 & k2, const Intersection & isect);
     
     /// Diffuse Reflectance of this material
-    glm::vec3 m_RDiffuse;
+    glm::vec3 m_RDiffuse = glm::vec3(1.f);
     /// Specular reflectance of this material
-    glm::vec3 m_RSpecular;
+    glm::vec3 m_RSpecular = glm::vec3(1.f);
     /// U Specular Exponent
-    float m_specU;
+    float m_specU = 5.f;
     /// V Specular Exponent
-    float m_specV;
+    float m_specV = 5.f;
 	
 };

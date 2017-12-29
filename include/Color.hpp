@@ -6,12 +6,16 @@
 #include <vector>
 #include <cstdint>
 #include <array>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Color {
 public:
 	Color() { Red = Green = Blue = Alpha = 1.0; }
+    Color(glm::vec3 vec) { Red = vec.r; Blue = vec.b; Green = vec.g; Alpha = 1.f; }
+    Color(glm::vec4 vec) { Red = vec.r; Blue = vec.b; Green = vec.g; Alpha = vec.a; }
 	Color(float r, float g, float b, float alpha = 1.f) { Red = r; Green = g; Blue = b; Alpha = alpha; }
 	Color(float val) { Red = Blue = Green = val; Alpha = 1.f; }
 

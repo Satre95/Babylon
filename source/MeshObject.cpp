@@ -6,6 +6,7 @@
 #include "MeshObject.hpp"
 #include "LambertMaterial.hpp"
 #include "TextureMaterial.hpp"
+#include "AnisotropicPhongMaterial.hpp"
 #include "glm/glm.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -14,11 +15,11 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indice
 	std::vector<Texture *> textures) {
 	m_vertices = verts;
 
-    if(textures.empty())
-        m_material = new LambertMaterial(Color(0.8f, 0.5f, 0.6f));
-    // TODO: Replace with correct allocation of specific texture types.
-    else
-        m_material = new TextureMaterial(textures.front());
+    
+//    if(textures.empty())
+        m_material = new LambertMaterial();
+//    else
+//        m_material = new TextureMaterial(textures.front());
 
 	GenerateTriangles(indices);
 	m_textures = textures;
@@ -31,11 +32,11 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris
 	m_vertices = verts;
 	m_triangles = tris;
 	
-    if(textures.empty())
-        m_material = new LambertMaterial(Color(0.8f, 0.5f, 0.6f));
+//    if(textures.empty())
+        m_material = new LambertMaterial();
     // TODO: Replace with correct allocation of specific texture types.
-    else
-        m_material = new TextureMaterial(textures.front());
+//    else
+//        m_material = new TextureMaterial(textures.front());
     
     for(auto & aTri: tris) aTri.SetMaterial(m_material);
     
@@ -91,7 +92,7 @@ void MeshObject::MakeBox(float x, float y, float z, Material *mtl) {
 	m_triangles.clear();
 	m_triangles.reserve(12);
 	if(mtl == nullptr)
-		mtl = new LambertMaterial;
+		mtl = new LambertMaterial();
 	m_material = mtl;
 
 	x *= 0.5f;

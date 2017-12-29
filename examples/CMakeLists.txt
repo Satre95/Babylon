@@ -1,6 +1,7 @@
 link_libraries(Babylon Threads::Threads)
 include_directories( ${INCLUDES} )
-add_executable(basic WIN32 basic.cpp ${ICON})
+add_executable(Basic WIN32 basic.cpp ${ICON})
+add_executable(AshikminTest WIN32 ashikminTest.cpp ${ICON} )
 
 # Windows config stuff
 if(MSVC)
@@ -16,21 +17,23 @@ endif()
 
 if(WIN32)
 	if(MSVC) # Check if we are using the Visual Studio compiler
-		set_target_properties(basic PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+		set_target_properties(Basic PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+        set_target_properties(AshikminTest PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
 	endif()
 endif()
 
-set(WINDOWS_BINARIES basic)
+set(WINDOWS_BINARIES Basic AshikminTest)
 set_target_properties(${WINDOWS_BINARIES} PROPERTIES
                       FOLDER "Babylon-Examples")
 # Mac Configs
 if (APPLE)
-   set_target_properties(basic PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Basic Example")
+   set_target_properties(Basic PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Basic Example")
+   set_target_properties(AshikminTest PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Basic Example")
 
    set_target_properties(${WINDOWS_BINARIES} PROPERTIES
                          RESOURCE example.icns
                          MACOSX_BUNDLE_SHORT_VERSION_STRING 1.0
                          MACOSX_BUNDLE_LONG_VERSION_STRING 1.0.0.0
                          MACOSX_BUNDLE_ICON_FILE example.icns
-                         MACOSX_BUNDLE_INFO_PLIST "${StarForge_SOURCE_DIR}/CMake/MacOSXBundleInfo.plist.in")
+                         MACOSX_BUNDLE_INFO_PLIST "${Babylon_SOURCE_DIR}/CMake/MacOSXBundleInfo.plist.in")
 endif()

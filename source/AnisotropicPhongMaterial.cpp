@@ -11,10 +11,20 @@ AnisotropicPhongMaterial::~AnisotropicPhongMaterial() {}
 //TODO: Implement reflectance calculation fn.
 void AnisotropicPhongMaterial::ComputeReflectance(Color &col, const glm::vec3 &in, glm::vec3 &out, const Intersection &hit)  {
     
+    glm::vec3 outDir;
+    Color tempColor;
+    GenerateSample(hit, in, outDir, tempColor);
+    
+    auto spec = Color(ComputeSpecularReflectance(in, outDir, hit));
+    auto diffuse = Color(ComputeDiffuseReflectance(in, outDir, hit));
+    
+    col = spec + diffuse;
 }
 
 //TODO: Implement sampe generation fn.
 void AnisotropicPhongMaterial::GenerateSample(const Intersection & isect, const glm::vec3 & inDir, glm::vec3 & outDir, Color & outColor) {
+    // TODO: Implemente proper sampling fn.
+    /*
     float rand1 = Rand::randFloat();
     float rand2 = Rand::randFloat();
     
@@ -25,7 +35,21 @@ void AnisotropicPhongMaterial::GenerateSample(const Intersection & isect, const 
     float base = 1.f - rand2;
     float exponent = 1.f / (m_specU * glm::cos(phi) * glm::cos(phi) + m_specV * glm::sin(phi) * glm::sin(phi) + 1.f);
     float cosTheta = glm::pow(base, exponent);
+     */
     
+    // For now, just randomly sample the hemisphere.
+    float u = Rand::randFloat();
+    float v = Rand::randFloat(0.f, 0.25f);
+    float azimuth = 2.f * glm::pi<float>() * u;
+    float elevation = glm::acos(2.f * v - 1.f);
+    float x = glm::sin(elevation) * glm::cos(azimuth);
+    float y = glm::sin(elevation) * glm::sin(azimuth);
+    float z = glm::cos(elevation);
+    outDir = glm::vec3(x, y, z);
+    
+    
+    //Set the output color;
+//    outColor = Color(m_RDiffuse.x, m_RDiffuse.y, m_RDiffuse.z);
 
 }
 
@@ -52,8 +76,9 @@ glm::vec3 AnisotropicPhongMaterial::ComputeSpecularReflectance(
     const float term1 = glm::sqrt((m_specU + 1.f) * (m_specV + 1.f)) / (8.f * glm::pi<float>());
     
     //Specular angle term
-    float exponent = m_specU * hDotU * hDotU + m_specV * hDotV * hDotV;
-    exponent /= (1 - hDotNorm * hDotNorm);
+    auto exponent = int(m_specU * hDotU * hDotU + m_specV * hDotV * hDotV);
+    exponent /= (1.f - hDotNorm * hDotNorm);
+//    exponent = glm::max(1.f, exponent);
     float term2_nume = glm::pow(hDotNorm, exponent);
     float term2_denom = hDotK * glm::max(normDotk1, normDotk2);
     const float term2 = term2_nume / term2_denom;
