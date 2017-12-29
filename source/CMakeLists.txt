@@ -9,7 +9,7 @@ set(HEADER_FILES ../include/Bitmap.hpp ../include/BoxTreeNode.hpp ../include/Box
 		../include/Ray.hpp ../include/RayTrace.hpp ../include/ScatterPhase.hpp
 		../include/Scene.hpp ../include/Triangle.hpp ../include/Utilities.hpp
 		../include/Vertex.hpp ../include/Volume.hpp ../include/Model.hpp
-		../include/Image.hpp ../include/TextureMaterial.hpp
+		../include/Image.hpp ../include/Texture.hpp
 		../include/AnisotropicPhongMaterial.hpp ../include/Rand.hpp
 		../include/stb_image.h ../include/stb_image_write.h)
 
@@ -19,8 +19,7 @@ set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
 		MeshObject.cpp MetalMaterial.cpp PointLight.cpp
 		RayTrace.cpp Scene.cpp Triangle.cpp
 		Model.cpp Texture.cpp Image.cpp
-        AnisotropicPhongMaterial.cpp
-		TextureMaterial.cpp)
+        AnisotropicPhongMaterial.cpp)
 
 add_library(Babylon STATIC ${HEADER_FILES} ${SOURCE_FILES})
 

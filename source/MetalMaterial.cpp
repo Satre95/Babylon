@@ -1,4 +1,4 @@
-﻿#include "MetalMaterial.hpp"
+#include "MetalMaterial.hpp"
 
 void MetalMaterial::ComputeReflectance(Color &col, const glm::vec3 &in, glm::vec3 &out, const Intersection &hit) {
 	glm::vec3 reflect = glm::normalize(glm::reflect(in, hit.Normal));
@@ -17,6 +17,10 @@ void MetalMaterial::GenerateSample(const Intersection & isect, const glm::vec3 &
 
 	//Compute the reflection dir
 	outDir = glm::reflect(inDir, normal);
+    
 	//Set the color
-	outColor = matColor;
+    if(m_texture)
+        outColor = m_texture->SampleTexture(isect.TexCoord);
+    else
+        outColor = matColor;
 }

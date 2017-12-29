@@ -21,5 +21,8 @@ void LambertMaterial::GenerateSample(const Intersection & isect, const glm::vec3
 	outDir = v * cosf(u) * i + sqrtf(t) * j + v * sinf(u) * k;
 
 	//Set the output color;
-	outColor = DiffuseColor;
+    if(m_texture)
+        outColor = m_texture->SampleTexture(isect.TexCoord);
+    else
+        outColor = DiffuseColor;
 }

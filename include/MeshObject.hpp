@@ -36,6 +36,8 @@ private:
 	std::vector<Texture *> m_textures;
 	Material * m_material = nullptr;
 	Triangle ** m_trianglePtrs = nullptr;
+    
+    static Material * s_defaultMaterial;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

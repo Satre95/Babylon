@@ -12,7 +12,9 @@
 
 class LambertMaterial :public Material {
 public:	
-	LambertMaterial() {}
+    LambertMaterial(): Material() {}
+    LambertMaterial(std::string file): Material(file) {}
+    LambertMaterial(Texture * tex): Material(tex) {}
 	LambertMaterial(Color c) { DiffuseColor = c; }
 	void ComputeReflectance(Color &col, const glm::vec3 &in, glm::vec3 &out, const Intersection &hit);
 

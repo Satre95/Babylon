@@ -5,9 +5,10 @@
 #include <cstring>
 #include "MeshObject.hpp"
 #include "LambertMaterial.hpp"
-#include "TextureMaterial.hpp"
 #include "AnisotropicPhongMaterial.hpp"
 #include "glm/glm.hpp"
+
+Material* MeshObject::s_defaultMaterial = new LambertMaterial();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -16,10 +17,10 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<size_t> & indice
 	m_vertices = verts;
 
     
-//    if(textures.empty())
-        m_material = new LambertMaterial();
-//    else
-//        m_material = new TextureMaterial(textures.front());
+    if(textures.empty())
+        m_material = s_defaultMaterial;
+    else
+        m_material = new LambertMaterial(textures.front());
 
 	GenerateTriangles(indices);
 	m_textures = textures;
@@ -32,11 +33,11 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris
 	m_vertices = verts;
 	m_triangles = tris;
 	
-//    if(textures.empty())
-        m_material = new LambertMaterial();
+    if(textures.empty())
+        m_material = s_defaultMaterial;
     // TODO: Replace with correct allocation of specific texture types.
-//    else
-//        m_material = new TextureMaterial(textures.front());
+    else
+        m_material = new LambertMaterial(textures.front());
     
     for(auto & aTri: tris) aTri.SetMaterial(m_material);
     
