@@ -1,4 +1,4 @@
-﻿#include "RayTrace.hpp"
+#include "RayTrace.hpp"
 #include "Volume.hpp"
 
 void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) const {
@@ -20,9 +20,7 @@ void RayTrace::TraceRay(Intersection & hitData, const Ray & ray, int depth) cons
 			Intersection shadowHit;
 			shadowHit.HitDistance = glm::length(lightPos - hitData.Position) - FLOAT_THRESHOLD;
 			shadowHit.Position = hitData.Position;
-			Ray shadowRay;
-			shadowRay.Origin = shadowHit.Position;
-			shadowRay.Direction = glm::normalize(lightPos - hitData.Position);
+			Ray shadowRay( shadowHit.Position, glm::normalize(lightPos - hitData.Position));
 			if (!scene.Intersect(shadowRay, shadowHit)) {
 				Color matColor = Color::BLACK;
                 glm::vec3 temp;

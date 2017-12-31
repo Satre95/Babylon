@@ -10,7 +10,8 @@
 
 class DirectLight : public Light {
 public:
-	DirectLight(glm::vec3 direction) { this->direction = direction; }
+    DirectLight(glm::vec3 direction, Color c = Color::WHITE, float i = 1.f):
+        Light(c, i) { this->direction = direction; }
 	DirectLight() { direction = glm::vec3(0); }
 
 	void SetDirection(glm::vec3 d) { direction = d; }

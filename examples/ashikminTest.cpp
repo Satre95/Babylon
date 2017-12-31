@@ -8,6 +8,7 @@
 #include "BoxTreeObject.hpp"
 #include "AnisotropicPhongMaterial.hpp"
 #include "Model.hpp"
+#include <boost/simd/pack.hpp>
 
 using namespace std::chrono;
 
@@ -16,6 +17,13 @@ int main(int argc, char* argv[]) {
         std::cout << "ERROR: No path for model given" << std::endl;
         return 1;
     }
+    
+    namespace bs = boost::simd;
+    using pack_t = bs::pack<glm::vec3>;
+    
+    auto pack_size = bs::cardinal_of<pack_t>();
+    std::cout << "cardinal: " << pack_size << std::endl;
+    return 0;
     
     // ----------------------------------------------------------
     // Model Loading.

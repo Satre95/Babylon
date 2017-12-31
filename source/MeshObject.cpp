@@ -51,7 +51,7 @@ MeshObject::MeshObject(std::vector<Vertex> & verts, std::vector<Triangle> & tris
 MeshObject::~MeshObject() {
 	m_vertices.clear();
 	m_triangles.clear();
-	delete m_material;
+//    delete m_material;
 	delete[] m_trianglePtrs;
 
 }

@@ -92,9 +92,7 @@ void FogVolume::EvaluateDirectInScattering(Color & incomingRad, const Ray & inco
 		Color illuminatedColor;
 		//Use the Illuminate fn to fetch light vars
 		aLight.Illuminate(pos, illuminatedColor, toLight, lightPos);
-		Ray shadowRay;
-		shadowRay.Origin = pos;
-		shadowRay.Direction = glm::normalize(lightPos - pos);
+		Ray shadowRay(pos, glm::normalize(lightPos - pos));
 		Intersection shadowHit;
 
 		//If ray doesn't hit anything, then test for vols.
@@ -134,9 +132,7 @@ void FogVolume::EvaluateIndirectInScattering(
 	float y = sinf(phi) * sinf(phi);
 	float z = cosf(phi);
 
-	Ray randomRay;
-	randomRay.Direction = glm::vec3(x, y, z);
-	randomRay.Origin = pos;
+	Ray randomRay(pos, glm::vec3(x, y, z));
 
 	//Recursively cast the generated ray into the volume.
 	Intersection randHit;

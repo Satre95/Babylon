@@ -106,18 +106,18 @@ void Camera::RenderPixel(int x, int y, const Scene & scene) {
 
 			float scaleX = 2.0f * tanf(hFov / 2.0f);
 			float scaleY = 2.0f * tanf(vFov / 2.0f);
-
-			Ray ray;
-			ray.Origin = d;
-			ray.Direction = glm::normalize(fx * scaleX * a + fy * scaleY * b - (focalPlane *c));
-
+            
+            auto rayDir = glm::normalize(fx * scaleX * a + fy * scaleY * b - (focalPlane *c));
+            auto rayOrigin = d;
+            
 			//Randomize the origin point around the camera aperture
 			float aperture = focalPlane / fStop;
 			float displacement = aperture / 2.f;
 			glm::vec3 randX = a * Rand::randFloat(-displacement, displacement);
 			glm::vec3 randY = b * Rand::randFloat(-displacement, displacement);
-			ray.Origin += (randX + randY);
-
+			rayOrigin += (randX + randY);
+            Ray ray(rayOrigin, rayDir);
+            
 			Intersection hitData;
 			rayTracer->TraceRay(hitData, ray);
 

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <array>
 #include <boost/simd/pack.hpp>
-
+#include <boost/simd/function/store.hpp>
+#include <boost/simd/function/load.hpp>
 #include "Object.hpp"
 #include "Ray.hpp"
 #include "Intersection.hpp"
@@ -33,7 +35,13 @@ private:
 	///Tests against the bounding volume of this node only.
 	bool IntersectVolume(const Ray & ray, Intersection & hit);
 
-	glm::vec3 BoxMin, BoxMax;
+    // First member is min, second is max
+    glm::vec3 BoxMin, BoxMax;
+    using pack_t = boost::simd::pack<float, 8>;
+    // Useful for SIMD processing.
+    pack_t Box;
+    
+//    glm::vec3 BoxMin, BoxMax;
 	BoxTreeNode * child1, *child2;
 	std::array<Triangle*, MAX_TRIANGLES_PER_BOX> Tri;
 	int numTriangles = -1; //Used only if node is a leaf

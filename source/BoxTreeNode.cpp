@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <glm/ext.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 int BoxTreeNode::splitCount = 0;
 //Use an alias for the boost::simd namespace
@@ -12,9 +13,10 @@ namespace bs = boost::simd;
 BoxTreeNode::BoxTreeNode()
 {
 	child1 = child2 = nullptr;
-	BoxMin = glm::vec3(1e15f);
-	BoxMax = glm::vec3(-(1e15f));
-	Tri.fill(nullptr);
+    BoxMin = glm::vec3(1e8f);
+    BoxMax = glm::vec3(-(1e8f));
+    
+    Tri.fill(nullptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,16 +37,21 @@ bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit, int & depth) {
 ////////////////////////////////////////////////////////////////////////////////
 
 bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
-	//test if ray intersects our bounding box.
-	auto & a = BoxMin;
-	auto & b = BoxMax;
-	auto & p = ray.Origin;
-	auto & d = ray.Direction;
-
-	glm::vec3 t_1, t_2;
-	t_1 = (a - p) / d;
-	t_2 = (b - p) / d;
-
+    // Make the output pack
+    pack_t p_out(0.f);
+    
+    //Calculate
+    p_out = (Box - ray.p_Origin) / ray.p_Direction;
+    // Extract output
+    std::array<float, 8> output;
+    bs::store(p_out, output.data());
+    
+    glm::vec3 t_1 = glm::vec3(output.at(0), output.at(1), output.at(2));
+    glm::vec3 t_2 = glm::vec3(output.at(4), output.at(5), output.at(6));
+    
+//    glm::vec3 t_1_scalar = (glm::vec3(a) - p) / d;
+//    glm::vec3 t_2_scalar = (glm::vec3(b) - p) / d;
+    
 	float t_min = glm::max(glm::min(t_1.x, t_2.x), glm::min(t_1.y, t_2.y));
 	t_min = glm::max(t_min, glm::min(t_1.z, t_2.z));
 
@@ -98,7 +105,7 @@ bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void BoxTreeNode::Construct(int count, Triangle ** tri) {
-	// Compute BoxMin & BoxMax to fit around all tri’s
+   // Compute BoxMin & BoxMax to fit around all tri’s
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -122,6 +129,18 @@ void BoxTreeNode::Construct(int count, Triangle ** tri) {
 				BoxMax.z = tri[i]->GetVertex(j).Position.z;
 		}
 	}
+    
+    //Copy Box values into pack
+    Box = pack_t(
+                 BoxMin.x,
+                 BoxMin.y,
+                 BoxMin.z,
+                 1.f,
+                 BoxMax.x,
+                 BoxMax.y,
+                 BoxMax.z,
+                 1.f
+                 );
 
 	// Check if this is a leaf node
 	if (count <= MAX_TRIANGLES_PER_BOX) {

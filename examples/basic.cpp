@@ -18,7 +18,13 @@ int main(int argc, char* argv[]) {
 		std::cout << "ERROR: No path for model given" << std::endl;
 		return 1;
 	}
-
+    
+    namespace bs = boost::simd;
+    using pack_t = bs::pack<float>;
+    
+    auto pack_size = bs::cardinal_of<pack_t>();
+    std::cout << "cardinal: " << pack_size << std::endl;
+    
 	// ----------------------------------------------------------
 	// Model Loading.
 	std::string path(argv[1]);
@@ -28,14 +34,13 @@ int main(int argc, char* argv[]) {
 	// ----------------------------------------------------------
 	// Scene Construction
 	Scene scene;
-	scene.SetSkyColor(Color(0.9f, 0.9f, 0.9f));
+	scene.SetSkyColor(Color(0.75f, 0.4f, 0.4f));
 
 	//Add lights
-	DirectLight dLight;
-	dLight.SetDirection(glm::vec3(0, -1.f, -1.f));
-	scene.AddLight(dLight);
-    DirectLight dLight1;
-    dLight1.SetDirection(glm::vec3(0, 0, -1.f));
+//    DirectLight dLight;
+//    dLight.SetDirection(glm::vec3(0, -1.f, -1.f));
+//    scene.AddLight(dLight);
+    DirectLight dLight1(glm::vec3(0, -1.f, -1.f), Color::WHITE, 0.5f);
     scene.AddLight(dLight1);
 
 	//Construct BoxTreeObjects from Model's meshes
@@ -53,15 +58,15 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0, 20.f, 20.f), glm::vec3(0, 10.f, 0), glm::vec3(0, 1.0f, 0));
-	cam.SetResolution(400, 400);
+	cam.BuildCamera( glm::vec3(0.f, 0.f, 20.f), glm::vec3(0, 10.f, 0), glm::vec3(0, 1.0f, 0));
+	cam.SetResolution(4000, 4000);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
 	cam.SetfStop(20000.f);
-	cam.SetSuperSample(1, 1);
+	cam.SetSuperSample(12, 12);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
-	cam.SetMaxPathLength(3);
+	cam.SetMaxPathLength(5);
 
 	// ----------------------------------------------------------
 	// Render!
@@ -78,6 +83,7 @@ int main(int argc, char* argv[]) {
 	// if(!cam.SaveImage("basic")) {
 	// 	std::cerr << "Failed to write image basic to file" << std::endl;
 	// }
+    std::system("open basic.bmp");
 
 
 	// ----------------------------------------------------------

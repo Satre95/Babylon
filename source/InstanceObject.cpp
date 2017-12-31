@@ -26,9 +26,7 @@ InstanceObject::InstanceObject(Object & obj) {
 
 bool InstanceObject::Intersect(const Ray &ray, Intersection &hit) {
 	//Covnert ray to object space.
-	Ray ray2;
-	ray2.Origin = glm::vec3(M_Inverse * glm::vec4(ray.Origin, 1));
-	ray2.Direction = glm::vec3(M_Inverse * glm::vec4(ray.Direction, 0));
+	Ray ray2(glm::vec3(M_Inverse * glm::vec4(ray.Origin, 1)), glm::vec3(M_Inverse * glm::vec4(ray.Direction, 0)));
 
 	//Perform intersection test.
 	if (child->Intersect(ray2, hit) == false)

@@ -2,6 +2,8 @@ link_libraries(Babylon Threads::Threads)
 include_directories( ${INCLUDES} )
 add_executable(Basic WIN32 basic.cpp ${ICON})
 add_executable(AshikminTest WIN32 ashikminTest.cpp ${ICON} )
+set_target_properties(Basic PROPERTIES COMPILE_FLAGS "-mavx2")
+set_target_properties(AshikminTest PROPERTIES COMPILE_FLAGS "-mavx2")
 
 # Windows config stuff
 if(MSVC)

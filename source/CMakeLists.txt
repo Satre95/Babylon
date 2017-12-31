@@ -22,5 +22,6 @@ set( SOURCE_FILES Bitmap.cpp BoxTreeNode.cpp BoxTreeObject.cpp
         AnisotropicPhongMaterial.cpp)
 
 add_library(Babylon STATIC ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(Babylon PROPERTIES COMPILE_FLAGS "-mavx2")
 
 target_link_libraries(Babylon glm assimp ${Boost_LIBRARIES})
