@@ -12,6 +12,7 @@
 #include "Triangle.hpp"
 
 #define MAX_TRIANGLES_PER_BOX 10
+#define SIMD_TREE_TRAVERSAL
 
 class BoxTreeNode
 {
@@ -41,7 +42,6 @@ private:
     // Useful for SIMD processing.
     pack_t Box;
     
-//    glm::vec3 BoxMin, BoxMax;
 	BoxTreeNode * child1, *child2;
 	std::array<Triangle*, MAX_TRIANGLES_PER_BOX> Tri;
 	int numTriangles = -1; //Used only if node is a leaf

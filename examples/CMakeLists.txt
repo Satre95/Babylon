@@ -20,7 +20,7 @@ endif()
 if(WIN32)
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(Basic PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
-        set_target_properties(AshikminTest PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+    set_target_properties(AshikminTest PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
 	endif()
 endif()
 

@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     using pack_t = bs::pack<float>;
     
     auto pack_size = bs::cardinal_of<pack_t>();
-    std::cout << "cardinal: " << pack_size << std::endl;
+    std::cout << "float pack cardinal: " << pack_size << std::endl;
     
 	// ----------------------------------------------------------
 	// Model Loading.
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 	// ----------------------------------------------------------
 	// Scene Construction
 	Scene scene;
-	scene.SetSkyColor(Color(0.75f, 0.4f, 0.4f));
+	scene.SetSkyColor(Color(0.75f, 0.6f, 0.4f));
 
 	//Add lights
 //    DirectLight dLight;
@@ -58,12 +58,12 @@ int main(int argc, char* argv[]) {
 
 	//Make a camera
 	Camera cam;
-	cam.BuildCamera( glm::vec3(0.f, 0.f, 20.f), glm::vec3(0, 10.f, 0), glm::vec3(0, 1.0f, 0));
-	cam.SetResolution(4000, 4000);
+	cam.BuildCamera( glm::vec3(0.f, 10.f, 15.f), glm::vec3(0, 0, 0), glm::vec3(0, 1.0f, 0));
+	cam.SetResolution(200, 200);
 	cam.SetFoV(45.f);
 	cam.SetFocus(1.f);
 	cam.SetfStop(20000.f);
-	cam.SetSuperSample(12, 12);
+	cam.SetSuperSample(4, 4);
 	cam.SetJitter(true);
 	cam.SetShirley(true);
 	cam.SetMaxPathLength(5);

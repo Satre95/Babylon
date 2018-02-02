@@ -5,10 +5,11 @@
 #include <cstring>
 #include "MeshObject.hpp"
 #include "LambertMaterial.hpp"
+#include "MetalMaterial.hpp"
 #include "AnisotropicPhongMaterial.hpp"
 #include "glm/glm.hpp"
 
-Material* MeshObject::s_defaultMaterial = new LambertMaterial();
+Material* MeshObject::s_defaultMaterial = new MetalMaterial();
 
 ////////////////////////////////////////////////////////////////////////////////
 

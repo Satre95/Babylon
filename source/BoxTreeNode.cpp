@@ -37,6 +37,7 @@ bool BoxTreeNode::Intersect(const Ray & ray, Intersection & hit, int & depth) {
 ////////////////////////////////////////////////////////////////////////////////
 
 bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
+#ifdef SIMD_TREE_TRAVERSAL
     // Make the output pack
     pack_t p_out(0.f);
     
@@ -49,21 +50,26 @@ bool BoxTreeNode::IntersectVolume(const Ray & ray, Intersection & hit) {
     glm::vec3 t_1 = glm::vec3(output.at(0), output.at(1), output.at(2));
     glm::vec3 t_2 = glm::vec3(output.at(4), output.at(5), output.at(6));
     
-//    glm::vec3 t_1_scalar = (glm::vec3(a) - p) / d;
-//    glm::vec3 t_2_scalar = (glm::vec3(b) - p) / d;
+#else
+    auto & p = ray.Origin;
+    auto & d = ray.Direction;
+    glm::vec3 t_1 = (BoxMin - p) / d;
+    glm::vec3 t_2 = (BoxMax - p) / d;
+
+#endif
     
-	float t_min = glm::max(glm::min(t_1.x, t_2.x), glm::min(t_1.y, t_2.y));
-	t_min = glm::max(t_min, glm::min(t_1.z, t_2.z));
-
-	float t_max = glm::min(glm::max(t_1.x, t_2.x), glm::max(t_1.y, t_2.y));
-	t_max = glm::min(t_max, glm::max(t_1.z, t_2.z));
-
-	//No intersection.
-	if (t_min > t_max || t_max < 0) {
-		return false;
-	}
-
-	return true;
+    float t_min = glm::max(glm::min(t_1.x, t_2.x), glm::min(t_1.y, t_2.y));
+    t_min = glm::max(t_min, glm::min(t_1.z, t_2.z));
+    
+    float t_max = glm::min(glm::max(t_1.x, t_2.x), glm::max(t_1.y, t_2.y));
+    t_max = glm::min(t_max, glm::max(t_1.z, t_2.z));
+    
+    //No intersection.
+    if (t_min > t_max || t_max < 0) {
+        return false;
+    }
+    
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -105,7 +111,7 @@ bool BoxTreeNode::IntersectTriangles(const Ray & ray, Intersection & hit) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void BoxTreeNode::Construct(int count, Triangle ** tri) {
-   // Compute BoxMin & BoxMax to fit around all tri’s
+   // Compute BoxMin & BoxMax to fit around all tri's
 	for (int i = 0; i < count; i++)
 	{
 		for (int j = 0; j < 3; j++)
