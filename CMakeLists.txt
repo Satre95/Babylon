@@ -18,7 +18,8 @@ set (INCLUDES
 		${EXTERNALS_DIR}/assimp/include 
 		${CMAKE_SOURCE_DIR}/include
 		${Boost_INCLUDE_DIRS}
-		${EXTERNALS_DIR}/boost.simd/include )
+		${EXTERNALS_DIR}/boost.simd/include 
+		${EXTERNALS_DIR}/SDL2/include)
 
 
 if(MSVC)
